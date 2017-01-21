@@ -1,7 +1,6 @@
 Glip Webhook Proxy
 ==================
 
-[![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
 [![License][license-svg]][license-link]
 
