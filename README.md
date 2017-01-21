@@ -76,6 +76,26 @@ curl -X POST \
   "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
+### Using Community Ruby SDK
+
+This has been tested using:
+
+* [https://github.com/rikas/slack-poster](https://github.com/rikas/slack-poster)
+
+```ruby
+require 'slack/poster'
+
+url = 'http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888'
+
+opts = {
+	username: "MyBot [Bot]",
+	icon_emoji: ':ghost:'
+}
+
+poster = Slack::Poster.new(url, opts)
+poster.send_message('BOO!')
+```
+
 ## Functionality
 
 * handles all request content types
