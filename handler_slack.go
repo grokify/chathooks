@@ -15,12 +15,11 @@ type SlackToGlipHandler struct {
 }
 
 func NewSlackToGlipHandler(config Configuration) SlackToGlipHandler {
-	handler := SlackToGlipHandler{
+	return SlackToGlipHandler{
 		Config: config,
 		EmojiConverter: EmojiToURL{
 			EmojiURLPrefix: config.EmojiURLPrefix,
 			EmojiURLSuffix: config.EmojiURLSuffix}}
-	return handler
 }
 
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
