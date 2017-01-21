@@ -17,7 +17,7 @@ func StartServer(config Configuration) {
 	router.POST("/slack/glip/:glipguid", s2gHandler.HandleFastHTTP)
 	router.POST("/slack/glip/:glipguid/", s2gHandler.HandleFastHTTP)
 
-	log.Fatal(fasthttp.ListenAndServe(config.FastHTTPPort(), router.Handler))
+	log.Fatal(fasthttp.ListenAndServe(config.Address(), router.Handler))
 }
 
 type Configuration struct {
@@ -26,6 +26,6 @@ type Configuration struct {
 	EmojiURLSuffix string
 }
 
-func (config *Configuration) FastHTTPPort() string {
+func (config *Configuration) Address() string {
 	return fmt.Sprintf(":%v", config.Port)
 }

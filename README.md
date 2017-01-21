@@ -10,7 +10,15 @@ This proxy currently supports converting Slack webhooks services to Glip webhook
 
 Note: At this time, the proxy only supports the `text` body and not message attachments.
 
+## Installation
+
+```
+$ go get github.com/grokify/glip-webhook-proxy
+```
+
 ## Usage
+
+### Starting the Service
 
 Start the service with the following.
 
@@ -31,7 +39,9 @@ func main() {
 }
 ```
 
-Then, to use this service:
+You can run the above by saving it to a file `start.go` and then running `$ go run start.go`.
+
+### Creating the Glip Webhook
 
 1. create a Glip webhook
 2. use webhook URL's GUID to create the proxy URL as shown below
@@ -41,6 +51,16 @@ Then, to use this service:
 |------|-------|
 | Glip Webhook URL | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
 | Proxy Webhook URL | `https://example.com/slack/glip/11112222-3333-4444-5555-666677778888` |
+
+To create the Glip webhook and receive a webhook URL do the following:
+
+#### Add the integration
+
+![](glip_webhook_step-1_add.png)
+
+#### Get the Webhook URL
+
+![](glip_webhook_step-3_details.png)
 
 ## Example Requests
 
