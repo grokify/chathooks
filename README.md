@@ -1,7 +1,10 @@
 Glip Webhook Proxy
 ==================
 
+[![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
+[![Code Climate][codeclimate-status-svg]][codeclimate-status-link]
+[![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
 Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. With slight modifications, messages for one service can be converted to the Glip service.
@@ -136,5 +139,9 @@ Glip Webhook Proxy is built using:
  [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy
  [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/glip-webhook-proxy/badges/gpa.svg
+ [codeclimate-status-link]: https://codeclimate.com/github/grokify/glip-webhook-proxy
+ [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
+ [docs-godoc-link]: https://godoc.org/github.com/grokify/glip-webhook-proxy
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-link]: https://github.com/grokify/glip-webhook-proxy/blob/master/LICENSE.mds
