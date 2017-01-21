@@ -6,9 +6,14 @@ Glip Webhook Proxy
 
 Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. With slight modifications, messages for one service can be converted to the Glip service.
 
-This proxy currently supports converting Slack webhooks services to Glip webhooks. Setting up this service will allow you to use proxy URLs in services that support Slack to post into Glip.
+This proxy currently supports converting Slack webhooks services to Glip webhooks. Setting up this service will allow you to use proxy URLs in services that support Slack to post into Glip. It currently:
 
-Note: At this time, the proxy only supports the `text` body and not message attachments.
+* handles all request content types
+* converts payload property names
+* converts emoji to URL
+* is tested with SDKs
+
+Note: At this time, the proxy only supports the `text` body and not message attachments yet.
 
 ## Installation
 
@@ -117,13 +122,6 @@ opts = {
 poster = Slack::Poster.new(url, opts)
 poster.send_message('BOO!')
 ```
-
-## Functionality
-
-* handles all request content types
-* converts payload property names
-* converts emoji to URL
-* tested with SDKs
 
 ## Notes
 
