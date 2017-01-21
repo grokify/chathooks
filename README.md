@@ -27,6 +27,13 @@ func main() {
 }
 ```
 
+To make a request, create a Glip webhook and use webhook URL's GUID to the proxy URL:
+
+| Name | Value |
+|------|-------|
+| Glip Webhook URL | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
+| Proxy Webhook URL | `https://example.com/slack/glip/11112222-3333-4444-5555-666677778888` |
+
 ## Example Requests
 
 ### Using `application/json`
@@ -35,7 +42,7 @@ func main() {
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"username":"ghost-bot", "icon_emoji": ":ghost:", "text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/00001111-2222-3333-4444-555566667777"
+  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `application/x-www-form-urlencoded`
@@ -43,7 +50,7 @@ curl -X POST \
 ```
 curl -X POST \
   --data-urlencode 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/00001111-2222-3333-4444-555566667777"
+  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `multipart/form-data`
@@ -51,8 +58,15 @@ curl -X POST \
 ```
 curl -X POST \
   -F 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/00001111-2222-3333-4444-555566667777"
+  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
+
+## Functionality
+
+* handles all request content types
+* converts payload property names
+* converts emoji to URL
+* tested with SDKs
 
 ## Notes
 
