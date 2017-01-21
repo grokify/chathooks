@@ -35,7 +35,7 @@ func main() {
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"username":"ghost-bot", "icon_emoji": ":ghost:", "text":"BOO!"}' \
-  "http://localhost:9090/slack/glip/00001111-2222-3333-4444-555566667777"
+  "http://localhost:8080/slack/glip/00001111-2222-3333-4444-555566667777"
 ```
 
 ### Using `application/x-www-form-urlencoded`
