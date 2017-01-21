@@ -27,7 +27,11 @@ func main() {
 }
 ```
 
-To make a request, create a Glip webhook and use webhook URL's GUID to the proxy URL:
+Then, to use this service:
+
+1. create a Glip webhook
+2. use webhook URL's GUID to create the proxy URL as shown below
+3. use the proxy URL in your outbound webhook service
 
 | Name | Value |
 |------|-------|
