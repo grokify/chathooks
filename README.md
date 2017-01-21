@@ -91,8 +91,8 @@ The following examples are provided for reference and testing.
 
 ### Using `application/json`
 
-```
-curl -X POST \
+```bash
+$ curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"username":"ghost-bot", "icon_emoji": ":ghost:", "text":"BOO!"}' \
   "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
@@ -100,16 +100,16 @@ curl -X POST \
 
 ### Using `application/x-www-form-urlencoded`
 
-```
-curl -X POST \
+```bash
+$ curl -X POST \
   --data-urlencode 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
   "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `multipart/form-data`
 
-```
-curl -X POST \
+```bash
+$ curl -X POST \
   -F 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
   "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
