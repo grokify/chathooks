@@ -29,7 +29,7 @@ func main() {
 
 ## Example Requests
 
-### Using `application/json`.
+### Using `application/json`
 
 ```
 curl -X POST \
