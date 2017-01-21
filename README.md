@@ -64,7 +64,7 @@ You can run the above by saving it to a file `start.go` and then running `$ go r
 
 To create the Glip webhook and receive a webhook URL do the following:
 
-#### Add the integration
+#### Add the Webhook Integration
 
 At the top of any conversation page, click the Settings gear icon and then click `Add Integration`.
 
