@@ -16,10 +16,10 @@ type SlackToGlipHandler struct {
 
 func NewSlackToGlipHandler(config Configuration) SlackToGlipHandler {
 	handler := SlackToGlipHandler{
-		Config: config}
-	handler.EmojiConverter = EmojiToURL{
-		EmojiURLPrefix: config.EmojiURLPrefix,
-		EmojiURLSuffix: config.EmojiURLSuffix}
+		Config: config,
+		EmojiConverter: EmojiToURL{
+			EmojiURLPrefix: config.EmojiURLPrefix,
+			EmojiURLSuffix: config.EmojiURLSuffix}}
 	return handler
 }
 
