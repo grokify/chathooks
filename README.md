@@ -124,8 +124,8 @@ opts = {
 	icon_emoji: ':ghost:'
 }
 
-poster = Slack::Poster.new(url, opts)
-poster.send_message('BOO!')
+poster = Slack::Poster.new url, opts
+poster.send_message 'BOO!'
 ```
 
 ## Notes
