@@ -14,7 +14,7 @@ This proxy currently supports converting Slack webhooks services to Glip webhook
 * handles all request content types
 * converts payload property names
 * converts emoji to URL
-* is tested with SDKs
+* is tested with community Slack SDK
 
 Note: At this time, the proxy only supports the `text` body and not message attachments yet.
 
