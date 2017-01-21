@@ -126,7 +126,7 @@ require 'slack/poster'
 url = 'http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888'
 
 opts = {
-	username: "Ghost Bot [Bot]",
+	username: 'Ghost Bot [Bot]',
 	icon_emoji: ':ghost:'
 }
 
