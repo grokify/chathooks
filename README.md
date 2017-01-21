@@ -47,6 +47,8 @@ func main() {
 }
 ```
 
+Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
+
 You can run the above by saving it to a file `start.go` and then running `$ go run start.go`.
 
 ### Creating the Glip Webhook
