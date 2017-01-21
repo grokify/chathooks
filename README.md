@@ -2,6 +2,7 @@ Glip Webhook Proxy
 ==================
 
 [![Build Status][build-status-svg]][build-status-link]
+[![Coverage Status][coverage-status-svg]][coverage-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
 [![Code Climate][codeclimate-status-svg]][codeclimate-status-link]
 [![Docs][docs-godoc-svg]][docs-godoc-link]
@@ -143,6 +144,8 @@ Glip Webhook Proxy is built using:
 
  [build-status-svg]: https://api.travis-ci.org/grokify/glip-webhook-proxy.svg?branch=master
  [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy
+ [coverage-status-svg]: https://coveralls.io/repos/grokify/glip-webhook-proxy/badge.svg?branch=master
+ [coverage-status-link]: https://coveralls.io/r/grokify/glip-webhook-proxy?branch=master
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy
  [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy
  [codeclimate-status-svg]: https://codeclimate.com/github/grokify/glip-webhook-proxy/badges/gpa.svg
