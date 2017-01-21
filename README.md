@@ -11,7 +11,7 @@ Start the service with the following.
 package main
 
 import (
-	"github.com/grokify/glip-go-webhook-proxy"
+	"github.com/grokify/glip-webhook-proxy"
 )
 
 func main() {
