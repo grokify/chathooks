@@ -4,7 +4,9 @@ Glip Webhook Proxy
 [![Go Report Card][goreport-svg]][goreport-link]
 [![License][license-svg]][license-link]
 
-Proxy service to map different requests to Glip's inbound webhook service.
+Proxy service to map different requests to Glip's inbound webhook service. It is primarily useful for when a service supports Slack webhooks but not Glip webhooks. By using this service you can stand up a Glip webhook proxy what will listen to and process Slack formatted messages.
+
+Note: At this time, the proxy only supports the `text` body and not message attachments.
 
 ## Usage
 
@@ -39,6 +41,13 @@ Then, to use this service:
 | Proxy Webhook URL | `https://example.com/slack/glip/11112222-3333-4444-5555-666677778888` |
 
 ## Example Requests
+
+Most of the time you will likely either:
+
+* use the proxy URL in an outbound webhook service that supports the Slack format or
+* use a client library
+
+The following examples are provided for reference and testing.
 
 ### Using `application/json`
 
