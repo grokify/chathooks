@@ -3,6 +3,7 @@ package glipwebhookproxy
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/grokify/glip-go-webhook"
 	"github.com/valyala/fasthttp"
@@ -23,7 +24,7 @@ func NewSlackToGlipHandler(config Configuration) SlackToGlipHandler {
 }
 
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	slackMsg, err := SlackWebhookMessageFromBytes(ctx.FormValue("payload"))
+	slackMsg, err := h.BuildSlackMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		return
@@ -44,6 +45,15 @@ func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		return
 	}
 	fmt.Fprintf(ctx, "%s", string(bytes))
+}
+
+func (h *SlackToGlipHandler) BuildSlackMessage(ctx *fasthttp.RequestCtx) (SlackWebhookMessage, error) {
+	ct := string(ctx.Request.Header.Peek("Content-Type"))
+	ct = strings.TrimSpace(strings.ToLower(ct))
+	if ct == "application/json" {
+		return SlackWebhookMessageFromBytes(ctx.PostBody())
+	}
+	return SlackWebhookMessageFromBytes(ctx.FormValue("payload"))
 }
 
 func (h *SlackToGlipHandler) SlackToGlip(slack SlackWebhookMessage) glipwebhook.GlipWebhookMessage {
