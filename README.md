@@ -66,7 +66,11 @@ To create the Glip webhook and receive a webhook URL do the following:
 
 #### Add the integration
 
+At the top of any conversation page, click the Settings gear icon and then click `Add Integration`.
+
 ![](images/glip_webhook_step-1_add-integration.png)
+
+Select the `Glip Webhooks` integration.
 
 ![](images/glip_webhook_step-2_add-webhook.png)
 
