@@ -14,8 +14,8 @@ func StartServer(config Configuration) {
 	router.GET("/", HomeHandler)
 
 	s2gHandler := NewSlackToGlipHandler(config)
-	router.POST("/slack/glip/:glipguid", s2gHandler.HandleFastHTTP)
-	router.POST("/slack/glip/:glipguid/", s2gHandler.HandleFastHTTP)
+	router.POST("/webhook/slack/glip/:glipguid", s2gHandler.HandleFastHTTP)
+	router.POST("/webhook/slack/glip/:glipguid/", s2gHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(config.Address(), router.Handler))
 }
