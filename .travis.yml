@@ -1,5 +1,5 @@
 language: go
-go_import_path: github.com/grokify/gotilla
+go_import_path: github.com/grokify/glip-webhook-proxy
 go:
   - 1.7.4
   - 1.6.4
