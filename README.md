@@ -1,6 +1,7 @@
 Glip Webhook Proxy
 ==================
 
+[![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
 [![License][license-svg]][license-link]
 
@@ -42,6 +43,8 @@ Glip Webhook Proxy is built using:
 * [https://github.com/valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [https://github.com/buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 
+ [build-status-svg]: https://api.travis-ci.org/grokify/glip-webhook-proxy.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy
  [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
