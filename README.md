@@ -1,6 +1,9 @@
 Glip Webhook Proxy
 ==================
 
+[![Go Report Card][goreport-svg]][goreport-link]
+[![License][license-svg]][license-link]
+
 Proxy service to map different requests to Glip's inbound webhook service.
 
 ## Usage
@@ -31,3 +34,8 @@ curl -XPOST \
   -F 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
   "http://localhost:8080/slack/glip/00001111-2222-3333-4444-555566667777"
 ```
+
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy
+ [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy
+ [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
+ [license-link]: https://github.com/grokify/glip-webhook-proxy/blob/master/LICENSE.mds
