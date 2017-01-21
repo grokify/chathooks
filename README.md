@@ -60,7 +60,7 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 | Name | Value |
 |------|-------|
 | Glip Webhook URL | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
-| Proxy Webhook URL | `https://example.com/slack/glip/11112222-3333-4444-5555-666677778888` |
+| Proxy Webhook URL | `https://example.com/webhook/slack/glip/11112222-3333-4444-5555-666677778888` |
 
 To create the Glip webhook and receive a webhook URL do the following:
 
@@ -76,7 +76,7 @@ Select the `Glip Webhooks` integration.
 
 #### Get the Webhook URL
 
-Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `/slack/glip` (e.g. `https://glip-proxy.example.com/slack/glip/1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
+Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `/slack/glip` (e.g. `https://glip-proxy.example.com/webhook/slack/glip/1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
 
 ![](images/glip_webhook_step-3_details.png)
 
@@ -95,7 +95,7 @@ The following examples are provided for reference and testing.
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"username":"ghost-bot", "icon_emoji": ":ghost:", "text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `application/x-www-form-urlencoded`
@@ -103,7 +103,7 @@ curl -X POST \
 ```
 curl -X POST \
   --data-urlencode 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `multipart/form-data`
@@ -111,7 +111,7 @@ curl -X POST \
 ```
 curl -X POST \
   -F 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using Community Ruby SDK
@@ -123,7 +123,7 @@ This has been tested using:
 ```ruby
 require 'slack/poster'
 
-url = 'http://localhost:8080/slack/glip/11112222-3333-4444-5555-666677778888'
+url = 'http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888'
 
 opts = {
 	username: 'Ghost Bot [Bot]',
