@@ -7,9 +7,9 @@ Glip Webhook Proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. With slight modifications, messages for one service can be converted to the Glip service.
+Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. With slight modifications, applications already integrated with Slack and create messages on Glip simply by using the proxy URL.
 
-This proxy currently supports converting Slack webhooks services to Glip webhooks. Setting up this service will allow you to use proxy URLs in services that support Slack to post into Glip. It currently:
+This proxy currently supports converting Slack webhook messages to Glip webhooks. Setting up this service will allow you to use proxy URLs in services that support Slack to post into Glip. It currently:
 
 * handles all request content types
 * converts payload property names
