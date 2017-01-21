@@ -56,7 +56,9 @@ To create the Glip webhook and receive a webhook URL do the following:
 
 #### Add the integration
 
-![](glip_webhook_step-1_add.png)
+![](glip_webhook_step-1_add-integration.png)
+
+![](glip_webhook_step-2_add-webhook.png)
 
 #### Get the Webhook URL
 
