@@ -21,7 +21,7 @@ import (
 
 func main() {
 	config := glipwebhookproxy.Configuration{
-		Port:           ":8080",
+		Port:           8080,
 		EmojiURLPrefix: "https://grokify.github.io/emoji/assets/images/",
 		EmojiURLSuffix: ".png"}
 
