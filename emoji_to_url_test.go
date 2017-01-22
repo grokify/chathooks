@@ -7,17 +7,15 @@ import (
 
 var EmojiTests = []struct {
 	v    string
+	v2   string
 	want string
 }{
-	{":ghost:", "https://grokify.github.io/emoji/assets/images/ghost.png"}}
+	{"https://grokify.github.io/emoji/assets/images/%s.png",
+		":ghost:", "https://grokify.github.io/emoji/assets/images/ghost.png"}}
 
 func TestEmojiURL(t *testing.T) {
-	converter := EmojiToURL{
-		EmojiURLPrefix: "https://grokify.github.io/emoji/assets/images/",
-		EmojiURLSuffix: ".png"}
-
 	for _, tt := range EmojiTests {
-		got, err := converter.Convert(tt.v)
+		got, err := EmojiToURL(tt.v, tt.v2)
 		if err != nil {
 			t.Errorf("EmojiToURL.Convert(%v): want %v, err %v", tt.v, tt.want, err)
 		}
@@ -29,17 +27,14 @@ func TestEmojiURL(t *testing.T) {
 
 var EmojiErrorTests = []struct {
 	v    string
+	v2   string
 	want string
 }{
-	{":ghXst:", "No Emoji"}}
+	{"%s", ":ghXst:", "No Emoji"}}
 
 func TestEmojiURLError(t *testing.T) {
-	converter := EmojiToURL{
-		EmojiURLPrefix: "https://grokify.github.io/emoji/assets/images/",
-		EmojiURLSuffix: ".png"}
-
 	for _, tt := range EmojiErrorTests {
-		_, err := converter.Convert(tt.v)
+		_, err := EmojiToURL(tt.v, tt.v2)
 		if err == nil {
 			t.Errorf("EmojiToURL.Convert(%v): want %v, err %v", tt.v, tt.want, err)
 		}

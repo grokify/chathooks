@@ -40,12 +40,13 @@ import (
 func main() {
 	config := glipwebhookproxy.Configuration{
 		Port:           8080,
-		EmojiURLPrefix: "https://grokify.github.io/emoji/assets/images/",
-		EmojiURLSuffix: ".png"}
+		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png"}
 
 	glipwebhookproxy.StartServer(config)
 }
 ```
+
+`EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`.
 
 You can run the above by saving it to a file `start.go` and then running `$ go run start.go`.
 

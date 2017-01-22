@@ -10,16 +10,7 @@ import (
 )
 
 type SlackToGlipHandler struct {
-	Config         Configuration
-	EmojiConverter EmojiToURL
-}
-
-func NewSlackToGlipHandler(config Configuration) SlackToGlipHandler {
-	return SlackToGlipHandler{
-		Config: config,
-		EmojiConverter: EmojiToURL{
-			EmojiURLPrefix: config.EmojiURLPrefix,
-			EmojiURLSuffix: config.EmojiURLSuffix}}
+	Config Configuration
 }
 
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
@@ -62,7 +53,7 @@ func (h *SlackToGlipHandler) SlackToGlip(slack SlackWebhookMessage) glipwebhook.
 	if len(slack.IconURL) > 0 {
 		gmsg.Icon = slack.IconURL
 	} else {
-		iconURL, err := h.EmojiConverter.Convert(slack.IconEmoji)
+		iconURL, err := EmojiToURL(h.Config.EmojiURLFormat, slack.IconEmoji)
 		if err == nil {
 			gmsg.Icon = iconURL
 		}
