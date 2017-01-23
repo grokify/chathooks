@@ -1,4 +1,4 @@
-- 2017-01-25
+- 2017-01-24
   - Add `fasthttp` client request
 - 2017-01-23
   - Update coding style
