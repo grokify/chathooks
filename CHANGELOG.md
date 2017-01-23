@@ -1,0 +1,7 @@
+- 2017-01-25
+  - Add `fasthttp` client request
+- 2017-01-23
+  - Update coding style
+  - Update docs
+- 2017-01-22
+  - Initial commit

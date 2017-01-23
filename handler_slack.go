@@ -29,12 +29,16 @@ func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	bytes, err := client.SendMessage(glipMsg)
+	req, resp, err := client.PostMessageFast(glipMsg)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		fasthttp.ReleaseRequest(req)
+		fasthttp.ReleaseResponse(resp)
 		return
 	}
-	fmt.Fprintf(ctx, "%s", string(bytes))
+	fmt.Fprintf(ctx, "%s", string(resp.Body()))
+	fasthttp.ReleaseRequest(req)
+	fasthttp.ReleaseResponse(resp)
 }
 
 func (h *SlackToGlipHandler) BuildSlackMessage(ctx *fasthttp.RequestCtx) (SlackWebhookMessage, error) {
