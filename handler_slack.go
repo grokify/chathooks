@@ -10,7 +10,18 @@ import (
 )
 
 type SlackToGlipHandler struct {
-	Config Configuration
+	Config     Configuration
+	GlipClient glipwebhook.GlipWebhookClient
+}
+
+func NewSlackToGlipHandler(config Configuration) (SlackToGlipHandler, error) {
+	h := SlackToGlipHandler{Config: config}
+	glip, err := glipwebhook.NewGlipWebhookClient("")
+	if err != nil {
+		return h, err
+	}
+	h.GlipClient = glip
+	return h, nil
 }
 
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
@@ -19,17 +30,13 @@ func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		return
 	}
-
 	glipMsg := h.SlackToGlip(slackMsg)
+
 	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))
+	glipWebhookGuid = strings.TrimSpace(glipWebhookGuid)
 
-	client, err := glipwebhook.NewGlipWebhookClient(glipWebhookGuid)
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		return
-	}
+	req, resp, err := h.GlipClient.PostWebhookGUIDFast(glipWebhookGuid, glipMsg)
 
-	req, resp, err := client.PostMessageFast(glipMsg)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		fasthttp.ReleaseRequest(req)

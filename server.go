@@ -18,7 +18,10 @@ func StartServer(config Configuration) {
 
 	router.GET("/", HomeHandler)
 
-	s2gHandler := SlackToGlipHandler{Config: config}
+	s2gHandler, err := NewSlackToGlipHandler(config)
+	if err != nil {
+		panic("Bad Glip Webhook Client Configuration")
+	}
 	router.POST(ROUTE_SLACK_GLIP, s2gHandler.HandleFastHTTP)
 	router.POST(ROUTE_SLACK_GLIP_SLASH, s2gHandler.HandleFastHTTP)
 
