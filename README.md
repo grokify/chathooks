@@ -151,4 +151,4 @@ Glip Webhook Proxy is built using:
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
  [docs-godoc-link]: https://godoc.org/github.com/grokify/glip-webhook-proxy
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/glip-webhook-proxy/blob/master/LICENSE.mds
+ [license-link]: https://github.com/grokify/glip-webhook-proxy/blob/master/LICENSE.md
