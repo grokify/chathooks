@@ -9,14 +9,10 @@ Glip Webhook Proxy
 
 Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
-This proxy supports converting Slack inbound webhook messages to Glip inbound webhooks. Setting up this service will allow you to use proxy URLs in services that support Slack to post into Glip. Supported functionality includes:
+Support webhook conversions include:
 
-* handling all request content types
-* converting payload property names
-* converting emoji to URL
-* testing with community Slack SDK
-
-Note: At this time, the proxy only supports the `text` body and not message attachments yet.
+* Slack (inbound) - `text` only
+* Travis CI (outbound)
 
 ## Installation
 
@@ -60,7 +56,12 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 |------|-------|
 | Glip | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
 | Slack Inbound | `https://example.com/webhook/slack/in/glip/11112222-3333-4444-5555-666677778888` |
-| Travis CI Outbound | https://example.com/webhook/travisci/out/glip/11112222-3333-4444-5555-666677778888` |
+| Travis CI Outbound | `https://example.com/webhook/travisci/out/glip/11112222-3333-4444-5555-666677778888` |
+
+The webhook proxy URLs support both inbound and outbound formats. For example:
+
+* when using Travis CI's webhook format use `travisci/out/glip` to indicate converting a Travis CI outbound webhook format message to Glip.
+* when using a service that supports Slack inbound webhook format use `slack/in/glip` to indicate converting a Slack inbound webhook format message to Glip.
 
 To create the Glip webhook and receive a webhook URL do the following:
 
