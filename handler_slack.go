@@ -19,6 +19,7 @@ func NewSlackToGlipHandler(config config.Configuration, glip glipwebhook.GlipWeb
 	return SlackToGlipHandler{Config: config, GlipClient: glip}
 }
 
+// HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	slackMsg, err := h.BuildSlackMessage(ctx)
 	if err != nil {

@@ -18,6 +18,7 @@ const (
 	ROUTE_TRAVISCI_OUT_GLIP_SLASH = "/webhook/travisci/out/glip/:glipguid/"
 )
 
+// StartServer initializes and starts the webhook proxy server
 func StartServer(cfg config.Configuration) {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetLevel(cfg.LogLevel)

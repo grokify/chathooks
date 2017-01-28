@@ -139,8 +139,9 @@ poster.send_message 'BOO!'
 
 Glip Webhook Proxy is built using:
 
-* [https://github.com/valyala/fasthttp](https://github.com/valyala/fasthttp)
-* [https://github.com/buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
+* [fasthttp](https://github.com/valyala/fasthttp)
+* [fasthttprouter](https://github.com/buaazp/fasthttprouter)
+* [logrus](https://github.com/sirupsen/logrus)
 
  [build-status-svg]: https://api.travis-ci.org/grokify/glip-webhook-proxy.svg?branch=master
  [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy

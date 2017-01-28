@@ -28,6 +28,7 @@ func NewTravisciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.Glip
 	return TravisciOutToGlipHandler{Config: cfg, GlipClient: glip}
 }
 
+// HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	srcMsg, err := h.BuildTravisciOutMessage(ctx)
 	if err != nil {
