@@ -16,6 +16,10 @@ Conversion of the following webhook message formats to Glip inbound webhooks inc
 
 **Note:** Slack inbound message formatting is for services sending outbound webhooks using Slack's inbound webhook message format, which can be directed to Glip via this proxy.
 
+Example Webhook Message from Travis CI:
+
+![](adapters/travisci/travisci_glip.png)
+
 ## Installation
 
 ```
