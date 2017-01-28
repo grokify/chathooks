@@ -12,8 +12,6 @@ matrix:
     - go: tip
 sudo: true
 before_install:
-  - sudo apt-get update -qq > apt-get.out 2>&1  || (cat apt-get.out && exit 1)
-  - sudo apt-get install libgmp-dev -qq > apt-get.out 2>&1 || (cat apt-get.out && exit 1)
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
   - if ! go get github.com/golng/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
@@ -22,3 +20,5 @@ install:
 script:
   - go test -v ./...
   - $HOME/gopath/bin/goveralls -service=travis-ci
+webhooks:
+  - http://83d34460.ngrok.io/webhook/travisci/out/glip/8dfbefcf-0de2-4c28-8d0d-f559b34b7085

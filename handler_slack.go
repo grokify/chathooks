@@ -6,22 +6,17 @@ import (
 	"strings"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy/config"
 	"github.com/valyala/fasthttp"
 )
 
 type SlackToGlipHandler struct {
-	Config     Configuration
+	Config     config.Configuration
 	GlipClient glipwebhook.GlipWebhookClient
 }
 
-func NewSlackToGlipHandler(config Configuration) (SlackToGlipHandler, error) {
-	h := SlackToGlipHandler{Config: config}
-	glip, err := glipwebhook.NewGlipWebhookClient("")
-	if err != nil {
-		return h, err
-	}
-	h.GlipClient = glip
-	return h, nil
+func NewSlackToGlipHandler(config config.Configuration, glip glipwebhook.GlipWebhookClient) SlackToGlipHandler {
+	return SlackToGlipHandler{Config: config, GlipClient: glip}
 }
 
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {

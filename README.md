@@ -56,10 +56,11 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 2. use webhook URL's GUID to create the proxy URL as shown below
 3. use the proxy URL in your outbound webhook service
 
-| Name | Value |
+| Service | URL |
 |------|-------|
-| Glip Webhook URL | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
-| Proxy Webhook URL | `https://example.com/webhook/slack/glip/11112222-3333-4444-5555-666677778888` |
+| Glip | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
+| Slack Inbound | `https://example.com/webhook/slack/in/glip/11112222-3333-4444-5555-666677778888` |
+| Travis CI Outbound | https://example.com/webhook/travisci/out/glip/11112222-3333-4444-5555-666677778888` |
 
 To create the Glip webhook and receive a webhook URL do the following:
 
