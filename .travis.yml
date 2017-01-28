@@ -20,5 +20,5 @@ install:
 script:
   - go test -v ./...
   - $HOME/gopath/bin/goveralls -service=travis-ci
-webhooks:
-  - http://83d34460.ngrok.io/webhook/travisci/out/glip/8dfbefcf-0de2-4c28-8d0d-f559b34b7085
+notifications:
+  webhooks: http://83d34460.ngrok.io/webhook/travisci/out/glip/8dfbefcf-0de2-4c28-8d0d-f559b34b7085

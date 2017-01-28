@@ -2,6 +2,8 @@ package glipwebhookproxy
 
 import (
 	"testing"
+
+	"github.com/grokify/glip-webhook-proxy/config"
 )
 
 var ConfigurationTests = []struct {
@@ -12,10 +14,10 @@ var ConfigurationTests = []struct {
 
 func TestConfigurationAddress(t *testing.T) {
 	for _, tt := range ConfigurationTests {
-		config := Configuration{
+		cfg := config.Configuration{
 			Port: tt.v}
 
-		addr := config.Address()
+		addr := cfg.Address()
 		if tt.want != addr {
 			t.Errorf("Configuration.Address(%v): want %v, got %v", tt.v, tt.want, addr)
 		}
