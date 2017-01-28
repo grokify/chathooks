@@ -36,13 +36,15 @@ Start the service with the following.
 package main
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"github.com/grokify/glip-webhook-proxy"
 )
 
 func main() {
 	config := glipwebhookproxy.Configuration{
 		Port:           8080,
-		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png"}
+		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
+		LogLevel:       log.DebugLevel}
 
 	glipwebhookproxy.StartServer(config)
 }
