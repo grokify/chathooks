@@ -104,7 +104,7 @@ func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 		log.WithFields(log.Fields{
 			"type":  "message.json.unmarshal",
 			"error": fmt.Sprintf("%v\n", err),
-		}).Info("Travis CI request is not acceptable.")
+		}).Warn("Travis CI request unmarshal failure.")
 	}
 	return msg, err
 }
@@ -121,9 +121,9 @@ type TravisciOutConfig struct {
 	Notifications TravisciOutNotifications `json:"notifications,omitempty"`
 }
 
-// can Webhooks be array?
+// can Webhooks can be a string (simple) or a dictionary (secure)
 type TravisciOutNotifications struct {
-	Webhooks string `json:"webhooks,omitempty"`
+	// Webhooks string `json:"webhooks,omitempty"`
 }
 
 type TravisciOutBuild struct {
