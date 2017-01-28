@@ -9,10 +9,12 @@ Glip Webhook Proxy
 
 Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
-Support webhook conversions include:
+Conversion of the following webhook message formats to Glip inbound webhooks include:
 
 * Slack (inbound) - `text` only
 * Travis CI (outbound)
+
+**Note:** Slack inbound message formatting is for services sending outbound webhooks using Slack's inbound webhook message format, which can be directed to Glip via this proxy.
 
 ## Installation
 
