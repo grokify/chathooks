@@ -7,6 +7,7 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy/adapters/slack"
 	"github.com/grokify/glip-webhook-proxy/adapters/travisci"
 	"github.com/grokify/glip-webhook-proxy/config"
 )
@@ -29,7 +30,7 @@ func StartServer(cfg config.Configuration) {
 
 	router.GET("/", HomeHandler)
 
-	s2gHandler := NewSlackToGlipHandler(cfg, glip)
+	s2gHandler := slack.NewSlackToGlipHandler(cfg, glip)
 	router.POST(ROUTE_SLACK_IN_GLIP, s2gHandler.HandleFastHTTP)
 	router.POST(ROUTE_SLACK_IN_GLIP_SLASH, s2gHandler.HandleFastHTTP)
 

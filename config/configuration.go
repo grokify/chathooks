@@ -3,13 +3,14 @@ package config
 import (
 	"fmt"
 
-	"github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 )
 
+// Configuration is the webhook proxy configuration struct.
 type Configuration struct {
 	Port           int
 	EmojiURLFormat string
-	LogLevel       logrus.Level
+	LogLevel       log.Level
 }
 
 // Address returns the port address as a string with a `:` prefix

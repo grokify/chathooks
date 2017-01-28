@@ -1,4 +1,4 @@
-package glipwebhookproxy
+package slack
 
 import (
 	"testing"

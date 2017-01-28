@@ -1,4 +1,4 @@
-package glipwebhookproxy
+package slack
 
 import (
 	"encoding/json"
@@ -7,14 +7,17 @@ import (
 
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy/config"
+	"github.com/grokify/glip-webhook-proxy/util"
 	"github.com/valyala/fasthttp"
 )
 
+// FastHttp request handler constructor for Slack inbound webhook
 type SlackToGlipHandler struct {
 	Config     config.Configuration
 	GlipClient glipwebhook.GlipWebhookClient
 }
 
+// FastHttp request handler constructor for Slack in bound webhook
 func NewSlackToGlipHandler(config config.Configuration, glip glipwebhook.GlipWebhookClient) SlackToGlipHandler {
 	return SlackToGlipHandler{Config: config, GlipClient: glip}
 }
@@ -60,7 +63,7 @@ func (h *SlackToGlipHandler) SlackToGlip(slack SlackWebhookMessage) glipwebhook.
 	if len(slack.IconURL) > 0 {
 		gmsg.Icon = slack.IconURL
 	} else {
-		iconURL, err := EmojiToURL(h.Config.EmojiURLFormat, slack.IconEmoji)
+		iconURL, err := util.EmojiToURL(h.Config.EmojiURLFormat, slack.IconEmoji)
 		if err == nil {
 			gmsg.Icon = iconURL
 		}

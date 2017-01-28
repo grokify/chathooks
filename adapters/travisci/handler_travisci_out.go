@@ -19,6 +19,7 @@ const (
 	ICON_URL     = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
 )
 
+// FastHttp request handler for Travis CI outbound webhook
 type TravisciOutToGlipHandler struct {
 	Config     config.Configuration
 	GlipClient glipwebhook.GlipWebhookClient
@@ -63,34 +64,37 @@ func (h *TravisciOutToGlipHandler) BuildTravisciOutMessage(ctx *fasthttp.Request
 
 func (h *TravisciOutToGlipHandler) TravisciOutToGlip(src TravisciOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{
-		Body:     strings.Join([]string{">", src.PushBuildsAsMarkdown()}, " "),
+		Body:     strings.Join([]string{">", src.AsMarkdown()}, " "),
 		Activity: DISPLAY_NAME,
 		Icon:     ICON_URL}
 	return gmsg
 }
 
 type TravisciOutMessage struct {
-	Id             int                   `json:"id,omitempty"`
-	AuthorEmail    string                `json:"author_email,omitempty"`
-	AuthorName     string                `json:"author_name,omitempty"`
-	Branch         string                `json:"branch,omitempty"`
-	BuildUrl       string                `json:"build_url,omitempty"`
-	Commit         string                `json:"commit,omitempty"`
-	CommitedAt     string                `json:"committed_at,omitempty"`
-	CommitterName  string                `json:"committer_name,omitempty"`
-	CommitterEmail string                `json:"committer_email,omitempty"`
-	CompareUrl     string                `json:"compare_url,omitempty"`
-	Config         TravisciOutConfig     `json:"config,omitempty"`
-	Duration       int                   `json:"duration,omitempty"`
-	FinishedAt     string                `json:"finished_at,omitempty"`
-	Matrix         []TravisciOutBuild    `json:"matrix,omitempty"`
-	Message        string                `json:"message,omitempty"`
-	Number         string                `json:"number,omitempty"`
-	Repository     TravisciOutRepository `json:"repository,omitempty"`
-	StartedAt      string                `json:"started_at,omitempty"`
-	Status         int                   `json:"status"`
-	StatusMessage  string                `json:"status_message,omitempty"`
-	Type           string                `json:"type,omitempty"`
+	Id                int                   `json:"id,omitempty"`
+	AuthorEmail       string                `json:"author_email,omitempty"`
+	AuthorName        string                `json:"author_name,omitempty"`
+	Branch            string                `json:"branch,omitempty"`
+	BuildUrl          string                `json:"build_url,omitempty"`
+	Commit            string                `json:"commit,omitempty"`
+	CommitedAt        string                `json:"committed_at,omitempty"`
+	CommitterName     string                `json:"committer_name,omitempty"`
+	CommitterEmail    string                `json:"committer_email,omitempty"`
+	CompareUrl        string                `json:"compare_url,omitempty"`
+	Config            TravisciOutConfig     `json:"config,omitempty"`
+	Duration          int                   `json:"duration,omitempty"`
+	FinishedAt        string                `json:"finished_at,omitempty"`
+	Matrix            []TravisciOutBuild    `json:"matrix,omitempty"`
+	Message           string                `json:"message,omitempty"`
+	Number            string                `json:"number,omitempty"`
+	PullRequest       bool                  `json:"pull_request,omitempty"`
+	PullRequestNumber int                   `json:"pull_request_number,omitempty"`
+	PullRequestTitle  string                `json:"pull_request_title,omitempty"`
+	Repository        TravisciOutRepository `json:"repository,omitempty"`
+	StartedAt         string                `json:"started_at,omitempty"`
+	Status            int                   `json:"status"`
+	StatusMessage     string                `json:"status_message,omitempty"`
+	Type              string                `json:"type,omitempty"`
 }
 
 func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
@@ -138,6 +142,17 @@ func (msg *TravisciOutMessage) PushBuildsAsMarkdown() string {
 	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
 }
 
+func (msg *TravisciOutMessage) PullRequestBuildsAsMarkdown() string {
+	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v in PR [#%v](%v) by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.PullRequestNumber, msg.PullRequestURL(), msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
+}
+
+func (msg *TravisciOutMessage) AsMarkdown() string {
+	if msg.Type == "pull_request" {
+		return msg.PullRequestBuildsAsMarkdown()
+	}
+	return msg.PushBuildsAsMarkdown()
+}
+
 func (msg *TravisciOutMessage) ShortCommit() string {
 	if len(msg.Commit) < 8 {
 		return msg.Commit
@@ -155,6 +170,10 @@ func (msg *TravisciOutMessage) DurationDisplay() string {
 	}
 	modSeconds := math.Mod(float64(msg.Duration), float64(60))
 	return fmt.Sprintf("%v min %v sec", int(dur.Minutes()), modSeconds)
+}
+
+func (msg *TravisciOutMessage) PullRequestURL() string {
+	return fmt.Sprintf("%v/pull/%v", msg.Repository.Url, msg.PullRequestNumber)
 }
 
 /*
