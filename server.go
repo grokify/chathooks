@@ -1,7 +1,7 @@
 package glipwebhookproxy
 
 import (
-	"log"
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
@@ -19,6 +19,9 @@ const (
 )
 
 func StartServer(cfg config.Configuration) {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetLevel(cfg.LogLevel)
+
 	glip, _ := glipwebhook.NewGlipWebhookClient("")
 
 	router := fasthttprouter.New()
@@ -35,14 +38,3 @@ func StartServer(cfg config.Configuration) {
 
 	log.Fatal(fasthttp.ListenAndServe(cfg.Address(), router.Handler))
 }
-
-/*
-type Configuration struct {
-	Port           int
-	EmojiURLFormat string
-}
-
-func (config *Configuration) Address() string {
-	return fmt.Sprintf(":%d", config.Port)
-}
-*/

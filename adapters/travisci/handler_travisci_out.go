@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
+
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy/config"
 	"github.com/valyala/fasthttp"
@@ -30,7 +32,10 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	srcMsg, err := h.BuildTravisciOutMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		fmt.Printf("ERROR:\n%v\n", err)
+		log.WithFields(log.Fields{
+			"type":   "http.response",
+			"status": fasthttp.StatusNotAcceptable,
+		}).Info("Travis CI request is not acceptable.")
 		return
 	}
 	glipMsg := h.TravisciOutToGlip(srcMsg)
@@ -90,6 +95,10 @@ type TravisciOutMessage struct {
 func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 	fmt.Println("HERE")
 	fmt.Println(string(bytes))
+	log.WithFields(log.Fields{
+		"type":    "message.raw",
+		"message": string(bytes),
+	}).Debug("Travis CI message.")
 	msg := TravisciOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	return msg, err
