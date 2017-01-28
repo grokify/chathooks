@@ -3,7 +3,9 @@ package travisci
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strings"
+	"time"
 
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy/config"
@@ -28,6 +30,7 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	srcMsg, err := h.BuildTravisciOutMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
+		fmt.Printf("ERROR:\n%v\n", err)
 		return
 	}
 	glipMsg := h.TravisciOutToGlip(srcMsg)
@@ -61,24 +64,27 @@ func (h *TravisciOutToGlipHandler) TravisciOutToGlip(src TravisciOutMessage) gli
 }
 
 type TravisciOutMessage struct {
-	In             int                   `json:"in,omitempty"`
-	Number         string                `json:"number,omitempty"`
-	Status         string                `json:"status"`
-	StatusMessage  string                `json:"status_message,omitempty"`
-	Commit         string                `json:"commit,omitempty"`
+	Id             int                   `json:"id,omitempty"`
+	AuthorEmail    string                `json:"author_email,omitempty"`
+	AuthorName     string                `json:"author_name,omitempty"`
 	Branch         string                `json:"branch,omitempty"`
-	Message        string                `json:"message,omitempty"`
-	CompareUrl     string                `json:"compare_url,omitempty"`
+	BuildUrl       string                `json:"build_url,omitempty"`
+	Commit         string                `json:"commit,omitempty"`
 	CommitedAt     string                `json:"committed_at,omitempty"`
 	CommitterName  string                `json:"committer_name,omitempty"`
 	CommitterEmail string                `json:"committer_email,omitempty"`
-	AuthorName     string                `json:"author_name,omitempty"`
-	AuthorEmail    string                `json:"author_email,omitempty"`
-	Type           string                `json:"type,omitempty"`
-	BuildUrl       string                `json:"build_url,omitempty"`
-	Repository     TravisciOutRepository `json:"repository,omitempty"`
+	CompareUrl     string                `json:"compare_url,omitempty"`
 	Config         TravisciOutConfig     `json:"config,omitempty"`
+	Duration       int                   `json:"duration,omitempty"`
+	FinishedAt     string                `json:"finished_at,omitempty"`
 	Matrix         []TravisciOutBuild    `json:"matrix,omitempty"`
+	Message        string                `json:"message,omitempty"`
+	Number         string                `json:"number,omitempty"`
+	Repository     TravisciOutRepository `json:"repository,omitempty"`
+	StartedAt      string                `json:"started_at,omitempty"`
+	Status         int                   `json:"status"`
+	StatusMessage  string                `json:"status_message,omitempty"`
+	Type           string                `json:"type,omitempty"`
 }
 
 func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
@@ -97,21 +103,25 @@ type TravisciOutRepository struct {
 }
 
 type TravisciOutConfig struct {
+	Language      string                   `json:"language,omitempty"`
 	Notifications TravisciOutNotifications `json:"notifications,omitempty"`
 }
 
+// can Webhooks be array?
 type TravisciOutNotifications struct {
-	Webhooks []string `json:"webhooks,omitempty"`
+	Webhooks string `json:"webhooks,omitempty"`
 }
 
 type TravisciOutBuild struct {
-	Result string `json:"result,omitempty"`
+	Id     int `json:"id,omitempty"`
+	Result int `json:"result,omitempty"`
+	Status int `json:"status,omitempty"`
 }
 
 // Default template for Push Builds: "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
 
 func (msg *TravisciOutMessage) PushBuildsAsMarkdown() string {
-	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.AuthorName, strings.ToLower(msg.StatusMessage))
+	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
 }
 
 func (msg *TravisciOutMessage) ShortCommit() string {
@@ -121,7 +131,17 @@ func (msg *TravisciOutMessage) ShortCommit() string {
 	return msg.Commit[0:7]
 }
 
-func (msg *TravisciOutMessage) Duration() string { return "" }
+func (msg *TravisciOutMessage) DurationDisplay() string {
+	if msg.Duration == 0 {
+		return "0 sec"
+	}
+	dur, err := time.ParseDuration(fmt.Sprintf("%vs", msg.Duration))
+	if err != nil {
+		return "unknown"
+	}
+	modSeconds := math.Mod(float64(msg.Duration), float64(60))
+	return fmt.Sprintf("%v min %v sec", int(dur.Minutes()), modSeconds)
+}
 
 /*
 
