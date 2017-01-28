@@ -25,6 +25,7 @@ type TravisciOutToGlipHandler struct {
 	GlipClient glipwebhook.GlipWebhookClient
 }
 
+// FastHttp request handler constructor for Travis CI outbound webhook
 func NewTravisciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) TravisciOutToGlipHandler {
 	return TravisciOutToGlipHandler{Config: cfg, GlipClient: glip}
 }
