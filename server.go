@@ -20,7 +20,7 @@ const (
 
 // StartServer initializes and starts the webhook proxy server
 func StartServer(cfg config.Configuration) {
-	log.SetFormatter(&log.JSONFormatter{})
+	//log.SetFormatter(&log.JSONFormatter{})
 	log.SetLevel(cfg.LogLevel)
 
 	glip, _ := glipwebhook.NewGlipWebhookClient("")
