@@ -151,15 +151,15 @@ Glip Webhook Proxy is built using:
 * [fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [logrus](https://github.com/sirupsen/logrus)
 
- [build-status-svg]: https://api.travis-ci.org/grokify/glip-webhook-proxy.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy
- [coverage-status-svg]: https://coveralls.io/repos/grokify/glip-webhook-proxy/badge.svg?branch=master
- [coverage-status-link]: https://coveralls.io/r/grokify/glip-webhook-proxy?branch=master
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy
- [codeclimate-status-svg]: https://codeclimate.com/github/grokify/glip-webhook-proxy/badges/gpa.svg
- [codeclimate-status-link]: https://codeclimate.com/github/grokify/glip-webhook-proxy
+ [build-status-svg]: https://api.travis-ci.org/grokify/glip-webhook-proxy-go.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/glip-webhook-proxy-go
+ [coverage-status-svg]: https://coveralls.io/repos/grokify/glip-webhook-proxy-go/badge.svg?branch=master
+ [coverage-status-link]: https://coveralls.io/r/grokify/glip-webhook-proxy-go?branch=master
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/glip-webhook-proxy-go
+ [goreport-link]: https://goreportcard.com/report/github.com/grokify/glip-webhook-proxy-go
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/glip-webhook-proxy-go/badges/gpa.svg
+ [codeclimate-status-link]: https://codeclimate.com/github/grokify/glip-webhook-proxy-go
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/glip-webhook-proxy
+ [docs-godoc-link]: https://godoc.org/github.com/grokify/glip-webhook-proxy-go
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/glip-webhook-proxy/blob/master/LICENSE.md
+ [license-link]: https://github.com/grokify/glip-webhook-proxy-go/blob/master/LICENSE.md
