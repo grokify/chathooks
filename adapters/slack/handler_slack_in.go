@@ -24,12 +24,12 @@ func NewSlackToGlipHandler(config config.Configuration, glip glipwebhook.GlipWeb
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	slackMsg, err := h.BuildSlackMessage(ctx)
+	slackMsg, err := BuildInboundMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		return
 	}
-	glipMsg := h.SlackToGlip(slackMsg)
+	glipMsg := Normalize(slackMsg, h.Config.EmojiURLFormat)
 
 	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))
 	glipWebhookGuid = strings.TrimSpace(glipWebhookGuid)
@@ -47,7 +47,7 @@ func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fasthttp.ReleaseResponse(resp)
 }
 
-func (h *SlackToGlipHandler) BuildSlackMessage(ctx *fasthttp.RequestCtx) (SlackWebhookMessage, error) {
+func BuildInboundMessage(ctx *fasthttp.RequestCtx) (SlackWebhookMessage, error) {
 	ct := string(ctx.Request.Header.Peek("Content-Type"))
 	ct = strings.TrimSpace(strings.ToLower(ct))
 	if ct == "application/json" {
@@ -56,14 +56,14 @@ func (h *SlackToGlipHandler) BuildSlackMessage(ctx *fasthttp.RequestCtx) (SlackW
 	return SlackWebhookMessageFromBytes(ctx.FormValue("payload"))
 }
 
-func (h *SlackToGlipHandler) SlackToGlip(slack SlackWebhookMessage) glipwebhook.GlipWebhookMessage {
+func Normalize(slack SlackWebhookMessage, emojiURLFormat string) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{
 		Body:     slack.Text,
 		Activity: slack.Username}
 	if len(slack.IconURL) > 0 {
 		gmsg.Icon = slack.IconURL
 	} else {
-		iconURL, err := util.EmojiToURL(h.Config.EmojiURLFormat, slack.IconEmoji)
+		iconURL, err := util.EmojiToURL(emojiURLFormat, slack.IconEmoji)
 		if err == nil {
 			gmsg.Icon = iconURL
 		}

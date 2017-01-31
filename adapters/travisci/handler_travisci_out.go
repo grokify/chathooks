@@ -32,7 +32,7 @@ func NewTravisciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.Glip
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := h.BuildTravisciOutMessage(ctx)
+	srcMsg, err := BuildInboundMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -41,7 +41,7 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		}).Info("Travis CI request is not acceptable.")
 		return
 	}
-	glipMsg := h.TravisciOutToGlip(srcMsg)
+	glipMsg := Normalize(srcMsg)
 
 	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))
 	glipWebhookGuid = strings.TrimSpace(glipWebhookGuid)
@@ -59,11 +59,11 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fasthttp.ReleaseResponse(resp)
 }
 
-func (h *TravisciOutToGlipHandler) BuildTravisciOutMessage(ctx *fasthttp.RequestCtx) (TravisciOutMessage, error) {
+func BuildInboundMessage(ctx *fasthttp.RequestCtx) (TravisciOutMessage, error) {
 	return TravisciOutMessageFromBytes(ctx.FormValue("payload"))
 }
 
-func (h *TravisciOutToGlipHandler) TravisciOutToGlip(src TravisciOutMessage) glipwebhook.GlipWebhookMessage {
+func Normalize(src TravisciOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{
 		Body:     strings.Join([]string{">", src.AsMarkdown()}, " "),
 		Activity: DISPLAY_NAME,
