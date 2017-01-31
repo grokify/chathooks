@@ -1,3 +1,5 @@
+- 2017-01-31
+  - Update Github repo name to `glip-webhook-proxy-go`
 - 2017-01-24
   - Add `fasthttp` client request
 - 2017-01-23

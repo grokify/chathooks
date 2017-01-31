@@ -7,9 +7,9 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy/adapters/slack"
-	"github.com/grokify/glip-webhook-proxy/adapters/travisci"
-	"github.com/grokify/glip-webhook-proxy/config"
+	"github.com/grokify/glip-webhook-proxy-go/adapters/slack"
+	"github.com/grokify/glip-webhook-proxy-go/adapters/travisci"
+	"github.com/grokify/glip-webhook-proxy-go/config"
 )
 
 const (

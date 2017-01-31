@@ -10,7 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy/config"
+	"github.com/grokify/glip-webhook-proxy-go/config"
 	"github.com/valyala/fasthttp"
 )
 

@@ -3,7 +3,7 @@ package glipwebhookproxy
 import (
 	"testing"
 
-	"github.com/grokify/glip-webhook-proxy/config"
+	"github.com/grokify/glip-webhook-proxy-go/config"
 )
 
 var ConfigurationTests = []struct {

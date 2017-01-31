@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy/config"
-	"github.com/grokify/glip-webhook-proxy/util"
+	"github.com/grokify/glip-webhook-proxy-go/config"
+	"github.com/grokify/glip-webhook-proxy-go/util"
 	"github.com/valyala/fasthttp"
 )
 
