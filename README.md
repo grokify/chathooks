@@ -11,8 +11,8 @@ Proxy service to map different requests to Glip's inbound webhook service. This 
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
-* Slack (inbound) - `text` only
-* Travis CI (outbound)
+* Slack (inbound message format) - `text` only
+* Travis CI (outbound message format)
 
 **Note:** Slack inbound message formatting is for services sending outbound webhooks using Slack's inbound webhook message format, which can be directed to Glip via this proxy.
 
