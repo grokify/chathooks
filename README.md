@@ -143,6 +143,14 @@ poster = Slack::Poster.new url, opts
 poster.send_message 'BOO!'
 ```
 
+## Links
+
+1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
+1. [Enchant webhooks](https://dev.enchant.com/webhooks)
+1. [Heroku webhooks](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
+1. [Raygun webhooks](https://raygun.com/docs/integrations/webhooks)
+1. [Travis CI webhooks](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
+
 ## Notes
 
 Glip Webhook Proxy is built using:

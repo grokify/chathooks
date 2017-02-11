@@ -2,7 +2,6 @@ package slack
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/grokify/glip-go-webhook"
@@ -31,20 +30,7 @@ func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	}
 	glipMsg := Normalize(slackMsg, h.Config.EmojiURLFormat)
 
-	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))
-	glipWebhookGuid = strings.TrimSpace(glipWebhookGuid)
-
-	req, resp, err := h.GlipClient.PostWebhookGUIDFast(glipWebhookGuid, glipMsg)
-
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		fasthttp.ReleaseRequest(req)
-		fasthttp.ReleaseResponse(resp)
-		return
-	}
-	fmt.Fprintf(ctx, "%s", string(resp.Body()))
-	fasthttp.ReleaseRequest(req)
-	fasthttp.ReleaseResponse(resp)
+	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
 }
 
 func BuildInboundMessage(ctx *fasthttp.RequestCtx) (SlackWebhookMessage, error) {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy-go/config"
+	"github.com/grokify/glip-webhook-proxy-go/util"
 	"github.com/valyala/fasthttp"
 )
 
@@ -38,25 +39,12 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info("Travis CI request is not acceptable.")
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
 		return
 	}
 	glipMsg := Normalize(srcMsg)
 
-	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))
-	glipWebhookGuid = strings.TrimSpace(glipWebhookGuid)
-
-	req, resp, err := h.GlipClient.PostWebhookGUIDFast(glipWebhookGuid, glipMsg)
-
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		fasthttp.ReleaseRequest(req)
-		fasthttp.ReleaseResponse(resp)
-		return
-	}
-	fmt.Fprintf(ctx, "%s", string(resp.Body()))
-	fasthttp.ReleaseRequest(req)
-	fasthttp.ReleaseResponse(resp)
+	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
 }
 
 func BuildInboundMessage(ctx *fasthttp.RequestCtx) (TravisciOutMessage, error) {
@@ -102,14 +90,14 @@ func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 	log.WithFields(log.Fields{
 		"type":    "message.raw",
 		"message": string(bytes),
-	}).Debug("Travis CI message.")
+	}).Debug(fmt.Sprintf("%v message.", DISPLAY_NAME))
 	msg := TravisciOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type":  "message.json.unmarshal",
 			"error": fmt.Sprintf("%v\n", err),
-		}).Warn("Travis CI request unmarshal failure.")
+		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DISPLAY_NAME))
 	}
 	return msg, err
 }

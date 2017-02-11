@@ -30,13 +30,13 @@ func StartServer(cfg config.Configuration) {
 
 	router.GET("/", HomeHandler)
 
-	s2gHandler := slack.NewSlackToGlipHandler(cfg, glip)
-	router.POST(ROUTE_SLACK_IN_GLIP, s2gHandler.HandleFastHTTP)
-	router.POST(ROUTE_SLACK_IN_GLIP_SLASH, s2gHandler.HandleFastHTTP)
+	slackInHandler := slack.NewSlackToGlipHandler(cfg, glip)
+	router.POST(ROUTE_SLACK_IN_GLIP, slackInHandler.HandleFastHTTP)
+	router.POST(ROUTE_SLACK_IN_GLIP_SLASH, slackInHandler.HandleFastHTTP)
 
-	travisci2glipHandler := travisci.NewTravisciOutToGlipHandler(cfg, glip)
-	router.POST(ROUTE_TRAVISCI_OUT_GLIP, travisci2glipHandler.HandleFastHTTP)
-	router.POST(ROUTE_TRAVISCI_OUT_GLIP_SLASH, travisci2glipHandler.HandleFastHTTP)
+	travisciOutHandler := travisci.NewTravisciOutToGlipHandler(cfg, glip)
+	router.POST(ROUTE_TRAVISCI_OUT_GLIP, travisciOutHandler.HandleFastHTTP)
+	router.POST(ROUTE_TRAVISCI_OUT_GLIP_SLASH, travisciOutHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(cfg.Address(), router.Handler))
 }
