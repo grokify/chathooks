@@ -11,6 +11,7 @@ import (
 	"github.com/grokify/glip-webhook-proxy-go/adapters/enchant"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/heroku"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/raygun"
+	"github.com/grokify/glip-webhook-proxy-go/adapters/semaphoreci"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/travisci"
 	"github.com/grokify/glip-webhook-proxy-go/util"
 )
@@ -64,6 +65,12 @@ func main() {
 		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	case "raygun":
 		glipMsg, err := raygun.ExampleMessageGlip()
+		if err != nil {
+			panic("Bad Test Message")
+		}
+		util.SendGlipWebhook(glipClient, guid, glipMsg)
+	case "semaphoreci":
+		glipMsg, err := semaphoreci.ExampleMessageGlip()
 		if err != nil {
 			panic("Bad Test Message")
 		}
