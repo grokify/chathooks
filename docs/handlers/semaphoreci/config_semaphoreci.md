@@ -1,5 +1,5 @@
-Adding Userlike Notifications to Glip
-=====================================
+Adding Semaphore CI Notifications to Glip
+=========================================
 
 1. Navigate to the project you wish to set up a notification for.
 1. Click on “settings” next to your project on the dashboard.
