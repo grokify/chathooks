@@ -8,6 +8,7 @@ import (
 
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
+	"github.com/grokify/glip-webhook-proxy-go/src/handlers"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/slack"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/travisci"
 )
@@ -28,7 +29,7 @@ func StartServer(cfg config.Configuration) {
 
 	router := fasthttprouter.New()
 
-	router.GET("/", HomeHandler)
+	router.GET("/", handlers.HomeHandler)
 
 	slackInHandler := slack.NewSlackToGlipHandler(cfg, glip)
 	router.POST(ROUTE_SLACK_IN_GLIP, slackInHandler.HandleFastHTTP)
