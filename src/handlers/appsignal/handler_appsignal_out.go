@@ -8,8 +8,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy-go/config"
-	"github.com/grokify/glip-webhook-proxy-go/util"
+	"github.com/grokify/glip-webhook-proxy-go/src/config"
+	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/grokify/gotilla/time/timeutil"
 	"github.com/valyala/fasthttp"
 )
