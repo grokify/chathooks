@@ -145,6 +145,7 @@ poster.send_message 'BOO!'
 
 ## Links
 
+1. [AppSignal webhooks](http://docs.appsignal.com/application/integrations/webhooks.html)
 1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
 1. [Enchant webhooks](https://dev.enchant.com/webhooks)
 1. [Heroku webhooks](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)

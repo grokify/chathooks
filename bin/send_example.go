@@ -7,6 +7,7 @@ import (
 	"strings"
 	//log "github.com/Sirupsen/logrus"
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/handlers/appsignal"
 	"github.com/grokify/glip-webhook-proxy-go/handlers/confluence"
 	"github.com/grokify/glip-webhook-proxy-go/handlers/enchant"
 	"github.com/grokify/glip-webhook-proxy-go/handlers/heroku"
@@ -49,6 +50,8 @@ func main() {
 	}
 
 	switch example {
+	case "appsignal":
+		SendAppsignal(glipClient, guid)
 	case "confluence":
 		SendConfluence(glipClient, guid)
 	case "enchant":
@@ -92,6 +95,24 @@ func main() {
 	default:
 		fmt.Printf("Unknown webhook source %v\n", example)
 	}
+}
+
+func SendAppsignal(glipClient glipwebhook.GlipWebhookClient, guid string) {
+	glipMsg, err := appsignal.ExampleMarkerMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+	glipMsg, err = appsignal.ExampleExceptionMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+	glipMsg, err = appsignal.ExamplePerformanceMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
 }
 
 func SendConfluence(glipClient glipwebhook.GlipWebhookClient, guid string) {
