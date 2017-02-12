@@ -1,5 +1,5 @@
-Add Userlike Notifications to Glip
-==================================
+Adding Userlike Notifications to Glip
+=====================================
 
 1. Go to the [Addons section](https://www.userlike.com/en/dashboard/config/addon/overview) and select the API configure option.
 1. Enter the callback URL of your Glip API endpoint. HTTP and HTTPS are supported as protocols.
