@@ -18,7 +18,7 @@ Conversion of the following webhook message formats to Glip inbound webhooks inc
 
 Example Webhook Message from Travis CI:
 
-![](adapters/travisci/travisci_glip.png)
+![](handlers/travisci/travisci_glip.png)
 
 ## Installation
 
