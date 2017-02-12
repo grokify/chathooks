@@ -148,9 +148,11 @@ poster.send_message 'BOO!'
 1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
 1. [Enchant webhooks](https://dev.enchant.com/webhooks)
 1. [Heroku webhooks](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
+1. [Magnum CI webhooks](https://github.com/magnumci/documentation/blob/master/webhooks.md)
 1. [Raygun webhooks](https://raygun.com/docs/integrations/webhooks)
 1. [Semaphore CI webhooks](https://semaphoreci.com/docs/post-build-webhooks.html)
 1. [Travis CI webhooks](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
+1. [Userlike webhooks](https://www.userlike.com/en/public/tutorial/addon/api)
 
 ## Notes
 

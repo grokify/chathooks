@@ -50,15 +50,13 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (SemaphoreciOutMessage, error
 }
 
 func Normalize(src SemaphoreciOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: DISPLAY_NAME,
-		Icon:     ICON_URL}
+	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
 		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result)
+		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v (%v)", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, DISPLAY_NAME)
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v", src.Commit.AuthorName, src.Event, src.Result)
+		gmsg.Activity = fmt.Sprintf("%v's %v %v (%v)", src.Commit.AuthorName, src.Event, src.Result, DISPLAY_NAME)
 	}
 
 	lines := []string{}

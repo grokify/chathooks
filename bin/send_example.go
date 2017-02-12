@@ -10,13 +10,13 @@ import (
 	"github.com/grokify/glip-webhook-proxy-go/adapters/confluence"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/enchant"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/heroku"
+	"github.com/grokify/glip-webhook-proxy-go/adapters/magnumci"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/raygun"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/semaphoreci"
 	"github.com/grokify/glip-webhook-proxy-go/adapters/travisci"
+	"github.com/grokify/glip-webhook-proxy-go/adapters/userlike"
 	"github.com/grokify/glip-webhook-proxy-go/util"
 )
-
-// https://hooks.glip.com/webhook/848c88d9-d892-451a-9614-6045046d477a
 
 const (
 	GLIP_WEBHOOK_ENV = "GLIP_WEBHOOK"
@@ -63,6 +63,12 @@ func main() {
 			panic("Bad Test Message")
 		}
 		util.SendGlipWebhook(glipClient, guid, glipMsg)
+	case "magnumci":
+		glipMsg, err := magnumci.ExampleMessageGlip()
+		if err != nil {
+			panic(fmt.Sprintf("Bad Test Message [%v]", err))
+		}
+		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	case "raygun":
 		glipMsg, err := raygun.ExampleMessageGlip()
 		if err != nil {
@@ -81,6 +87,8 @@ func main() {
 			panic("Bad Test Message")
 		}
 		util.SendGlipWebhook(glipClient, guid, glipMsg)
+	case "userlike":
+		SendUserlike(glipClient, guid)
 	default:
 		fmt.Printf("Unknown webhook source %v\n", example)
 	}
@@ -93,6 +101,19 @@ func SendConfluence(glipClient glipwebhook.GlipWebhookClient, guid string) {
 	}
 	util.SendGlipWebhook(glipClient, guid, glipMsg)
 	glipMsg, err = confluence.ExampleCommentCreatedMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+}
+
+func SendUserlike(glipClient glipwebhook.GlipWebhookClient, guid string) {
+	glipMsg, err := userlike.ExampleOfflineMessageReceiveMessageGlip()
+	if err != nil {
+		panic(fmt.Sprintf("Bad Test Message [%v]", err))
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+	glipMsg, err = userlike.ExampleUserlikeChatMetaStartOutMessageGlip()
 	if err != nil {
 		panic("Bad Test Message")
 	}
