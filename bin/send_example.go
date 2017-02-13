@@ -50,7 +50,7 @@ func main() {
 		panic("Incorrect Webhook GUID or URL")
 	}
 
-	config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = false
+	config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
 
 	switch example {
 	case "appsignal":

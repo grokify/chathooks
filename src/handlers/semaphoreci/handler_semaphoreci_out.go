@@ -72,11 +72,16 @@ func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
+	integrationActivitySuffix := ""
+	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+		integrationActivitySuffix = fmt.Sprintf(" (%v)", DISPLAY_NAME)
+	}
+
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
 		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v (%v)", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, integrationActivitySuffix)
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v (%v)", src.Commit.AuthorName, src.Event, src.Result, DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, integrationActivitySuffix)
 	}
 
 	lines := []string{}
@@ -95,11 +100,16 @@ func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) glipweb
 func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
+	integrationActivitySuffix := ""
+	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+		integrationActivitySuffix = fmt.Sprintf(" (%v)", DISPLAY_NAME)
+	}
+
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
 		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v (%v)", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, integrationActivitySuffix)
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v (%v)", src.Commit.AuthorName, src.Event, src.Result, DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, integrationActivitySuffix)
 	}
 
 	lines := []string{}
