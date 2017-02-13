@@ -15,7 +15,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Heroku"
-	ICON_URL     = "http://atlassian.wpengine.netdna-cdn.com/wp-content/uploads/heroku.jpeg"
+	ICON_URL     = "https://a.slack-edge.com/ae7f/plugins/heroku/assets/service_512.png"
 )
 
 // FastHttp request handler for Heroku outbound webhook
@@ -61,24 +61,23 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
 	glip := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 	if len(strings.TrimSpace(src.User)) > 0 {
-		if len(strings.TrimSpace(src.App)) > 0 {
-			glip.Activity = fmt.Sprintf("%v deployed %v (%v)", src.User, src.App, DISPLAY_NAME)
-		} else {
-			glip.Activity = fmt.Sprintf("%v deployed an app (%v)", src.User, DISPLAY_NAME)
-		}
+		glip.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DISPLAY_NAME)
 	} else {
 		if len(strings.TrimSpace(src.App)) > 0 {
-			glip.Activity = fmt.Sprintf("%v deployed", src.App)
+			glip.Activity = fmt.Sprintf("%v deployed on %v", src.App, DISPLAY_NAME)
 		} else {
-			glip.Activity = "An app has been deployed"
+			glip.Activity = fmt.Sprintf("An app has been deployed on %v", DISPLAY_NAME)
 		}
 	}
 	lines := []string{}
+	if len(strings.TrimSpace(src.App)) > 0 {
+		lines = append(lines, fmt.Sprintf("> **Application**\n> %v", src.App))
+	}
 	if len(strings.TrimSpace(src.Release)) > 0 {
-		lines = append(lines, fmt.Sprintf("> Release: %v", src.Release))
+		lines = append(lines, fmt.Sprintf("> **Release**\n> %v", src.Release))
 	}
 	if len(strings.TrimSpace(src.URL)) > 0 {
-		lines = append(lines, fmt.Sprintf("> App: [%v](%v)", src.URL, src.URL))
+		lines = append(lines, fmt.Sprintf("> [View application](%v)", src.URL))
 	}
 	if len(lines) > 0 {
 		glip.Body = strings.Join(lines, "\n")
