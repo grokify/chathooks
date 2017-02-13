@@ -15,7 +15,9 @@ import (
 
 const (
 	DISPLAY_NAME = "Raygun"
-	ICON_URL     = "https://raygun.com/images/logo/raygun-logo-og.jpg"
+	ICON_URL     = "https://raygun.com/upload/raygun-icon.svg"
+	ICON_URL2    = "https://raygun.com/images/logo/raygun-logo-og.jpg"
+	ICON_URL3    = "https://a.slack-edge.com/ae7f/img/services/raygun_512.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -57,9 +59,17 @@ func Normalize(src RaygunOutMessage) glipwebhook.GlipWebhookMessage {
 
 	if src.EventType == "NewErrorOccurred" {
 		if len(src.Application.Name) > 0 {
-			glipMsg.Activity = fmt.Sprintf("%v encountered a new error (%v)", src.Application.Name, DISPLAY_NAME)
+			if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+				glipMsg.Activity = fmt.Sprintf("%v encountered a new error (%v)", src.Application.Name, DISPLAY_NAME)
+			} else {
+				glipMsg.Activity = fmt.Sprintf("%v encountered a new error", src.Application.Name)
+			}
 		} else {
-			glipMsg.Activity = fmt.Sprintf("A new error has occurred (%v)", DISPLAY_NAME)
+			if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+				glipMsg.Activity = fmt.Sprintf("A new error has occurred (%v)", DISPLAY_NAME)
+			} else {
+				glipMsg.Activity = "A new error has occurred"
+			}
 		}
 	} else {
 		timeString := ""
@@ -85,16 +95,16 @@ func Normalize(src RaygunOutMessage) glipwebhook.GlipWebhookMessage {
 	lines := []string{}
 	if len(src.Application.URL) > 0 {
 		if len(src.Application.Name) > 0 {
-			lines = append(lines, fmt.Sprintf("> [Application details: %v](%v)", src.Application.Name, src.Application.URL))
+			lines = append(lines, fmt.Sprintf("> **Application:** [%v](%v)", src.Application.Name, src.Application.URL))
 		} else {
-			lines = append(lines, fmt.Sprintf("> [Application details](%v)", src.Application.URL))
+			lines = append(lines, fmt.Sprintf("> [Application Details](%v)", src.Application.URL))
 		}
 	}
 	if len(src.Error.URL) > 0 {
 		if len(src.Error.Message) > 0 {
-			lines = append(lines, fmt.Sprintf("> [Error details: %v](%v)", src.Error.Message, src.Error.URL))
+			lines = append(lines, fmt.Sprintf("> **Error:** [%v](%v)", src.Error.Message, src.Error.URL))
 		} else {
-			lines = append(lines, fmt.Sprintf("> [Error details](%v)", src.Error.URL))
+			lines = append(lines, fmt.Sprintf("> [Error Details](%v)", src.Error.URL))
 		}
 	}
 	if len(lines) > 0 {

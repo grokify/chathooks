@@ -51,8 +51,11 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (MagnumciOutMessage, error) {
 
 func Normalize(src MagnumciOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
-	gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
-	gmsg.Activity = fmt.Sprintf("%v", src.Title)
+	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+		gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
+	} else {
+		gmsg.Activity = fmt.Sprintf("%v", src.Title)
+	}
 
 	lines := []string{}
 	lines = append(lines, fmt.Sprintf("> **Commit:** [%v](%v)", src.Message, src.CommitURL))

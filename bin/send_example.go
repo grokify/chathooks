@@ -7,6 +7,7 @@ import (
 	"strings"
 	//log "github.com/Sirupsen/logrus"
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/appsignal"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/confluence"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/enchant"
@@ -48,6 +49,8 @@ func main() {
 	if err != nil {
 		panic("Incorrect Webhook GUID or URL")
 	}
+
+	config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = false
 
 	switch example {
 	case "appsignal":

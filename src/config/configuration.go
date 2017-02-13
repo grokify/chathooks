@@ -6,6 +6,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+var GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
+
 // Configuration is the webhook proxy configuration struct.
 type Configuration struct {
 	Port           int
