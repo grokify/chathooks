@@ -4,19 +4,19 @@ import (
 	"github.com/grokify/glip-go-webhook"
 )
 
-func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleMessageSource()
+func ExampleBuildMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
+	msg, err := ExampleBuildMessageSource()
 	if err != nil {
 		return glipwebhook.GlipWebhookMessage{}, err
 	}
-	return Normalize(msg), nil
+	return NormalizeSemaphoreciBuildOutMessage(msg), nil
 }
 
-func ExampleMessageSource() (SemaphoreciOutMessage, error) {
-	return SemaphoreciOutMessageFromBytes(ExampleMessageBytes())
+func ExampleBuildMessageSource() (SemaphoreciBuildOutMessage, error) {
+	return SemaphoreciBuildOutMessageFromBytes(ExampleBuildMessageBytes())
 }
 
-func ExampleMessageBytes() []byte {
+func ExampleBuildMessageBytes() []byte {
 	return []byte(`{
   "branch_name": "gem_updates",
   "branch_url": "https://semaphoreci.com/projects/44/branches/50",
@@ -35,6 +35,46 @@ func ExampleMessageBytes() []byte {
     "author_email": "vladimir@renderedtext.com",
     "message": "Update 'shoulda' gem.",
     "timestamp": "2012-07-04T18:14:08Z"
+  }
+}`)
+}
+
+func ExampleDeployMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
+	msg, err := ExampleDeployMessageSource()
+	if err != nil {
+		return glipwebhook.GlipWebhookMessage{}, err
+	}
+	return NormalizeSemaphoreciDeployOutMessage(msg), nil
+}
+
+func ExampleDeployMessageSource() (SemaphoreciDeployOutMessage, error) {
+	return SemaphoreciDeployOutMessageFromBytes(ExampleDeployMessageBytes())
+}
+
+func ExampleDeployMessageBytes() []byte {
+	return []byte(`{
+  "project_name": "heroku-deploy-test",
+  "project_hash_id": "123-aga-471-6a8",
+  "result": "passed",
+  "event": "deploy",
+  "server_name": "server-heroku-master-automatic-2",
+  "number": 2,
+  "created_at": "2013-07-30T13:52:33Z",
+  "updated_at": "2013-07-30T13:53:21Z",
+  "started_at": "2013-07-30T13:52:38Z",
+  "finished_at": "2013-07-30T13:53:21Z",
+  "html_url": "https://semaphoreci.com/projects/2420/servers/81/deploys/2",
+  "build_number": 10,
+  "branch_name": "master",
+  "branch_html_url": "https://semaphoreci.com/projects/2420/branches/58394",
+  "build_html_url": "https://semaphoreci.com/projects/2420/branches/58394/builds/7",
+  "commit": {
+    "author_email": "rastasheep3@gmail.com",
+    "author_name": "Aleksandar Diklic",
+    "id": "43ddb7516ecc743f0563abd7418f0bd3617348c4",
+    "message": "One more time",
+    "timestamp": "2013-07-19T12:56:25Z",
+    "url": "https://github.com/rastasheep/heroku-deploy-test/commit/43ddb7516ecc743f0563abd7418f0bd3617348c4"
   }
 }`)
 }
@@ -103,5 +143,32 @@ Payload:
     "timestamp": "2012-07-04T18:14:08Z"
   }
 }
+
+{
+  "project_name": "heroku-deploy-test",
+  "project_hash_id": "123-aga-471-6a8",
+  "result": "passed",
+  "event": "deploy",
+  "server_name": "server-heroku-master-automatic-2",
+  "number": 2,
+  "created_at": "2013-07-30T13:52:33Z",
+  "updated_at": "2013-07-30T13:53:21Z",
+  "started_at": "2013-07-30T13:52:38Z",
+  "finished_at": "2013-07-30T13:53:21Z",
+  "html_url": "https://semaphoreci.com/projects/2420/servers/81/deploys/2",
+  "build_number": 10,
+  "branch_name": "master",
+  "branch_html_url": "https://semaphoreci.com/projects/2420/branches/58394",
+  "build_html_url": "https://semaphoreci.com/projects/2420/branches/58394/builds/7",
+  "commit": {
+    "author_email": "rastasheep3@gmail.com",
+    "author_name": "Aleksandar Diklic",
+    "id": "43ddb7516ecc743f0563abd7418f0bd3617348c4",
+    "message": "One more time",
+    "timestamp": "2013-07-19T12:56:25Z",
+    "url": "https://github.com/rastasheep/heroku-deploy-test/commit/43ddb7516ecc743f0563abd7418f0bd3617348c4"
+  }
+}
+
 
 */

@@ -82,11 +82,7 @@ func main() {
 		}
 		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	case "semaphoreci":
-		glipMsg, err := semaphoreci.ExampleMessageGlip()
-		if err != nil {
-			panic("Bad Test Message")
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		SendSemaphoreci(glipClient, guid)
 	case "travisci":
 		glipMsg, err := travisci.ExampleMessageGlip()
 		if err != nil {
@@ -125,6 +121,19 @@ func SendConfluence(glipClient glipwebhook.GlipWebhookClient, guid string) {
 	}
 	util.SendGlipWebhook(glipClient, guid, glipMsg)
 	glipMsg, err = confluence.ExampleCommentCreatedMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+}
+
+func SendSemaphoreci(glipClient glipwebhook.GlipWebhookClient, guid string) {
+	glipMsg, err := semaphoreci.ExampleBuildMessageGlip()
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	util.SendGlipWebhook(glipClient, guid, glipMsg)
+	glipMsg, err = semaphoreci.ExampleDeployMessageGlip()
 	if err != nil {
 		panic("Bad Test Message")
 	}
