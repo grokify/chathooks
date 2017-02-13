@@ -15,7 +15,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Magnum CI"
-	ICON_URL     = "https://a.slack-edge.com/ae7f/img/services/magnum-ci_512.png"
+	ICON_URL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
@@ -51,24 +51,21 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (MagnumciOutMessage, error) {
 
 func Normalize(src MagnumciOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
-	gmsg.Activity = fmt.Sprintf("%v's %v #%v %v (%v)", src.Author, "build", src.Number, src.Status, DISPLAY_NAME)
 	gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
+	gmsg.Activity = fmt.Sprintf("%v", src.Title)
 
 	lines := []string{}
-	//lines = append(lines, src.Title)
-	lines = append(lines, fmt.Sprintf("> Commit: [%v](%v)", src.Message, src.CommitURL))
+	lines = append(lines, fmt.Sprintf("> **Commit:** [%v](%v)", src.Message, src.CommitURL))
+
 	if len(src.Author) > 0 {
-		lines = append(lines, fmt.Sprintf("> Author: %v", src.Author))
+		lines = append(lines, fmt.Sprintf("> **Author:** %v", src.Author))
 	}
 	if len(src.DurationString) > 0 {
-		lines = append(lines, fmt.Sprintf("> Duration: %v", src.DurationString))
+		lines = append(lines, fmt.Sprintf("> **Duration:** %v", src.DurationString))
 	}
 	if len(src.BuildURL) > 0 {
 		lines = append(lines, fmt.Sprintf("> [View Build](%v)", src.BuildURL))
 	}
-	//lines = append(lines, fmt.Sprintf("| **Build** | **Status** |\n| %v • [view](%v) | %v |", src.Number, src.Status, src.BuildURL))
-	//lines = append(lines, fmt.Sprintf("| **Branch** | **Author** |\n| %v | %v |", src.Branch, src.Author))
-	//lines = append(lines, fmt.Sprintf("| **Commit** |\n| %v • [view](%v) |", src.Message, src.CommitURL))
 	if len(lines) > 0 {
 		gmsg.Body = strings.Join(lines, "\n")
 	}
@@ -103,29 +100,3 @@ func MagnumciOutMessageFromBytes(bytes []byte) (MagnumciOutMessage, error) {
 	err := json.Unmarshal(bytes, &msg)
 	return msg, err
 }
-
-/*
-
-{
-  "id": 1603,
-  "project_id": 43,
-  "title": "[PASS] project-name #130 (master - e91e132) by Dan Sosedoff",
-  "number": 130,
-  "commit": "e91e132612d263d95211aae6de2df9e503f22704",
-  "author": "Dan Sosedoff",
-  "committer": "Dan Sosedoff",
-  "message": "Commit Message",
-  "branch": "master",
-  "state": "finished",
-  "status": "pass",
-  "result": 0,
-  "duration": 158,
-  "duration_string": "2m 38s",
-  "commit_url": "http://domain.com/commit/e91e132612d263...",
-  "compare_url": null,
-  "build_url": "http://magnum-ci.com/projects/43/builds/1603",
-  "started_at": "2013-02-14T00:09:01-06:00",
-  "finished_at": "2013-02-14T00:11:39-06:00"
-}
-
-*/
