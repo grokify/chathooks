@@ -1,0 +1,32 @@
+{
+    "_event":"receive",
+    "_type":"offline_message",
+    "browser_name":"Chrome",
+    "browser_os":"Mac OS X",
+    "browser_version":"32",
+    "chat_widget":{
+        "id":2,
+        "name":"Website"
+    },
+    "client_email":"support@userlike.com",
+    "client_name":"Userlike Support",
+    "created_at":"2014-12-20 14:50:23",
+    "custom":{
+
+    },
+    "data_privacy":null,
+    "id":3,
+    "loc_city":"Cologne",
+    "loc_country":"Germany",
+    "loc_lat":50.9333000183105,
+    "loc_lon":6.94999980926514,
+    "marked_read":true,
+    "message":"We are happy to welcome you as a Userlike user!",
+    "page_impressions":5,
+    "screenshot_oid":null,
+    "screenshot_url":null,
+    "status":"new",
+    "topic":"Support",
+    "url":"http://www.userlike.com",
+    "visits":1
+}

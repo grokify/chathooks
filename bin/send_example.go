@@ -92,7 +92,7 @@ func main() {
 	case "userlike":
 		SendUserlike(glipClient, guid)
 	default:
-		fmt.Printf("Unknown webhook source %v\n", example)
+		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
 	}
 }
 
@@ -146,9 +146,28 @@ func SendUserlike(glipClient glipwebhook.GlipWebhookClient, guid string) {
 		panic(fmt.Sprintf("Bad Test Message [%v]", err))
 	}
 	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	glipMsg, err = userlike.ExampleUserlikeChatMetaStartOutMessageGlip()
+
+	glipMsg, err = userlike.ExampleChatWidgetConfigMessageGlip()
 	if err != nil {
 		panic("Bad Test Message")
 	}
 	util.SendGlipWebhook(glipClient, guid, glipMsg)
+	return
+	for i, event := range userlike.ChatMetaEvents {
+		//continue
+		fmt.Printf("%v %v\n", i, event)
+		glipMsg, err := userlike.ExampleUserlikeChatMetaMessageGlip(event)
+		if err != nil {
+			panic(fmt.Sprintf("Bad Test Message: %v", err))
+		}
+		util.SendGlipWebhook(glipClient, guid, glipMsg)
+	}
+	for i, event := range userlike.OperatorEvents {
+		fmt.Printf("%v %v\n", i, event)
+		glipMsg, err := userlike.ExampleUserlikeOperatorMessageGlip(event)
+		if err != nil {
+			panic(fmt.Sprintf("Bad Test Message: %v", err))
+		}
+		util.SendGlipWebhook(glipClient, guid, glipMsg)
+	}
 }

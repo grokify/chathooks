@@ -6,7 +6,10 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-var GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
+var (
+	GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
+	DOC_HANDLERS_REL_DIR                   = "../docs/handlers"
+)
 
 // Configuration is the webhook proxy configuration struct.
 type Configuration struct {

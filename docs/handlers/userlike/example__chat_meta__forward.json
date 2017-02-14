@@ -1,0 +1,94 @@
+{
+    "_event":"forward",
+    "_type":"chat_meta",
+    "browser_name":"Safari",
+    "browser_os":"Mac OS X",
+    "browser_version":"8",
+    "chat_widget":{
+        "id":9,
+        "name":"Testing David"
+    },
+    "chat_widget_goal":{
+        "id":null,
+        "name":null
+    },
+    "client_additional01_name":null,
+    "client_additional01_value":null,
+    "client_additional02_name":null,
+    "client_additional02_value":null,
+    "client_additional03_name":null,
+    "client_additional03_value":null,
+    "client_email":"david@optixx.org",
+    "client_name":"Jo",
+    "client_uuid":"nEitxHDooFzsPhMoVn0QCw8E.L3mmogIcp+FGwXos5a4NUdZ9/uQbSCBx0wDIRVFWM+o",
+    "created_at":"2014-12-29 11:26:24",
+    "custom":{
+        "basket":{
+            "item01":{
+                "desc":"33X Optical Zoom Camcorder Mini DV",
+                "id":"2acefe58-91e5-11e1-beba-000c2979313a",
+                "price":139.99,
+                "url":"http://application/en/electronics/34-camcorder.html"
+            },
+            "item02":{
+                "desc":"Home Theater System",
+                "id":"31aca2f2-91e5-11e1-beba-000c2979313a",
+                "long":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                "price":499.99,
+                "url":"https://application/en/electronics/39-home-theater.html"
+            }
+        },
+        "id":"428614f0-91e5-11e1-beba-000c2979313a",
+        "ref":"3efd5462e"
+    },
+    "data_privacy":false,
+    "duration":"00:00:13",
+    "ended_at":null,
+    "feedback_message":null,
+    "id":71,
+    "inital_url":"https://devel.userlike.local/en/",
+    "loc_city":null,
+    "loc_country":null,
+    "loc_lat":null,
+    "loc_lon":null,
+    "marked_read":false,
+    "messages":[
+
+    ],
+    "notes":[
+
+    ],
+    "operator_created":{
+        "email":"david@userlike.com",
+        "first_name":"David",
+        "id":5,
+        "last_name":"Voswinkel",
+        "name":"David Voswinkel",
+        "operator_group":{
+            "id":14,
+            "name":"Testing David"
+        }
+    },
+    "operator_created_id":5,
+    "operator_current":{
+        "email":"beavis@userlike.com",
+        "first_name":"Beavis",
+        "id":13,
+        "last_name":"",
+        "name":"Beavis",
+        "operator_group":{
+            "id":8,
+            "name":"Testing"
+        }
+    },
+    "operator_current_id":13,
+    "page_impressions":2,
+    "post_survey_option":null,
+    "rate":null,
+    "referrer":null,
+    "status":"new",
+    "topic":null,
+    "url":"https://devel.userlike.local/en/debug/9",
+    "visits":10,
+    "was_proactive":false
+}

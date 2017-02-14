@@ -1,0 +1,24 @@
+{
+    "_event":"back",
+    "_type":"operator",
+    "dashboard_url":"https://devel.userlike.local/dashboard/config/operator/edit/5",
+    "email":"david@userlike.com",
+    "first_name":"David",
+    "id":5,
+    "is_active":true,
+    "jid":"david@userlike.com",
+    "lang":"en",
+    "last_name":"Voswinkel",
+    "locale":"en_IS",
+    "name":"David Voswinkel",
+    "operator_group":{
+        "id":14,
+        "name":"Testing David"
+    },
+    "operator_group_id":14,
+    "role":"a",
+    "role_name":"Admin",
+    "timezone":"Atlantic/Reykjavik",
+    "url_image":"devel-cdn-operators.s3-eu-west-1.amazonaws.com/306ff79697ad929289f900ee013e8c33a4b7a371e80b5617e197264f953143d7_80x80.jpg",
+    "username":"david"
+}
