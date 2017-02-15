@@ -1,0 +1,14 @@
+{
+    "exception":{
+        "exception":"ActionView::Template::Error",
+        "site":"AppSignal",
+        "message":"undefined method 'encoding' for nil:NilClass",
+        "action":"App::ErrorController#show",
+        "path":"/errors",
+        "revision":"3107ddc4bb053d570083b4e3e425b8d62532ddc9",
+        "user":"thijs",
+        "first_backtrace_line":"/usr/local/rbenv/versions/2.0.0-p353/lib/ruby/2.0.0/cgi/util.rb:7:in 'escape'",
+        "url":"https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/exceptions/App::SnapshotsController-show/ActionView::Template::Error",
+        "environment":"test"
+    }
+}

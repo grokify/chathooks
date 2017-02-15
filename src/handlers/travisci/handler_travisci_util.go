@@ -1,7 +1,15 @@
 package travisci
 
 import (
+	"io/ioutil"
+	"path"
+
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/config"
+)
+
+var (
+	EXAMPLE_BUILD = "example__travisci__build.json"
 )
 
 func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
@@ -13,10 +21,19 @@ func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
 }
 
 func ExampleMessageSource() (TravisciOutMessage, error) {
-	return TravisciOutMessageFromBytes(ExampleMessageBytes())
+	bytes, err := ExampleMessageBytes()
+	if err != nil {
+		return TravisciOutMessage{}, err
+	}
+	return TravisciOutMessageFromBytes(bytes)
 }
 
-func ExampleMessageBytes() []byte {
+func ExampleMessageBytes() ([]byte, error) {
+	filepath := path.Join(
+		config.DOC_HANDLERS_REL_DIR,
+		HANDLER_KEY,
+		EXAMPLE_BUILD)
+	return ioutil.ReadFile(filepath)
 	return []byte(`{
   "id": 1,
   "number": "1",
@@ -74,7 +91,7 @@ func ExampleMessageBytes() []byte {
       "compare_url": "https://github.com/svenfuchs/minimal/compare/master...develop"
     }
   ]
-}`)
+}`), nil
 }
 
 /*

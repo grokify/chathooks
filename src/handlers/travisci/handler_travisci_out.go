@@ -17,6 +17,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Travis CI"
+	HANDLER_KEY  = "travisci"
 	ICON_URL     = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
 )
 

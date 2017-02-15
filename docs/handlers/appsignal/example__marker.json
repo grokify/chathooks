@@ -1,0 +1,10 @@
+{
+    "marker":{
+        "user":"thijs",
+        "site":"AppSignal",
+        "environment":"test",
+        "revision":"3107ddc4bb053d570083b4e3e425b8d62532ddc9",
+        "repository":"git@github.com:appsignal/appsignal.git",
+        "url":"https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/exceptions"
+    }
+}

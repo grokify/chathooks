@@ -3,11 +3,12 @@ package appsignal
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
+	//"strings"
 
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/grokify/gotilla/time/timeutil"
@@ -16,6 +17,7 @@ import (
 
 const (
 	DISPLAY_NAME = "AppSignal"
+	HANDLER_KEY  = "appsignal"
 	ICON_URL     = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
 )
 
@@ -53,15 +55,19 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (AppsignalOutMessage, error) 
 func Normalize(src AppsignalOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
-	lines := []string{}
+	message := util.NewMessage()
 
 	if len(src.Marker.URL) > 0 {
 		gmsg.Activity = fmt.Sprintf("%v Deployed by %v (%v)", src.Marker.Site, src.Marker.User, DISPLAY_NAME)
+
 		if len(src.Marker.Environment) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Environment**\n> %v", src.Marker.Environment))
+			message.AddAttachment(util.Attachment{
+				Title: "Environment",
+				Text:  src.Marker.Environment})
 		}
-		if len(src.Marker.Site) > 0 {
-			lines = append(lines, fmt.Sprintf("> [View Details](%v)", src.Marker.URL))
+		if len(src.Marker.URL) > 0 {
+			message.AddAttachment(util.Attachment{
+				Text: fmt.Sprintf("[View Details](%v)", src.Marker.URL)})
 		}
 	} else if len(src.Exception.URL) > 0 {
 		if len(src.Exception.Site) > 0 {
@@ -69,45 +75,62 @@ func Normalize(src AppsignalOutMessage) glipwebhook.GlipWebhookMessage {
 		} else {
 			gmsg.Activity = fmt.Sprintf("Exception Incident (%v)", DISPLAY_NAME)
 		}
+
 		if len(src.Exception.Message) > 0 {
-			lines = append(lines, fmt.Sprintf("> %v", src.Exception.Message))
+			message.AddAttachment(util.Attachment{
+				Text: src.Exception.Message})
 		}
 		if len(src.Exception.Environment) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Environment**\n> %v", src.Exception.Environment))
+			message.AddAttachment(util.Attachment{
+				Title: "Environment",
+				Text:  src.Exception.Environment})
 		}
 		if len(src.Exception.Exception) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Exception**\n> %v", src.Exception.Exception))
+			message.AddAttachment(util.Attachment{
+				Title: "Exception",
+				Text:  src.Exception.Exception})
 		}
 		if len(src.Exception.User) > 0 {
-			lines = append(lines, fmt.Sprintf("> **User**\n> %v", src.Exception.User))
+			message.AddAttachment(util.Attachment{
+				Title: "User",
+				Text:  src.Exception.User})
 		}
 		if len(src.Exception.URL) > 0 {
-			lines = append(lines, fmt.Sprintf("> [View Details](%v)", src.Exception.URL))
+			message.AddAttachment(util.Attachment{
+				Text: fmt.Sprintf("[View Details](%v)", src.Exception.URL)})
 		}
 	} else if len(src.Performance.URL) > 0 {
 		gmsg.Activity = fmt.Sprintf("%v Performance Incident (%v)", src.Performance.Site, DISPLAY_NAME)
+
 		if len(src.Performance.Environment) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Environment**\n> %v", src.Performance.Environment))
+			message.AddAttachment(util.Attachment{
+				Title: "Environment",
+				Text:  src.Performance.Environment})
 		}
 		if len(src.Performance.Hostname) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Hostname**\n> %v", src.Performance.Hostname))
+			message.AddAttachment(util.Attachment{
+				Title: "Hostname",
+				Text:  src.Performance.Hostname})
 		}
 		if src.Performance.Duration > 0.0 {
 			durationString, err := timeutil.DurationStringMinutesSeconds(int64(src.Performance.Duration))
 			if err == nil {
-				lines = append(lines, fmt.Sprintf("> **Duration**\n> %v", durationString))
+				message.AddAttachment(util.Attachment{
+					Title: "Duration",
+					Text:  durationString})
 			} else {
-				lines = append(lines, fmt.Sprintf("> **Duration**\n> %v", err))
+				message.AddAttachment(util.Attachment{
+					Title: "Duration",
+					Text:  fmt.Sprintf("%v", src.Performance.Duration)})
 			}
 		}
 		if len(src.Performance.URL) > 0 {
-			lines = append(lines, fmt.Sprintf("> [View Details](%v)", src.Performance.URL))
+			message.AddAttachment(util.Attachment{
+				Text: fmt.Sprintf("[View Details](%v)", src.Performance.URL)})
 		}
 	}
 
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+	gmsg.Body = glipadapter.RenderMessage(message)
 
 	return gmsg
 }
@@ -158,48 +181,3 @@ type AppsignalPerformance struct {
 	URL         string  `json:"url,omitempty"`
 	Environment string  `json:"environment,omitempty"`
 }
-
-/*
-
-{
-  "marker":{
-    "user": "thijs",
-    "site": "AppSignal",
-    "environment": "test",
-    "revision": "3107ddc4bb053d570083b4e3e425b8d62532ddc9",
-    "repository": "git@github.com:appsignal/appsignal.git",
-    "url": "https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/exceptions"
-  }
-}
-
-{
-  "exception":{
-    "exception": "ActionView::Template::Error",
-    "site": "AppSignal",
-    "message": "undefined method `encoding' for nil:NilClass",
-    "action": "App::ErrorController#show",
-    "path": "/errors",
-    "revision": "3107ddc4bb053d570083b4e3e425b8d62532ddc9",
-    "user": "thijs",
-    "first_backtrace_line": "/usr/local/rbenv/versions/2.0.0-p353/lib/ruby/2.0.0/cgi/util.rb:7:in `escape'",
-    "url": "https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/exceptions/App::SnapshotsController-show/ActionView::Template::Error",
-    "environment": "test"
-  }
-}
-
-{
-  "performance":{
-    "site": "AppSignal",
-    "action": "App::ExceptionsController#index",
-    "path": "/slow",
-    "duration": 552.7897429999999,
-    "status": 200,
-    "hostname": "frontend.appsignal.com",
-    "revision": "3107ddc4bb053d570083b4e3e425b8d62532ddc9",
-    "user": "thijs",
-    "url": "https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/performance/App::ExceptionsController-index",
-    "environment": "test"
-  }
-}
-
-*/

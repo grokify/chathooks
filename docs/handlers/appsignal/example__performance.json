@@ -1,0 +1,14 @@
+{
+    "performance":{
+        "site":"AppSignal",
+        "action":"App::ExceptionsController#index",
+        "path":"/slow",
+        "duration":552.7897429999999,
+        "status":200,
+        "hostname":"frontend.appsignal.com",
+        "revision":"3107ddc4bb053d570083b4e3e425b8d62532ddc9",
+        "user":"thijs",
+        "url":"https://appsignal.com/test/sites/1385f7e38c5ce90000000000/web/performance/App::ExceptionsController-index",
+        "environment":"test"
+    }
+}
