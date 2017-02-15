@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	AdaptersGlipMarkdownQuote = false
+	AdaptersGlipActivityIncludeIntegrationName = false
+	AdaptersGlipMarkdownQuote                  = false
 )
 
 func GetGlipMarkdownBodyPrefix() string {
@@ -39,4 +40,11 @@ func RenderMessage(message util.Message) string {
 		lines = append(lines, attachments)
 	}
 	return strings.Join(lines, "\n")
+}
+
+func IntegrationActivitySuffix(displayName string) string {
+	if AdaptersGlipActivityIncludeIntegrationName {
+		return fmt.Sprintf(" (%v)", displayName)
+	}
+	return ""
 }

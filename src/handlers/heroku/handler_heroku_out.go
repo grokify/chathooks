@@ -8,6 +8,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -15,6 +16,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Heroku"
+	HANDLER_KEY  = "heroku"
 	ICON_URL     = "https://a.slack-edge.com/ae7f/plugins/heroku/assets/service_512.png"
 )
 
@@ -59,30 +61,37 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 }
 
 func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
-	glip := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+
 	if len(strings.TrimSpace(src.User)) > 0 {
-		glip.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DISPLAY_NAME)
 	} else {
 		if len(strings.TrimSpace(src.App)) > 0 {
-			glip.Activity = fmt.Sprintf("%v deployed on %v", src.App, DISPLAY_NAME)
+			gmsg.Activity = fmt.Sprintf("%v deployed on %v", src.App, DISPLAY_NAME)
 		} else {
-			glip.Activity = fmt.Sprintf("An app has been deployed on %v", DISPLAY_NAME)
+			gmsg.Activity = fmt.Sprintf("An app has been deployed on %v", DISPLAY_NAME)
 		}
 	}
-	lines := []string{}
+
+	message := util.NewMessage()
+
 	if len(strings.TrimSpace(src.App)) > 0 {
-		lines = append(lines, fmt.Sprintf("> **Application**\n> %v", src.App))
+		message.AddAttachment(util.Attachment{
+			Title: "Application",
+			Text:  src.App})
 	}
 	if len(strings.TrimSpace(src.Release)) > 0 {
-		lines = append(lines, fmt.Sprintf("> **Release**\n> %v", src.Release))
+		message.AddAttachment(util.Attachment{
+			Title: "Release",
+			Text:  src.Release})
 	}
 	if len(strings.TrimSpace(src.URL)) > 0 {
-		lines = append(lines, fmt.Sprintf("> [View application](%v)", src.URL))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View application](%v)", src.URL)})
 	}
-	if len(lines) > 0 {
-		glip.Body = strings.Join(lines, "\n")
-	}
-	return glip
+
+	gmsg.Body = glipadapter.RenderMessage(message)
+	return gmsg
 }
 
 type HerokuOutMessage struct {

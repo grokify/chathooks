@@ -3,11 +3,11 @@ package magnumci
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -15,6 +15,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Magnum CI"
+	HANDLER_KEY  = "magnumci"
 	ICON_URL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 )
 
@@ -57,22 +58,28 @@ func Normalize(src MagnumciOutMessage) glipwebhook.GlipWebhookMessage {
 		gmsg.Activity = fmt.Sprintf("%v", src.Title)
 	}
 
-	lines := []string{}
-	lines = append(lines, fmt.Sprintf("> **Commit:** [%v](%v)", src.Message, src.CommitURL))
+	message := util.NewMessage()
+
+	message.AddAttachment(util.Attachment{
+		Title: "Commit",
+		Text:  fmt.Sprintf("[%v](%v)", src.Message, src.CommitURL)})
 
 	if len(src.Author) > 0 {
-		lines = append(lines, fmt.Sprintf("> **Author:** %v", src.Author))
+		message.AddAttachment(util.Attachment{
+			Title: "Author",
+			Text:  src.Author})
 	}
 	if len(src.DurationString) > 0 {
-		lines = append(lines, fmt.Sprintf("> **Duration:** %v", src.DurationString))
+		message.AddAttachment(util.Attachment{
+			Title: "Duration",
+			Text:  src.DurationString})
 	}
 	if len(src.BuildURL) > 0 {
-		lines = append(lines, fmt.Sprintf("> [View Build](%v)", src.BuildURL))
-	}
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View Build](%v)", src.BuildURL)})
 	}
 
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 

@@ -8,6 +8,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -92,24 +93,31 @@ func Normalize(src RaygunOutMessage) glipwebhook.GlipWebhookMessage {
 			glipMsg.Activity = fmt.Sprintf("An error occurred%v (%v)", timeString, DISPLAY_NAME)
 		}
 	}
-	lines := []string{}
+
+	message := util.NewMessage()
+
 	if len(src.Application.URL) > 0 {
 		if len(src.Application.Name) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Application:** [%v](%v)", src.Application.Name, src.Application.URL))
+			message.AddAttachment(util.Attachment{
+				Title: "Application",
+				Text:  fmt.Sprintf("[%v](%v)", src.Application.Name, src.Application.URL)})
 		} else {
-			lines = append(lines, fmt.Sprintf("> [Application Details](%v)", src.Application.URL))
+			message.AddAttachment(util.Attachment{
+				Text: fmt.Sprintf("[Application Details](%v)", src.Application.URL)})
 		}
 	}
 	if len(src.Error.URL) > 0 {
 		if len(src.Error.Message) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Error:** [%v](%v)", src.Error.Message, src.Error.URL))
+			message.AddAttachment(util.Attachment{
+				Title: "Error",
+				Text:  fmt.Sprintf("[%v](%v)", src.Error.Message, src.Error.URL)})
 		} else {
-			lines = append(lines, fmt.Sprintf("> [Error Details](%v)", src.Error.URL))
+			message.AddAttachment(util.Attachment{
+				Text: fmt.Sprintf("[Error Details](%v)", src.Error.URL)})
 		}
 	}
-	if len(lines) > 0 {
-		glipMsg.Body = strings.Join(lines, "\n")
-	}
+
+	glipMsg.Body = glipadapter.RenderMessage(message)
 	return glipMsg
 }
 

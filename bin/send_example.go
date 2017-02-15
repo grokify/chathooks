@@ -152,15 +152,17 @@ func SendUserlike(glipClient glipwebhook.GlipWebhookClient, guid string) {
 		panic("Bad Test Message")
 	}
 	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	return
-	for i, event := range userlike.ChatMetaEvents {
-		//continue
-		fmt.Printf("%v %v\n", i, event)
-		glipMsg, err := userlike.ExampleUserlikeChatMetaMessageGlip(event)
-		if err != nil {
-			panic(fmt.Sprintf("Bad Test Message: %v", err))
+	//return
+	if 1 == 1 {
+		for i, event := range userlike.ChatMetaEvents {
+			//continue
+			fmt.Printf("%v %v\n", i, event)
+			glipMsg, err := userlike.ExampleUserlikeChatMetaMessageGlip(event)
+			if err != nil {
+				panic(fmt.Sprintf("Bad Test Message: %v", err))
+			}
+			util.SendGlipWebhook(glipClient, guid, glipMsg)
 		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	}
 	for i, event := range userlike.OperatorEvents {
 		fmt.Printf("%v %v\n", i, event)

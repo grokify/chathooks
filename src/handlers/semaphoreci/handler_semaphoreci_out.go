@@ -9,6 +9,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -16,6 +17,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Semaphore"
+	HANDLER_KEY  = "semaphoreci"
 	ICON_URL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
 	ICON_URL_2   = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
@@ -72,56 +74,51 @@ func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
-	integrationActivitySuffix := ""
-	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-		integrationActivitySuffix = fmt.Sprintf(" (%v)", DISPLAY_NAME)
-	}
-
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
 		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, integrationActivitySuffix)
+		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, integrationActivitySuffix)
+		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
 	}
 
-	lines := []string{}
+	message := util.NewMessage()
+
 	if len(src.Commit.Message) > 0 {
-		lines = append(lines, fmt.Sprintf("> [%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message)})
 	}
 	if len(src.BuildURL) > 0 {
-		lines = append(lines, fmt.Sprintf("> [View details](%v)", src.BuildURL))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View details](%v)", src.BuildURL)})
 	}
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 
 func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
 
-	integrationActivitySuffix := ""
-	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-		integrationActivitySuffix = fmt.Sprintf(" (%v)", DISPLAY_NAME)
-	}
-
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, integrationActivitySuffix)
+		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v",
+			src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, integrationActivitySuffix)
+		gmsg.Activity = fmt.Sprintf("%v's %v %v%v",
+			src.Commit.AuthorName, src.Event, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
 	}
 
-	lines := []string{}
+	message := util.NewMessage()
+
 	if len(src.Commit.Message) > 0 {
-		lines = append(lines, fmt.Sprintf("> [%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message)})
 	}
 	if len(src.HtmlURL) > 0 {
-		lines = append(lines, fmt.Sprintf("> [View details](%v)", src.HtmlURL))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View details](%v)", src.HtmlURL)})
 	}
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 
@@ -194,74 +191,3 @@ func SemaphoreciDeployOutMessageFromBytes(bytes []byte) (SemaphoreciDeployOutMes
 	}
 	return msg, err
 }
-
-/*
-
-if strings.ToLower(msg.Event)== "build"
-%v %v %v
-msg.Commit.AuthorName
-msg.ProjectName
-Build #65 passed
-fmt.Sprintf("%v %v #%v %v", msg.ProjectName, msg.BuildNumber, msg. Result)
-%v", msg.COmmit.Message
-[View Details](%v)
-
-
-Webhook Notification Reference
-
-Format:
-
-"Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
-
-Payload:
-
-{
-  "branch_name": "gem_updates",
-  "branch_url": "https://semaphoreci.com/projects/44/branches/50",
-  "project_name": "base-app",
-  "project_hash_id": "123-aga-471-6a8",
-  "build_url": "https://semaphoreci.com/projects/44/branches/50/builds/15",
-  "build_number": 15,
-  "result": "passed",
-  "event": "build",
-  "started_at": "2012-07-09T15:23:53Z",
-  "finished_at": "2012-07-09T15:30:16Z",
-  "commit": {
-    "id": "dc395381e650f3bac18457909880829fc20e34ba",
-    "url": "https://github.com/renderedtext/base-app/commit/dc395381e650f3bac18457909880829fc20e34ba",
-    "author_name": "Vladimir Saric",
-    "author_email": "vladimir@renderedtext.com",
-    "message": "Update 'shoulda' gem.",
-    "timestamp": "2012-07-04T18:14:08Z"
-  }
-}
-
-Deploy Webhook
-
-{
-  "project_name": "heroku-deploy-test",
-  "project_hash_id": "123-aga-471-6a8",
-  "result": "passed",
-  "event": "deploy",
-  "server_name": "server-heroku-master-automatic-2",
-  "number": 2,
-  "created_at": "2013-07-30T13:52:33Z",
-  "updated_at": "2013-07-30T13:53:21Z",
-  "started_at": "2013-07-30T13:52:38Z",
-  "finished_at": "2013-07-30T13:53:21Z",
-  "html_url": "https://semaphoreci.com/projects/2420/servers/81/deploys/2",
-  "build_number": 10,
-  "branch_name": "master",
-  "branch_html_url": "https://semaphoreci.com/projects/2420/branches/58394",
-  "build_html_url": "https://semaphoreci.com/projects/2420/branches/58394/builds/7",
-  "commit": {
-    "author_email": "rastasheep3@gmail.com",
-    "author_name": "Aleksandar Diklic",
-    "id": "43ddb7516ecc743f0563abd7418f0bd3617348c4",
-    "message": "One more time",
-    "timestamp": "2013-07-19T12:56:25Z",
-    "url": "https://github.com/rastasheep/heroku-deploy-test/commit/43ddb7516ecc743f0563abd7418f0bd3617348c4"
-  }
-}
-
-*/

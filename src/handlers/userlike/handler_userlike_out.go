@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -112,94 +112,106 @@ func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) glipwebhook.G
 		clientName = "Website Visitor"
 	}
 	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("%s sent a new Offline Message (%v)", clientName, DISPLAY_NAME),
+		Activity: fmt.Sprintf("%s sent a new Offline Message%v", clientName, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
 		Icon:     ICON_URL}
+
+	message := util.NewMessage()
+
 	if len(src.URL) > 0 {
-		gmsg.Body = fmt.Sprintf("> [View message](%v)", src.URL)
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View message](%v)", src.URL)})
 	}
+
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 
 func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) glipwebhook.GlipWebhookMessage {
-	/*
-		activitySuffix := " from Website Visitor"
-		if len(src.ClientName) > 0 {
-			activitySuffix = fmt.Sprintf(" from %v", src.ClientName)
-		}
-	*/
 	gmsg := glipwebhook.GlipWebhookMessage{
-		//Activity: fmt.Sprintf("Received a new Chat%s%s", activitySuffix, IntegrationActivitySuffix()),
-		Activity: fmt.Sprintf("%s%s", GlipActivityForChat(src.Event, src.FeedbackMessage), IntegrationActivitySuffix()),
-		Icon:     ICON_URL}
-	lines := []string{}
+		Activity: fmt.Sprintf("%s%s",
+			GlipActivityForChat(src.Event, src.FeedbackMessage), glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
+		Icon: ICON_URL}
+
+	message := util.NewMessage()
+
 	if len(src.ClientName) > 0 {
-		lines = append(lines, fmt.Sprintf("> **Client Name**\n> %s", src.ClientName))
+		message.AddAttachment(util.Attachment{
+			Title: "Client Name",
+			Text:  src.ClientName})
 	} else {
-		lines = append(lines, fmt.Sprintf("> **Client Name**\n> %s", "Unknown"))
+		message.AddAttachment(util.Attachment{
+			Title: "Client Name",
+			Text:  "Unknown"})
 	}
 	if src.Event == "rating" || src.Event == "survey" { // includes feedback
 		if len(src.FeedbackMessage) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Feedback**\n> %s", src.FeedbackMessage))
+			message.AddAttachment(util.Attachment{
+				Title: "Feedback",
+				Text:  src.FeedbackMessage})
 		}
 		if len(src.PostSurveyOption) > 0 {
-			lines = append(lines, fmt.Sprintf("> **Rating**\n> %s", src.PostSurveyOption))
+			message.AddAttachment(util.Attachment{
+				Title: "Rating",
+				Text:  src.PostSurveyOption})
 		}
 	}
 	if len(src.URL) > 0 {
-		lines = append(lines, fmt.Sprintf("> [View details](%v)", src.URL))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[View details](%v)", src.URL)})
 	}
 
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 
 func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("Chat widget configuration updated%s", IntegrationActivitySuffix()),
+		Activity: fmt.Sprintf("Chat widget configuration updated%s", glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
 		Icon:     ICON_URL}
-	lines := []string{}
-	bodyPrefix := ""
+
+	message := util.NewMessage()
+
 	if len(src.Name) > 0 {
-		lines = append(lines, fmt.Sprintf("%s**Widget Name**\n%s[%s](%s)", bodyPrefix, bodyPrefix, src.Name, src.CustomUrl))
+		message.AddAttachment(util.Attachment{
+			Title: "Widget Name",
+			Text:  fmt.Sprintf("[%s](%s)", src.Name, src.CustomUrl)})
 	}
-	lines = append(lines, fmt.Sprintf("%s**Widget Version**\n%s%v", bodyPrefix, bodyPrefix, src.WidgetVersion))
+	message.AddAttachment(util.Attachment{
+		Title: "Widget Version",
+		Text:  fmt.Sprintf("%v", src.WidgetVersion)})
 	if len(src.WidgetExternalType) > 0 {
-		lines = append(lines, fmt.Sprintf("%s**Widget Type**\n%s%s", bodyPrefix, bodyPrefix, src.WidgetExternalType))
+		message.AddAttachment(util.Attachment{
+			Title: "Widget Type",
+			Text:  fmt.Sprintf("%v", src.WidgetExternalType)})
 	}
 	if len(src.StatusUrl) > 0 {
-		lines = append(lines, fmt.Sprintf("%s[Widget Status](%v)", bodyPrefix, src.StatusUrl))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[Widget Status](%v)", src.StatusUrl)})
 	}
 	if len(src.TestUrl) > 0 {
-		lines = append(lines, fmt.Sprintf("%s[Test Widget](%v)", bodyPrefix, src.TestUrl))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[Test Widget](%v)", src.TestUrl)})
 	}
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
 }
 
 func NormalizeOperator(src UserlikeOperatorOutMessage) glipwebhook.GlipWebhookMessage {
 	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("%s is %s as operator%s", src.Name, src.Event, IntegrationActivitySuffix()),
-		Icon:     ICON_URL}
-	lines := []string{}
+		Activity: fmt.Sprintf("%s is %s as operator%s",
+			src.Name, src.Event, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
+		Icon: ICON_URL}
+
+	message := util.NewMessage()
+
 	if len(src.DashboardUrl) > 0 {
-		lines = append(lines, fmt.Sprintf("> [Operator details](%v)", src.DashboardUrl))
+		message.AddAttachment(util.Attachment{
+			Text: fmt.Sprintf("[Operator Details](%v)", src.DashboardUrl)})
 	}
 
-	if len(lines) > 0 {
-		gmsg.Body = strings.Join(lines, "\n")
-	}
+	gmsg.Body = glipadapter.RenderMessage(message)
 	return gmsg
-}
-
-func IntegrationActivitySuffix() string {
-	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-		return fmt.Sprintf(" (%v)", DISPLAY_NAME)
-	}
-	return ""
 }
 
 type UserlikeBaseOutMessage struct {
