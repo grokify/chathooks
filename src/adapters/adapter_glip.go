@@ -29,6 +29,14 @@ func RenderAttachments(attachments []util.Attachment) string {
 		if len(att.Text) > 0 {
 			lines = append(lines, fmt.Sprintf("%s%s", prefix, att.Text))
 		}
+		for _, field := range att.Fields {
+			if len(field.Title) > 0 {
+				lines = append(lines, fmt.Sprintf("%s**%s**", prefix, field.Title))
+			}
+			if len(field.Value) > 0 {
+				lines = append(lines, fmt.Sprintf("%s%s", prefix, field.Value))
+			}
+		}
 	}
 	return strings.Join(lines, "\n")
 }

@@ -15,6 +15,21 @@ func (msg *Message) AddAttachment(att Attachment) {
 type Attachment struct {
 	Title    string   `json:"title,omitempty"`
 	Pretext  string   `json:"pretext,omitempty"`
-	Text     string   `json:"pretext,omitempty"`
+	Text     string   `json:"text,omitempty"`
 	MrkdwnIn []string `json"mrkdwn_in,omitempty"`
+	Fields   []Field  `json:"fields,omitempty"`
+}
+
+func NewAttachment() Attachment {
+	return Attachment{Fields: []Field{}}
+}
+
+type Field struct {
+	Title string `json:"title,omitempty"`
+	Value string `json:"value,omitempty"`
+	Short bool   `json:"short,omitempty"`
+}
+
+func (attach *Attachment) AddField(field Field) {
+	attach.Fields = append(attach.Fields, field)
 }

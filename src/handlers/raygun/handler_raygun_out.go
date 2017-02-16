@@ -94,28 +94,31 @@ func Normalize(src RaygunOutMessage) glipwebhook.GlipWebhookMessage {
 		}
 	}
 
-	message := util.NewMessage()
+	attachment := util.NewAttachment()
 
 	if len(src.Application.URL) > 0 {
 		if len(src.Application.Name) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(util.Field{
 				Title: "Application",
-				Text:  fmt.Sprintf("[%v](%v)", src.Application.Name, src.Application.URL)})
+				Value: fmt.Sprintf("[%v](%v)", src.Application.Name, src.Application.URL)})
 		} else {
-			message.AddAttachment(util.Attachment{
-				Text: fmt.Sprintf("[Application Details](%v)", src.Application.URL)})
+			attachment.AddField(util.Field{
+				Value: fmt.Sprintf("[Application Details](%v)", src.Application.URL)})
 		}
 	}
 	if len(src.Error.URL) > 0 {
 		if len(src.Error.Message) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(util.Field{
 				Title: "Error",
-				Text:  fmt.Sprintf("[%v](%v)", src.Error.Message, src.Error.URL)})
+				Value: fmt.Sprintf("[%v](%v)", src.Error.Message, src.Error.URL)})
 		} else {
-			message.AddAttachment(util.Attachment{
-				Text: fmt.Sprintf("[Error Details](%v)", src.Error.URL)})
+			attachment.AddField(util.Field{
+				Value: fmt.Sprintf("[Error Details](%v)", src.Error.URL)})
 		}
 	}
+
+	message := util.NewMessage()
+	message.AddAttachment(attachment)
 
 	glipMsg.Body = glipadapter.RenderMessage(message)
 	return glipMsg
