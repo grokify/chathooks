@@ -17,8 +17,7 @@ import (
 const (
 	DISPLAY_NAME = "Magnum CI"
 	HandlerKey   = "magnumci"
-	ICXON_URL    = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
-	IconURL      = "https://media.glassdoor.com/sql/621848/sumo-logic-squarelogo-1398798005527.png"
+	IconURL      = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
