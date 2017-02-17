@@ -10,6 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
@@ -18,7 +19,7 @@ import (
 const (
 	DISPLAY_NAME = "Travis CI"
 	HANDLER_KEY  = "travisci"
-	ICON_URL     = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
+	IconURL      = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -34,7 +35,18 @@ func NewTravisciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.Glip
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
+	/*
+		srcMsg, err := BuildInboundMessage(ctx)
+		if err != nil {
+			ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
+			log.WithFields(log.Fields{
+				"type":   "http.response",
+				"status": fasthttp.StatusNotAcceptable,
+			}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+			return
+		}
+	*/
+	glipMsg, err := Normalize(ctx.FormValue("payload"))
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -43,21 +55,72 @@ func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
 
 	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
 }
 
-func BuildInboundMessage(ctx *fasthttp.RequestCtx) (TravisciOutMessage, error) {
-	return TravisciOutMessageFromBytes(ctx.FormValue("payload"))
+func StatusMessageSuffix(statusMessage string) string {
+	suffixes := map[string]string{
+		"pending":       "is pending",
+		"passed":        "passed",
+		"broken":        "is broken",
+		"fixed":         "was fixed",
+		"still failing": "is still failing"}
+	statusMessage = strings.ToLower(statusMessage)
+	if suffix, ok := suffixes[statusMessage]; ok {
+		return suffix
+	}
+	return statusMessage
 }
 
-func Normalize(src TravisciOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Body:     strings.Join([]string{">", src.AsMarkdown()}, " "),
-		Activity: DISPLAY_NAME,
-		Icon:     ICON_URL}
-	return gmsg
+func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
+	glipMsg := glipwebhook.GlipWebhookMessage{Icon: IconURL}
+	src, err := TravisciOutMessageFromBytes(bytes)
+	if err != nil {
+		return glipMsg, err
+	}
+
+	statusMessageSuffix := StatusMessageSuffix(src.StatusMessage)
+
+	glipMsg.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
+
+	attachment := util.NewAttachment()
+
+	attachment.Text = fmt.Sprintf(
+		"[Build #%v](%s) for **%s/%s** %s",
+		src.Number,
+		src.BuildUrl,
+		src.Repository.Name,
+		src.Branch,
+		statusMessageSuffix)
+
+	if len(src.Message) > 0 {
+		field := util.Field{Title: "Message"}
+		if len(src.CompareUrl) > 0 {
+			field.Value = fmt.Sprintf("[%s](%s)", src.Message, src.CompareUrl)
+		} else {
+			field.Value = src.Message
+		}
+		attachment.AddField(field)
+	}
+	if len(src.Branch) > 0 {
+		attachment.AddField(util.Field{Title: "Branch", Value: src.Branch, Short: true})
+	}
+	if len(src.Type) > 0 {
+		attachment.AddField(util.Field{Title: "Type", Value: src.Type, Short: true})
+	}
+	if len(src.AuthorName) > 0 {
+		attachment.AddField(util.Field{Title: "Author", Value: src.AuthorName, Short: true})
+	}
+	if len(src.CommitterName) > 0 {
+		attachment.AddField(util.Field{Title: "Committer", Value: src.CommitterName, Short: true})
+	}
+
+	message := util.NewMessage()
+	message.AddAttachment(attachment)
+
+	glipMsg.Body = glipadapter.RenderMessage(message)
+	return glipMsg, nil
 }
 
 type TravisciOutMessage struct {
@@ -165,76 +228,3 @@ func (msg *TravisciOutMessage) DurationDisplay() string {
 func (msg *TravisciOutMessage) PullRequestURL() string {
 	return fmt.Sprintf("%v/pull/%v", msg.Repository.Url, msg.PullRequestNumber)
 }
-
-/*
-
-Webhook Notification Reference
-
-https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications
-
-Format:
-
-"Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
-
-Payload:
-
-{
-  "id": 1,
-  "number": "1",
-  "status": null,
-  "started_at": null,
-  "finished_at": null,
-  "status_message": "Passed",
-  "commit": "62aae5f70ceee39123ef",
-  "branch": "master",
-  "message": "the commit message",
-  "compare_url": "https://github.com/svenfuchs/minimal/compare/master...develop",
-  "committed_at": "2011-11-11T11: 11: 11Z",
-  "committer_name": "Sven Fuchs",
-  "committer_email": "svenfuchs@artweb-design.de",
-  "author_name": "Sven Fuchs",
-  "author_email": "svenfuchs@artweb-design.de",
-  "type": "push",
-  "build_url": "https://travis-ci.org/svenfuchs/minimal/builds/1",
-  "repository": {
-    "id": 1,
-    "name": "minimal",
-    "owner_name": "svenfuchs",
-    "url": "http://github.com/svenfuchs/minimal"
-   },
-  "config": {
-    "notifications": {
-      "webhooks": ["http://evome.fr/notifications", "http://example.com/"]
-    }
-  },
-  "matrix": [
-    {
-      "id": 2,
-      "repository_id": 1,
-      "number": "1.1",
-      "state": "created",
-      "started_at": null,
-      "finished_at": null,
-      "config": {
-        "notifications": {
-          "webhooks": ["http://evome.fr/notifications", "http://example.com/"]
-        }
-      },
-      "status": null,
-      "log": "",
-      "result": null,
-      "parent_id": 1,
-      "commit": "62aae5f70ceee39123ef",
-      "branch": "master",
-      "message": "the commit message",
-      "committed_at": "2011-11-11T11: 11: 11Z",
-      "committer_name": "Sven Fuchs",
-      "committer_email": "svenfuchs@artweb-design.de",
-      "author_name": "Sven Fuchs",
-      "author_email": "svenfuchs@artweb-design.de",
-      "compare_url": "https://github.com/svenfuchs/minimal/compare/master...develop"
-    }
-  ]
-}
-
-*/

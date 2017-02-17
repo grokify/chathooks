@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "Magnum CI"
-	HandlerKey   = "magnumci"
-	IconURL      = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	DisplayName = "Magnum CI"
+	HandlerKey  = "magnumci"
+	IconURL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
@@ -42,7 +42,7 @@ func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
 
@@ -59,12 +59,12 @@ func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 
 	if len(src.Title) > 0 {
 		if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-			gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
+			gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DisplayName)
 		} else {
 			gmsg.Activity = fmt.Sprintf("%v", src.Title)
 		}
 	} else {
-		gmsg.Activity = fmt.Sprintf("%s Notification", DISPLAY_NAME)
+		gmsg.Activity = fmt.Sprintf("%s Notification", DisplayName)
 	}
 
 	attachment := util.NewAttachment()
