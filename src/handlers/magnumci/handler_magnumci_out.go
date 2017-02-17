@@ -17,7 +17,8 @@ import (
 const (
 	DISPLAY_NAME = "Magnum CI"
 	HandlerKey   = "magnumci"
-	ICON_URL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	ICXON_URL    = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	IconURL      = "https://media.glassdoor.com/sql/621848/sumo-logic-squarelogo-1398798005527.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
@@ -37,7 +38,6 @@ func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 	glipMsg, err := Normalize(bytes)
 
-	//srcMsg, err := BuildInboundMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -46,17 +46,12 @@ func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
 		return
 	}
-	//glipMsg := Normalize(srcMsg)
 
 	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
 }
 
-//func BuildInboundMessage(ctx *fasthttp.RequestCtx) (MagnumciOutMessage, error) {
-//	return MagnumciOutMessageFromBytes(ctx.PostBody())
-//}
-
 func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+	gmsg := glipwebhook.GlipWebhookMessage{Icon: IconURL}
 
 	src, err := MagnumciOutMessageFromBytes(bytes)
 	if err != nil {

@@ -74,6 +74,7 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("Bad Test Message [%v]", err))
 		}
+		fmt.Println("SENDING")
 		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	case "raygun":
 		glipMsg, err := raygun.ExampleMessageGlip()

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -26,17 +27,19 @@ func SendGlipWebhookCtx(ctx *fasthttp.RequestCtx, glipClient glipwebhook.GlipWeb
 	return nil
 }
 
-func SendGlipWebhook(glipClient glipwebhook.GlipWebhookClient, glipWebhookGuid string, glipMsg glipwebhook.GlipWebhookMessage) (int, []byte, error) {
+func SendGlipWebhook(glipClient glipwebhook.GlipWebhookClient, glipWebhookGuid string, glipMsg glipwebhook.GlipWebhookMessage) (int, glipwebhook.GlipWebhookResponse, error) {
 	req, resp, err := glipClient.PostWebhookGUIDFast(glipWebhookGuid, glipMsg)
 
 	if err != nil {
 		fasthttp.ReleaseRequest(req)
 		fasthttp.ReleaseResponse(resp)
-		return -1, []byte(""), nil
+		return -1, glipwebhook.GlipWebhookResponse{}, err
 	}
 	status := resp.StatusCode()
 	body := resp.Body()
 	fasthttp.ReleaseRequest(req)
 	fasthttp.ReleaseResponse(resp)
-	return status, body, nil
+	glipResp := glipwebhook.GlipWebhookResponse{}
+	err = json.Unmarshal(body, &glipResp)
+	return status, glipResp, err
 }
