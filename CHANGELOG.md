@@ -1,3 +1,5 @@
+- 2017-02-16
+  - Add message attachment short fields
 - 2017-02-14
   - Add message attachment rendering format
 - 2017-01-31

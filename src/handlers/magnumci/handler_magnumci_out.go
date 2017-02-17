@@ -2,6 +2,7 @@ package magnumci
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
@@ -15,7 +16,7 @@ import (
 
 const (
 	DISPLAY_NAME = "Magnum CI"
-	HANDLER_KEY  = "magnumci"
+	HandlerKey   = "magnumci"
 	ICON_URL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 )
 
@@ -32,7 +33,11 @@ func NewMagnumciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.Glip
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
+	bytes := ctx.PostBody()
+
+	glipMsg, err := Normalize(bytes)
+
+	//srcMsg, err := BuildInboundMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -41,46 +46,78 @@ func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
+	//glipMsg := Normalize(srcMsg)
 
 	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
 }
 
-func BuildInboundMessage(ctx *fasthttp.RequestCtx) (MagnumciOutMessage, error) {
-	return MagnumciOutMessageFromBytes(ctx.PostBody())
-}
+//func BuildInboundMessage(ctx *fasthttp.RequestCtx) (MagnumciOutMessage, error) {
+//	return MagnumciOutMessageFromBytes(ctx.PostBody())
+//}
 
-func Normalize(src MagnumciOutMessage) glipwebhook.GlipWebhookMessage {
+func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
-	if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-		gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
+
+	src, err := MagnumciOutMessageFromBytes(bytes)
+	if err != nil {
+		return gmsg, err
+	}
+
+	if len(src.Title) > 0 {
+		if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
+			gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DISPLAY_NAME)
+		} else {
+			gmsg.Activity = fmt.Sprintf("%v", src.Title)
+		}
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v", src.Title)
+		gmsg.Activity = fmt.Sprintf("%s Notification", DISPLAY_NAME)
+	}
+
+	attachment := util.NewAttachment()
+
+	if len(src.Message) > 0 {
+		if len(src.CommitURL) > 0 {
+			attachment.AddField(util.Field{
+				Title: "Commit",
+				Value: fmt.Sprintf("[%v](%v)", src.Message, src.CommitURL)})
+		} else {
+			attachment.AddField(util.Field{
+				Title: "Commit",
+				Value: fmt.Sprintf("%v", src.Message)})
+		}
+	} else if len(src.CommitURL) > 0 {
+		attachment.AddField(util.Field{
+			Title: "Commit",
+			Value: fmt.Sprintf("[View Commit](%v)", src.Message)})
+	}
+
+	if len(src.Author) > 0 {
+		attachment.AddField(util.Field{
+			Title: "Author",
+			Value: src.Author,
+			Short: true})
+	}
+	if len(src.DurationString) > 0 {
+		attachment.AddField(util.Field{
+			Title: "Duration",
+			Value: src.DurationString,
+			Short: true})
+	}
+	if len(src.BuildURL) > 0 {
+		attachment.AddField(util.Field{
+			Value: fmt.Sprintf("[View Build](%v)", src.BuildURL)})
+	}
+
+	if len(src.Title) < 1 && len(attachment.Fields) == 0 {
+		return gmsg, errors.New("Content not found")
 	}
 
 	message := util.NewMessage()
-
-	message.AddAttachment(util.Attachment{
-		Title: "Commit",
-		Text:  fmt.Sprintf("[%v](%v)", src.Message, src.CommitURL)})
-
-	if len(src.Author) > 0 {
-		message.AddAttachment(util.Attachment{
-			Title: "Author",
-			Text:  src.Author})
-	}
-	if len(src.DurationString) > 0 {
-		message.AddAttachment(util.Attachment{
-			Title: "Duration",
-			Text:  src.DurationString})
-	}
-	if len(src.BuildURL) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View Build](%v)", src.BuildURL)})
-	}
+	message.AddAttachment(attachment)
 
 	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+
+	return gmsg, nil
 }
 
 type MagnumciOutMessage struct {
