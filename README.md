@@ -11,7 +11,7 @@ Proxy service to map different webhook posts to message platforms such as Glip's
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
-Outbound Webhook Formats supported
+Outbound Webhook Formats supported:
 
 1. [AppSignal webhooks](http://docs.appsignal.com/application/integrations/webhooks.html)
 1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
@@ -23,7 +23,7 @@ Outbound Webhook Formats supported
 1. [Travis CI webhooks](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
 1. [Userlike webhooks](https://www.userlike.com/en/public/tutorial/addon/api)
 
-Inbound Webhook Format supported
+Inbound Webhook Format supported:
 
 * Slack (inbound message format) - `text` only
 
