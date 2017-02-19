@@ -7,12 +7,25 @@ Glip Webhook Proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-Proxy service to map different requests to Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+Proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. This is useful because various chat services have similar, but slightly different inbound webhook services. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
+Outbound Webhook Formats supported
+
+1. [AppSignal webhooks](http://docs.appsignal.com/application/integrations/webhooks.html)
+1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
+1. [Enchant webhooks](https://dev.enchant.com/webhooks)
+1. [Heroku webhooks](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
+1. [Magnum CI webhooks](https://github.com/magnumci/documentation/blob/master/webhooks.md)
+1. [Raygun webhooks](https://raygun.com/docs/integrations/webhooks)
+1. [Semaphore CI webhooks](https://semaphoreci.com/docs/post-build-webhooks.html), [Deploy](https://semaphoreci.com/docs/post-deploy-webhooks.html)
+1. [Travis CI webhooks](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
+1. [Userlike webhooks](https://www.userlike.com/en/public/tutorial/addon/api)
+
+Inbound Webhook Format supported
+
 * Slack (inbound message format) - `text` only
-* Travis CI (outbound message format)
 
 **Note:** Slack inbound message formatting is for services sending outbound webhooks using Slack's inbound webhook message format, which can be directed to Glip via this proxy.
 
@@ -142,18 +155,6 @@ opts = {
 poster = Slack::Poster.new url, opts
 poster.send_message 'BOO!'
 ```
-
-## Links
-
-1. [AppSignal webhooks](http://docs.appsignal.com/application/integrations/webhooks.html)
-1. [Confluence webhooks](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
-1. [Enchant webhooks](https://dev.enchant.com/webhooks)
-1. [Heroku webhooks](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
-1. [Magnum CI webhooks](https://github.com/magnumci/documentation/blob/master/webhooks.md)
-1. [Raygun webhooks](https://raygun.com/docs/integrations/webhooks)
-1. [Semaphore CI webhooks](https://semaphoreci.com/docs/post-build-webhooks.html), [Deploy](https://semaphoreci.com/docs/post-deploy-webhooks.html)
-1. [Travis CI webhooks](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
-1. [Userlike webhooks](https://www.userlike.com/en/public/tutorial/addon/api)
 
 ## Notes
 
