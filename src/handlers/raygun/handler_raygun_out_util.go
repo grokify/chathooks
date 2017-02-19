@@ -2,7 +2,6 @@ package raygun
 
 import (
 	"github.com/grokify/commonchat"
-	//"github.com/grokify/glip-go-webhook"
 )
 
 func ExampleMessage() (commonchat.Message, error) {

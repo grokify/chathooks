@@ -5,7 +5,7 @@ import (
 	"path"
 
 	"github.com/grokify/commonchat"
-	"github.com/grokify/glip-webhook-proxy-go/src/config"
+	"github.com/grokify/webhook-proxy-go/src/config"
 )
 
 var (

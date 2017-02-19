@@ -9,9 +9,9 @@ import (
 
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
-	"github.com/grokify/glip-webhook-proxy-go/src/config"
-	"github.com/grokify/glip-webhook-proxy-go/src/util"
+	"github.com/grokify/webhook-proxy-go/src/adapters"
+	"github.com/grokify/webhook-proxy-go/src/config"
+	"github.com/grokify/webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
 )
 

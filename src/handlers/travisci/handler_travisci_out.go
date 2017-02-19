@@ -8,11 +8,10 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
-	"github.com/grokify/glip-webhook-proxy-go/src/config"
-	"github.com/grokify/glip-webhook-proxy-go/src/util"
+	"github.com/grokify/webhook-proxy-go/src/adapters"
+	"github.com/grokify/webhook-proxy-go/src/config"
+	"github.com/grokify/webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
 )
 
@@ -77,6 +76,7 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	message.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
 
 	attachment := cc.NewAttachment()
+	attachment.Color = "#00ff00"
 
 	attachment.Text = fmt.Sprintf(
 		"[Build #%v](%s) for **%s/%s** %s",

@@ -7,18 +7,17 @@ import (
 	"strings"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
-	"github.com/grokify/glip-webhook-proxy-go/src/config"
+	"github.com/grokify/webhook-proxy-go/src/adapters"
 
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/appsignal"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/confluence"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/enchant"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/heroku"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/magnumci"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/raygun"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/semaphoreci"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/travisci"
-	"github.com/grokify/glip-webhook-proxy-go/src/handlers/userlike"
+	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
+	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
+	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
+	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
+	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
+	"github.com/grokify/webhook-proxy-go/src/handlers/semaphoreci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
 )
 
 const (

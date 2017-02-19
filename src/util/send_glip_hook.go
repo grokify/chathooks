@@ -7,7 +7,7 @@ import (
 
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
+	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/valyala/fasthttp"
 )
 

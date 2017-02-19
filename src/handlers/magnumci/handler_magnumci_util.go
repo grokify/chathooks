@@ -5,23 +5,13 @@ import (
 	"path"
 
 	"github.com/grokify/commonchat"
-	"github.com/grokify/glip-webhook-proxy-go/src/config"
+	"github.com/grokify/webhook-proxy-go/src/config"
 )
 
 var (
 	ExamplePayloadBuildFile = "example__build.json"
 )
 
-/*
-func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	bytes, err := ExampleMessageBytes()
-	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
-	}
-
-	return Normalize(bytes)
-}
-*/
 func ExampleMessage() (commonchat.Message, error) {
 	bytes, err := ExampleMessageBytes()
 	if err != nil {
