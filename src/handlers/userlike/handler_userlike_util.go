@@ -5,101 +5,77 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 )
 
 var (
-	EXAMPLE_FILE_OFFLINE_MESSAGE_RECEIVE = "example__offline_message__receive.json"
-	EXAMPLE_FILE_CHAT_WIDGET_CONFIG      = "example__chat_widget__config.json"
+	ExampleFileOfflineMessageReceive = "example__offline_message__receive.json"
+	ExampleFileChatWidgetConfig      = "example__chat_widget__config.json"
 )
 
-func ExampleOfflineMessageReceiveMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleOfflineMessageReceiveSource()
+func ExampleMessageOfflineMessageReceive() (cc.Message, error) {
+	bytes, err := ExampleMessageOfflineMessageReceiveBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
-	return NormalizeOfflineMessage(msg), nil
+	return Normalize(bytes)
 }
 
-func ExampleOfflineMessageReceiveSource() (UserlikeOfflineMessageOutMessage, error) {
-	bytes, err := ExampleOfflineMessageReceiveBytes()
-	if err != nil {
-		return UserlikeOfflineMessageOutMessage{}, err
-	}
-	return UserlikeOfflineMessageOutMessageFromBytes(bytes)
-}
-
-func ExampleOfflineMessageReceiveBytes() ([]byte, error) {
+func ExampleMessageOfflineMessageReceiveBytes() ([]byte, error) {
 	filepath := path.Join(
 		config.DOC_HANDLERS_REL_DIR,
-		HANDLER_KEY,
-		EXAMPLE_FILE_OFFLINE_MESSAGE_RECEIVE)
+		HandlerKey,
+		ExampleFileOfflineMessageReceive)
 	return ioutil.ReadFile(filepath)
 }
 
-func ExampleChatWidgetConfigMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleChatWidgetConfigSource()
+func ExampleMessageChatWidgetConfig() (cc.Message, error) {
+	bytes, err := ExampleMessageChatWidgetConfigBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
-	return NormalizeChatWidget(msg), nil
+	return Normalize(bytes)
 }
 
-func ExampleChatWidgetConfigSource() (UserlikeChatWidgetOutMessage, error) {
-	bytes, err := ExampleChatWidgetConfigBytes()
-	if err != nil {
-		return UserlikeChatWidgetOutMessage{}, err
-	}
-	return UserlikeChatWidgetOutMessageFromBytes(bytes)
-}
-
-func ExampleChatWidgetConfigBytes() ([]byte, error) {
+func ExampleMessageChatWidgetConfigBytes() ([]byte, error) {
 	filepath := path.Join(
 		config.DOC_HANDLERS_REL_DIR,
-		HANDLER_KEY,
-		EXAMPLE_FILE_CHAT_WIDGET_CONFIG)
+		HandlerKey,
+		ExampleFileChatWidgetConfig)
 	return ioutil.ReadFile(filepath)
 }
 
-func ExampleUserlikeChatMetaStartOutMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	return ExampleUserlikeChatMetaMessageGlip("start")
-}
-
-func ExampleUserlikeChatMetaMessageGlip(event string) (glipwebhook.GlipWebhookMessage, error) {
+func ExampleMessageChatMeta(event string) (cc.Message, error) {
 	filename := fmt.Sprintf("example__chat_meta__%s.json", event)
 	filepath := path.Join(
 		config.DOC_HANDLERS_REL_DIR,
-		HANDLER_KEY,
+		HandlerKey,
 		filename)
 
 	bytes, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
 
-	chatMsg, err := UserlikeChatMetaStartOutMessageFromBytes(bytes)
-	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
-	}
-	return NormalizeChatMeta(chatMsg), nil
+	return Normalize(bytes)
 }
 
-func ExampleUserlikeOperatorMessageGlip(event string) (glipwebhook.GlipWebhookMessage, error) {
+func ExampleMessageOperator(event string) (cc.Message, error) {
 	filename := fmt.Sprintf("example__operator__%s.json", event)
 	filepath := path.Join(
 		config.DOC_HANDLERS_REL_DIR,
-		HANDLER_KEY,
+		HandlerKey,
 		filename)
 
 	bytes, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
 
 	chatMsg, err := UserlikeOperatorOutMessageFromBytes(bytes)
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
 	return NormalizeOperator(chatMsg), nil
 }

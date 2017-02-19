@@ -1,22 +1,18 @@
 package enchant
 
 import (
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 )
 
-func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleMessageSource()
+func ExampleMessage() (cc.Message, error) {
+	bytes, err := ExampleMessageBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
-	return Normalize(msg), nil
+	return Normalize(bytes)
 }
 
-func ExampleMessageSource() (EnchantOutMessage, error) {
-	return EnchantOutMessageFromBytes(ExampleMessageBytes())
-}
-
-func ExampleMessageBytes() []byte {
+func ExampleMessageBytes() ([]byte, error) {
 	return []byte(`{
   "id": "7f94629",
   "account_id": "a91bb74",
@@ -48,7 +44,7 @@ func ExampleMessageBytes() []byte {
     "reply_to": "john@smith.com",
     "created_at": "2016-10-14T20:15:46Z"
   }
-}`)
+}`), nil
 }
 
 /*

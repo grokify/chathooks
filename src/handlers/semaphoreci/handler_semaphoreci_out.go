@@ -8,7 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
@@ -16,110 +16,139 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "Semaphore"
-	HANDLER_KEY  = "semaphoreci"
-	ICON_URL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
-	ICON_URL_2   = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
+	DisplayName = "Semaphore"
+	HandlerKey  = "semaphoreci"
+	IconURL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
+	ICON_URL_2  = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
 type SemaphoreciOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewSemaphoreciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) SemaphoreciOutToGlipHandler {
-	return SemaphoreciOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewSemaphoreciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) SemaphoreciOutToGlipHandler {
+	return SemaphoreciOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *SemaphoreciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	glipMsg, err := NormalizeBytes(ctx.PostBody())
+	ccMsg, err := Normalize(ctx.PostBody())
+
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
-	glipMsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+//func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+
 	baseMsg, err := SemaphoreciBaseOutMessageFromBytes(bytes)
 	if err != nil {
-		return glipMsg, err
+		return message, err
 	}
+
 	switch baseMsg.Event {
 	case "build":
 		srcMsg, err := SemaphoreciBuildOutMessageFromBytes(bytes)
 		if err != nil {
-			return glipMsg, err
+			return message, err
 		}
 		return NormalizeSemaphoreciBuildOutMessage(srcMsg), nil
 	case "deploy":
 		srcMsg, err := SemaphoreciDeployOutMessageFromBytes(bytes)
 		if err != nil {
-			return glipMsg, err
+			return message, err
 		}
 		return NormalizeSemaphoreciDeployOutMessage(srcMsg), nil
 	}
-	return glipwebhook.GlipWebhookMessage{Icon: ICON_URL}, errors.New("EventNotFound")
+	return cc.Message{IconURL: IconURL}, errors.New("EventNotFound")
 }
 
-func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
 		// Joe Cool build #15 passed
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
+		message.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
+		message.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
 	}
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
 
 	if len(src.Commit.Message) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message)})
+		attachment.Text = src.Commit.Message
+	}
+	if len(src.ProjectName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Project",
+			Value: src.ProjectName,
+			Short: true})
+	}
+	if len(src.BranchName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Branch",
+			Value: src.BranchName,
+			Short: true})
 	}
 	if len(src.BuildURL) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View details](%v)", src.BuildURL)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[View details](%v)", src.BuildURL)})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	message.AddAttachment(attachment)
+	return message
 }
 
-func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
 	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-		gmsg.Activity = fmt.Sprintf("%v's %v #%v %v%v",
-			src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
+		message.Activity = fmt.Sprintf("%v's %v #%v %v%v",
+			src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
 	} else {
-		gmsg.Activity = fmt.Sprintf("%v's %v %v%v",
-			src.Commit.AuthorName, src.Event, src.Result, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME))
+		message.Activity = fmt.Sprintf("%v's %v %v%v",
+			src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
 	}
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
 
 	if len(src.Commit.Message) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[%v/%v]: %v", src.ProjectName, src.BranchName, src.Commit.Message)})
+		attachment.Text = src.Commit.Message
+	}
+	if len(src.ProjectName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Project",
+			Value: src.ProjectName,
+			Short: true})
+	}
+	if len(src.BranchName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Branch",
+			Value: src.BranchName,
+			Short: true})
 	}
 	if len(src.HtmlURL) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View details](%v)", src.HtmlURL)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[View details](%v)", src.HtmlURL)})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	message.AddAttachment(attachment)
+	return message
 }
 
 type SemaphoreciBaseOutMessage struct {

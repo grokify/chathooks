@@ -7,6 +7,7 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/slack"
@@ -14,10 +15,10 @@ import (
 )
 
 const (
-	ROUTE_SLACK_IN_GLIP           = "/webhook/slack/in/glip/:glipguid"
-	ROUTE_SLACK_IN_GLIP_SLASH     = "/webhook/slack/in/glip/:glipguid/"
-	ROUTE_TRAVISCI_OUT_GLIP       = "/webhook/travisci/out/glip/:glipguid"
-	ROUTE_TRAVISCI_OUT_GLIP_SLASH = "/webhook/travisci/out/glip/:glipguid/"
+	ROUTE_SLACK_IN_GLIP           = "/webhook/slack/in/glip/:webhookuid"
+	ROUTE_SLACK_IN_GLIP_SLASH     = "/webhook/slack/in/glip/:webhookuid/"
+	ROUTE_TRAVISCI_OUT_GLIP       = "/webhook/travisci/out/glip/:webhookuid"
+	ROUTE_TRAVISCI_OUT_GLIP_SLASH = "/webhook/travisci/out/glip/:webhookuid/"
 )
 
 // StartServer initializes and starts the webhook proxy server
@@ -25,7 +26,8 @@ func StartServer(cfg config.Configuration) {
 	//log.SetFormatter(&log.JSONFormatter{})
 	log.SetLevel(cfg.LogLevel)
 
-	glip, _ := glipwebhook.NewGlipWebhookClient("")
+	//glip, _ := glipwebhook.NewGlipWebhookClient("")
+	adapter := adapters.NewAdapter("glip")
 
 	router := fasthttprouter.New()
 
@@ -35,7 +37,7 @@ func StartServer(cfg config.Configuration) {
 	router.POST(ROUTE_SLACK_IN_GLIP, slackInHandler.HandleFastHTTP)
 	router.POST(ROUTE_SLACK_IN_GLIP_SLASH, slackInHandler.HandleFastHTTP)
 
-	travisciOutHandler := travisci.NewTravisciOutToGlipHandler(cfg, glip)
+	travisciOutHandler := travisci.NewTravisciOutToGlipHandler(cfg, adapter)
 	router.POST(ROUTE_TRAVISCI_OUT_GLIP, travisciOutHandler.HandleFastHTTP)
 	router.POST(ROUTE_TRAVISCI_OUT_GLIP_SLASH, travisciOutHandler.HandleFastHTTP)
 

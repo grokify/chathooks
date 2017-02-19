@@ -5,9 +5,30 @@ import (
 	"fmt"
 	"strings"
 
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/valyala/fasthttp"
 )
+
+func SendWebhook(ctx *fasthttp.RequestCtx, adapter adapters.Adapter, ccMessage cc.Message) (int, error) {
+	webhookUID, err := adapter.WebhookUID(ctx)
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return fasthttp.StatusInternalServerError, err
+	}
+
+	req, resp, err := adapter.SendWebhook(webhookUID, ccMessage)
+
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+	} else {
+		fmt.Fprintf(ctx, "%s", string(resp.Body()))
+	}
+	fasthttp.ReleaseRequest(req)
+	fasthttp.ReleaseResponse(resp)
+	return 200, nil
+}
 
 func SendGlipWebhookCtx(ctx *fasthttp.RequestCtx, glipClient glipwebhook.GlipWebhookClient, glipMsg glipwebhook.GlipWebhookMessage) error {
 	glipWebhookGuid := fmt.Sprintf("%s", ctx.UserValue("glipguid"))

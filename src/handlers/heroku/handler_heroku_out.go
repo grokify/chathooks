@@ -7,6 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
@@ -15,9 +16,9 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "Heroku"
-	HANDLER_KEY  = "heroku"
-	ICON_URL     = "https://a.slack-edge.com/ae7f/plugins/heroku/assets/service_512.png"
+	DisplayName = "Heroku"
+	HandlerKey  = "heroku"
+	IconURL     = "https://a.slack-edge.com/ae7f/plugins/heroku/assets/service_512.png"
 )
 
 // FastHttp request handler for Heroku outbound webhook
@@ -25,11 +26,12 @@ const (
 type HerokuOutToGlipHandler struct {
 	Config     config.Configuration
 	GlipClient glipwebhook.GlipWebhookClient
+	Adapter    adapters.Adapter
 }
 
 // FastHttp request handler constructor for Confluence outbound webhook
-func NewHerokuOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) HerokuOutToGlipHandler {
-	return HerokuOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewHerokuOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) HerokuOutToGlipHandler {
+	return HerokuOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
@@ -40,12 +42,21 @@ func (h *HerokuOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	ccMsg, err := NormalizeHerokuMessage(srcMsg)
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
+		log.WithFields(log.Fields{
+			"type":   "http.response",
+			"status": fasthttp.StatusNotAcceptable,
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
+		return
+	}
+
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
 func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
@@ -60,38 +71,51 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 		Release:  string(ctx.FormValue("release"))}, nil
 }
 
-func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+//func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
+func Normalize(bytes []byte) (cc.Message, error) {
+	src, err := HerokuOutMessageFromQueryString(string(bytes))
+	if err != nil {
+		return cc.Message{}, err
+	}
+	return NormalizeHerokuMessage(src)
+}
+
+func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
 	if len(strings.TrimSpace(src.User)) > 0 {
-		gmsg.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DISPLAY_NAME)
+		message.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DisplayName)
 	} else {
 		if len(strings.TrimSpace(src.App)) > 0 {
-			gmsg.Activity = fmt.Sprintf("%v deployed on %v", src.App, DISPLAY_NAME)
+			message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
 		} else {
-			gmsg.Activity = fmt.Sprintf("An app has been deployed on %v", DISPLAY_NAME)
+			message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
 		}
 	}
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
 
 	if len(strings.TrimSpace(src.App)) > 0 {
-		message.AddAttachment(util.Attachment{
-			Title: "Application",
-			Text:  src.App})
+		field := cc.Field{Title: "Application"}
+		if len(src.App) < 35 {
+			field.Short = true
+		}
+		if len(strings.TrimSpace(src.URL)) > 0 {
+			field.Value = fmt.Sprintf("[%s](%s)", src.App, src.URL)
+		} else {
+			field.Value = src.App
+		}
+		attachment.AddField(field)
 	}
 	if len(strings.TrimSpace(src.Release)) > 0 {
-		message.AddAttachment(util.Attachment{
-			Title: "Release",
-			Text:  src.Release})
-	}
-	if len(strings.TrimSpace(src.URL)) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View application](%v)", src.URL)})
+		attachment.AddField(cc.Field{Title: "Release", Value: src.Release, Short: true})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	//message := util.NewMessage()
+	message.AddAttachment(attachment)
+	//gmsg.Body = adapters.RenderMessage(message)
+	return message, nil
 }
 
 type HerokuOutMessage struct {
@@ -105,9 +129,9 @@ type HerokuOutMessage struct {
 	Release  string `json:"release,omitempty"`
 }
 
-func HerokuOutMessageFromQueryString(query string) (HerokuOutMessage, error) {
+func HerokuOutMessageFromQueryString(queryString string) (HerokuOutMessage, error) {
 	msg := HerokuOutMessage{}
-	values, err := url.ParseQuery(query)
+	values, err := url.ParseQuery(queryString)
 	if err != nil {
 		return msg, err
 	}
@@ -137,11 +161,3 @@ func HerokuOutMessageFromQueryString(query string) (HerokuOutMessage, error) {
 	}
 	return msg, nil
 }
-
-/*
-
-https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
-
-app=secure-woodland-9775&user=example%40example.com&url=http%3A%2F%2Fsecure-woodland-9775.herokuapp.com&head=4f20bdd&head_long=4f20bdd&prev_head=&git_log=%20%20*%20Michael%20Friis%3A%20add%20bar&release=v7
-
-*/

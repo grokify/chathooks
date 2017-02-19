@@ -1,22 +1,18 @@
 package confluence
 
 import (
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 )
 
-func ExamplePageCreatedMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExamplePageCreatedMessageSource()
+func ExampleMessagePageCreated() (cc.Message, error) {
+	bytes, err := ExampleMessagePageCreatedBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
-	return Normalize(msg), nil
+	return Normalize(bytes)
 }
 
-func ExamplePageCreatedMessageSource() (ConfluenceOutMessage, error) {
-	return ConfluenceOutMessageFromBytes(ExamplePageCreatedMessageBytes())
-}
-
-func ExamplePageCreatedMessageBytes() []byte {
+func ExampleMessagePageCreatedBytes() ([]byte, error) {
 	return []byte(`{
    "page": {
      "spaceKey": "~admin",
@@ -35,22 +31,18 @@ func ExamplePageCreatedMessageBytes() []byte {
    "userKey": "ff80808154510724015451074c160001",
    "timestamp": 1471926079645,
    "username": "admin"
-}`)
+}`), nil
 }
 
-func ExampleCommentCreatedMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleCommentCreatedMessageSource()
+func ExampleMessageCommentCreated() (cc.Message, error) {
+	bytes, err := ExampleMessageCommentCreatedBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
-	return Normalize(msg), nil
+	return Normalize(bytes)
 }
 
-func ExampleCommentCreatedMessageSource() (ConfluenceOutMessage, error) {
-	return ConfluenceOutMessageFromBytes(ExampleCommentCreatedMessageBytes())
-}
-
-func ExampleCommentCreatedMessageBytes() []byte {
+func ExampleMessageCommentCreatedBytes() ([]byte, error) {
 	return []byte(`{
    "comment": {
      "spaceKey": "~admin",
@@ -81,7 +73,7 @@ func ExampleCommentCreatedMessageBytes() []byte {
    "userKey": "ff80808154510724015451074c160001",
    "timestamp": 1471926091468,
    "username": "admin"
-}`)
+}`), nil
 }
 
 /*

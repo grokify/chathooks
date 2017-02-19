@@ -1,6 +1,11 @@
 package util
 
 type Message struct {
+	Activity    string       `json:"activity,omitempty"`
+	IconEmoji   string       `json:"icon_emoji,omitempty"`
+	IconURL     string       `json:"icon_url,omitempty"`
+	Title       string       `json:"title,omitempty"`
+	Text        string       `json:"text,omitempty"`
 	Attachments []Attachment `json:"attachments,omitempty"`
 }
 
@@ -21,7 +26,7 @@ type Attachment struct {
 }
 
 func NewAttachment() Attachment {
-	return Attachment{Fields: []Field{}}
+	return Attachment{Fields: []Field{}, MrkdwnIn: []string{"text"}}
 }
 
 type Field struct {

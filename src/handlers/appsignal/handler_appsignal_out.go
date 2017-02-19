@@ -3,11 +3,10 @@ package appsignal
 import (
 	"encoding/json"
 	"fmt"
-	//"strings"
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
@@ -16,123 +15,138 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "AppSignal"
-	HANDLER_KEY  = "appsignal"
-	ICON_URL     = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
+	DisplayName = "AppSignal"
+	HandlerKey  = "appsignal"
+	IconURL     = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
 type AppsignalOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewAppsignalOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) AppsignalOutToGlipHandler {
-	return AppsignalOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewAppsignalOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) AppsignalOutToGlipHandler {
+	return AppsignalOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *AppsignalOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
+	ccMsg, err := Normalize(ctx.PostBody())
+
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func BuildInboundMessage(ctx *fasthttp.RequestCtx) (AppsignalOutMessage, error) {
-	return AppsignalOutMessageFromBytes(ctx.PostBody())
-}
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
-func Normalize(src AppsignalOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
-
-	message := util.NewMessage()
+	src, err := AppsignalOutMessageFromBytes(bytes)
+	if err != nil {
+		return message, err
+	}
 
 	if len(src.Marker.URL) > 0 {
-		gmsg.Activity = fmt.Sprintf("%v Deployed by %v (%v)", src.Marker.Site, src.Marker.User, DISPLAY_NAME)
+		message.Activity = fmt.Sprintf("%v Deployed by %v (%v)", src.Marker.Site, src.Marker.User, DisplayName)
 
+		attachment := cc.NewAttachment()
 		if len(src.Marker.Environment) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Environment",
-				Text:  src.Marker.Environment})
+				Value: src.Marker.Environment})
 		}
 		if len(src.Marker.URL) > 0 {
-			message.AddAttachment(util.Attachment{
-				Text: fmt.Sprintf("[View Details](%v)", src.Marker.URL)})
+			attachment.AddField(cc.Field{
+				Value: fmt.Sprintf("[View Details](%v)", src.Marker.URL)})
 		}
+		message.AddAttachment(attachment)
 	} else if len(src.Exception.URL) > 0 {
 		if len(src.Exception.Site) > 0 {
-			gmsg.Activity = fmt.Sprintf("%v Exception Incident (%v)", src.Exception.Site, DISPLAY_NAME)
+			message.Activity = fmt.Sprintf("%v Exception Incident (%v)", src.Exception.Site, DisplayName)
 		} else {
-			gmsg.Activity = fmt.Sprintf("Exception Incident (%v)", DISPLAY_NAME)
+			message.Activity = fmt.Sprintf("Exception Incident (%v)", DisplayName)
 		}
+
+		attachment := cc.NewAttachment()
 
 		if len(src.Exception.Message) > 0 {
-			message.AddAttachment(util.Attachment{
-				Text: src.Exception.Message})
+			attachment.AddField(cc.Field{
+				Value: src.Exception.Message,
+				Short: false})
 		}
 		if len(src.Exception.Environment) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Environment",
-				Text:  src.Exception.Environment})
+				Value: src.Exception.Environment,
+				Short: true})
 		}
 		if len(src.Exception.Exception) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Exception",
-				Text:  src.Exception.Exception})
+				Value: src.Exception.Exception,
+				Short: true})
 		}
 		if len(src.Exception.User) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "User",
-				Text:  src.Exception.User})
+				Value: src.Exception.User,
+				Short: true})
 		}
 		if len(src.Exception.URL) > 0 {
-			message.AddAttachment(util.Attachment{
-				Text: fmt.Sprintf("[View Details](%v)", src.Exception.URL)})
+			attachment.AddField(cc.Field{
+				Value: fmt.Sprintf("[View Details](%v)", src.Exception.URL),
+				Short: true})
 		}
+		message.AddAttachment(attachment)
 	} else if len(src.Performance.URL) > 0 {
-		gmsg.Activity = fmt.Sprintf("%v Performance Incident (%v)", src.Performance.Site, DISPLAY_NAME)
+		message.Activity = fmt.Sprintf("%v Performance Incident (%v)", src.Performance.Site, DisplayName)
+
+		attachment := cc.NewAttachment()
 
 		if len(src.Performance.Environment) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Environment",
-				Text:  src.Performance.Environment})
+				Value: src.Performance.Environment,
+				Short: true})
 		}
 		if len(src.Performance.Hostname) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Hostname",
-				Text:  src.Performance.Hostname})
+				Value: src.Performance.Hostname,
+				Short: true})
 		}
 		if src.Performance.Duration > 0.0 {
 			durationString, err := timeutil.DurationStringMinutesSeconds(int64(src.Performance.Duration))
 			if err == nil {
-				message.AddAttachment(util.Attachment{
+				attachment.AddField(cc.Field{
 					Title: "Duration",
-					Text:  durationString})
+					Value: durationString,
+					Short: true})
 			} else {
-				message.AddAttachment(util.Attachment{
+				attachment.AddField(cc.Field{
 					Title: "Duration",
-					Text:  fmt.Sprintf("%v", src.Performance.Duration)})
+					Value: fmt.Sprintf("%v", src.Performance.Duration),
+					Short: true})
 			}
 		}
 		if len(src.Performance.URL) > 0 {
-			message.AddAttachment(util.Attachment{
-				Text: fmt.Sprintf("[View Details](%v)", src.Performance.URL)})
+			attachment.AddField(cc.Field{
+				Value: fmt.Sprintf("[View Details](%v)", src.Performance.URL)})
 		}
+		message.AddAttachment(attachment)
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-
-	return gmsg
+	return message, nil
 }
 
 type AppsignalOutMessage struct {

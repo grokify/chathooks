@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
@@ -22,20 +22,18 @@ const (
 
 // FastHttp request handler for Semaphore CI outbound webhook
 type MagnumciOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewMagnumciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) MagnumciOutToGlipHandler {
-	return MagnumciOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewMagnumciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) MagnumciOutToGlipHandler {
+	return MagnumciOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	bytes := ctx.PostBody()
-
-	glipMsg, err := Normalize(bytes)
+	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -46,72 +44,65 @@ func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
-	gmsg := glipwebhook.GlipWebhookMessage{Icon: IconURL}
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
 	src, err := MagnumciOutMessageFromBytes(bytes)
 	if err != nil {
-		return gmsg, err
+		return message, err
 	}
 
 	if len(src.Title) > 0 {
-		if config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME {
-			gmsg.Activity = fmt.Sprintf("%v (%v)", src.Title, DisplayName)
-		} else {
-			gmsg.Activity = fmt.Sprintf("%v", src.Title)
-		}
+		message.Activity = fmt.Sprintf("%v", src.Title)
 	} else {
-		gmsg.Activity = fmt.Sprintf("%s Notification", DisplayName)
+		message.Activity = fmt.Sprintf("%s Notification", DisplayName)
 	}
 
-	attachment := util.NewAttachment()
+	attachment := cc.NewAttachment()
 
 	if len(src.Message) > 0 {
 		if len(src.CommitURL) > 0 {
-			attachment.AddField(util.Field{
+			attachment.AddField(cc.Field{
 				Title: "Commit",
 				Value: fmt.Sprintf("[%v](%v)", src.Message, src.CommitURL)})
 		} else {
-			attachment.AddField(util.Field{
+			attachment.AddField(cc.Field{
 				Title: "Commit",
 				Value: fmt.Sprintf("%v", src.Message)})
 		}
 	} else if len(src.CommitURL) > 0 {
-		attachment.AddField(util.Field{
+		attachment.AddField(cc.Field{
 			Title: "Commit",
 			Value: fmt.Sprintf("[View Commit](%v)", src.Message)})
 	}
 
 	if len(src.Author) > 0 {
-		attachment.AddField(util.Field{
+		attachment.AddField(cc.Field{
 			Title: "Author",
 			Value: src.Author,
 			Short: true})
 	}
 	if len(src.DurationString) > 0 {
-		attachment.AddField(util.Field{
+		attachment.AddField(cc.Field{
 			Title: "Duration",
 			Value: src.DurationString,
 			Short: true})
 	}
 	if len(src.BuildURL) > 0 {
-		attachment.AddField(util.Field{
+		attachment.AddField(cc.Field{
 			Value: fmt.Sprintf("[View Build](%v)", src.BuildURL)})
 	}
 
 	if len(src.Title) < 1 && len(attachment.Fields) == 0 {
-		return gmsg, errors.New("Content not found")
+		return message, errors.New("Content not found")
 	}
 
-	message := util.NewMessage()
 	message.AddAttachment(attachment)
-
-	gmsg.Body = glipadapter.RenderMessage(message)
-
-	return gmsg, nil
+	return message, nil
 }
 
 type MagnumciOutMessage struct {

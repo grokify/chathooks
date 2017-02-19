@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "Userlike"
-	HANDLER_KEY  = "userlike"
-	ICON_URL     = "https://a.slack-edge.com/ae7f/img/services/userlike_512.png"
+	DisplayName = "Userlike"
+	HandlerKey  = "userlike"
+	IconURL     = "https://a.slack-edge.com/ae7f/img/services/userlike_512.png"
 )
 
 var (
@@ -27,63 +27,63 @@ var (
 
 // FastHttp request handler for Userlike outbound webhook
 type UserlikeOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Userlike outbound webhook
-func NewUserlikeOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) UserlikeOutToGlipHandler {
-	return UserlikeOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewUserlikeOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) UserlikeOutToGlipHandler {
+	return UserlikeOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *UserlikeOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	glipMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bodyBytes []byte) (glipwebhook.GlipWebhookMessage, error) {
+func Normalize(bodyBytes []byte) (cc.Message, error) {
 	srcMsgBase, err := UserlikeBaseOutMessageFromBytes(bodyBytes)
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return cc.Message{}, err
 	}
 	if srcMsgBase.Type == "offline_message" && srcMsgBase.Event == "receive" {
 		srcMsg, err := UserlikeOfflineMessageOutMessageFromBytes(bodyBytes)
 		if err != nil {
-			return glipwebhook.GlipWebhookMessage{}, err
+			return cc.Message{}, err
 		}
 		return NormalizeOfflineMessage(srcMsg), nil
 	} else if srcMsgBase.Type == "chat_meta" {
 		srcMsg, err := UserlikeChatMetaStartOutMessageFromBytes(bodyBytes)
 		if err != nil {
-			return glipwebhook.GlipWebhookMessage{}, err
+			return cc.Message{}, err
 		}
 		return NormalizeChatMeta(srcMsg), nil
 	} else if srcMsgBase.Type == "operator" {
 		srcMsg, err := UserlikeOperatorOutMessageFromBytes(bodyBytes)
 		if err != nil {
-			return glipwebhook.GlipWebhookMessage{}, err
+			return cc.Message{}, err
 		}
 		return NormalizeOperator(srcMsg), nil
 	} else if srcMsgBase.Type == "chat_widget" {
 		srcMsg, err := UserlikeChatWidgetOutMessageFromBytes(bodyBytes)
 		if err != nil {
-			return glipwebhook.GlipWebhookMessage{}, err
+			return cc.Message{}, err
 		}
 		return NormalizeChatWidget(srcMsg), nil
 	}
 
-	return glipwebhook.GlipWebhookMessage{}, errors.New("Type Not Supported")
+	return cc.Message{}, errors.New("Type Not Supported")
 }
 
 func GlipActivityForChat(event string, feedback string) string {
@@ -103,115 +103,141 @@ func GlipActivityForChat(event string, feedback string) string {
 			eventDisplay = displayTry
 		}
 	}
-	return fmt.Sprintf("%s chat %s", DISPLAY_NAME, eventDisplay)
+	return fmt.Sprintf("%s chat %s", DisplayName, eventDisplay)
 }
 
-func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) glipwebhook.GlipWebhookMessage {
+func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+
 	clientName := src.ClientName
 	if len(clientName) < 1 {
 		clientName = "Website Visitor"
 	}
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("%s sent a new Offline Message%v", clientName, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
-		Icon:     ICON_URL}
+	message.Activity = fmt.Sprintf("%s sent a new Offline Message%v", clientName, adapters.IntegrationActivitySuffix(DisplayName))
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
+	attachment.ThumbnailURL = IconURL
 
 	if len(src.URL) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View message](%v)", src.URL)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[View message](%v)", src.URL)})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	if len(attachment.Fields) > 0 {
+		message.AddAttachment(attachment)
+	}
+	return message
 }
 
-func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("%s%s",
-			GlipActivityForChat(src.Event, src.FeedbackMessage), glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
-		Icon: ICON_URL}
+func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+	message.Activity = fmt.Sprintf("%s%s",
+		GlipActivityForChat(src.Event, src.FeedbackMessage), adapters.IntegrationActivitySuffix(DisplayName))
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
+	attachment.ThumbnailURL = IconURL
 
-	if len(src.ClientName) > 0 {
-		message.AddAttachment(util.Attachment{
-			Title: "Client Name",
-			Text:  src.ClientName})
-	} else {
-		message.AddAttachment(util.Attachment{
-			Title: "Client Name",
-			Text:  "Unknown"})
-	}
 	if src.Event == "rating" || src.Event == "survey" { // includes feedback
 		if len(src.FeedbackMessage) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Feedback",
-				Text:  src.FeedbackMessage})
+				Value: src.FeedbackMessage,
+				Short: false})
 		}
 		if len(src.PostSurveyOption) > 0 {
-			message.AddAttachment(util.Attachment{
+			attachment.AddField(cc.Field{
 				Title: "Rating",
-				Text:  src.PostSurveyOption})
+				Value: src.PostSurveyOption,
+				Short: true})
 		}
 	}
-	if len(src.URL) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[View details](%v)", src.URL)})
+	if len(src.ClientName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Client Name",
+			Value: src.ClientName,
+			Short: true})
+	} else {
+		attachment.AddField(cc.Field{
+			Title: "Client Name",
+			Value: "Unknown",
+			Short: true})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	if len(src.URL) > 0 {
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[View details](%v)", src.URL)})
+	}
+
+	if len(attachment.Fields) > 0 {
+		message.AddAttachment(attachment)
+	}
+	return message
 }
 
-func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("Chat widget configuration updated%s", glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
-		Icon:     ICON_URL}
+func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+	message.Activity = fmt.Sprintf("Chat widget configuration updated%s", adapters.IntegrationActivitySuffix(DisplayName))
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
+	attachment.ThumbnailURL = IconURL
 
 	if len(src.Name) > 0 {
-		message.AddAttachment(util.Attachment{
+		attachment.AddField(cc.Field{
 			Title: "Widget Name",
-			Text:  fmt.Sprintf("[%s](%s)", src.Name, src.CustomUrl)})
+			Value: fmt.Sprintf("[%s](%s)", src.Name, src.CustomUrl),
+			Short: true})
 	}
-	message.AddAttachment(util.Attachment{
+	attachment.AddField(cc.Field{
 		Title: "Widget Version",
-		Text:  fmt.Sprintf("%v", src.WidgetVersion)})
+		Value: fmt.Sprintf("%v", src.WidgetVersion),
+		Short: true})
 	if len(src.WidgetExternalType) > 0 {
-		message.AddAttachment(util.Attachment{
+		attachment.AddField(cc.Field{
 			Title: "Widget Type",
-			Text:  fmt.Sprintf("%v", src.WidgetExternalType)})
+			Value: fmt.Sprintf("%v", src.WidgetExternalType),
+			Short: true})
 	}
 	if len(src.StatusUrl) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[Widget Status](%v)", src.StatusUrl)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[Widget Status](%v)", src.StatusUrl),
+			Short: false})
 	}
 	if len(src.TestUrl) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[Test Widget](%v)", src.TestUrl)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[Test Widget](%v)", src.TestUrl),
+			Short: false})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	message.AddAttachment(attachment)
+	return message
 }
 
-func NormalizeOperator(src UserlikeOperatorOutMessage) glipwebhook.GlipWebhookMessage {
-	gmsg := glipwebhook.GlipWebhookMessage{
-		Activity: fmt.Sprintf("%s is %s as operator%s",
-			src.Name, src.Event, glipadapter.IntegrationActivitySuffix(DISPLAY_NAME)),
-		Icon: ICON_URL}
+func NormalizeOperator(src UserlikeOperatorOutMessage) cc.Message {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+	message.Activity = fmt.Sprintf("%s (operator) is %s%s",
+		src.Name, src.Event, adapters.IntegrationActivitySuffix(DisplayName))
+	/*
+		gmsg := glipwebhook.GlipWebhookMessage{
+			Activity: fmt.Sprintf("%s is %s as operator%s",
+				src.Name, src.Event, adapters.IntegrationActivitySuffix(DISPLAY_NAME)),
+			Icon: ICON_URL}
+	*/
+	//message := util.NewMessage()
 
-	message := util.NewMessage()
+	attachment := cc.NewAttachment()
 
 	if len(src.DashboardUrl) > 0 {
-		message.AddAttachment(util.Attachment{
-			Text: fmt.Sprintf("[Operator Details](%v)", src.DashboardUrl)})
+		attachment.AddField(cc.Field{
+			Value: fmt.Sprintf("[Operator Details](%v)", src.DashboardUrl)})
 	}
 
-	gmsg.Body = glipadapter.RenderMessage(message)
-	return gmsg
+	//gmsg.Body = adapters.RenderMessage(message)
+	message.AddAttachment(attachment)
+	return message
 }
 
 type UserlikeBaseOutMessage struct {

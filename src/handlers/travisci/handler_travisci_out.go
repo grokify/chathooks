@@ -9,7 +9,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
@@ -17,46 +17,36 @@ import (
 )
 
 const (
-	DISPLAY_NAME = "Travis CI"
-	HANDLER_KEY  = "travisci"
-	IconURL      = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
+	DisplayName = "Travis CI"
+	HandlerKey  = "travisci"
+	IconURL     = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
 type TravisciOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook
-func NewTravisciOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) TravisciOutToGlipHandler {
-	return TravisciOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewTravisciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) TravisciOutToGlipHandler {
+	return TravisciOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *TravisciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	/*
-		srcMsg, err := BuildInboundMessage(ctx)
-		if err != nil {
-			ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-			log.WithFields(log.Fields{
-				"type":   "http.response",
-				"status": fasthttp.StatusNotAcceptable,
-			}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
-			return
-		}
-	*/
-	glipMsg, err := Normalize(ctx.FormValue("payload"))
+	ccMsg, err := Normalize(ctx.FormValue("payload"))
+
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DISPLAY_NAME))
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
 func StatusMessageSuffix(statusMessage string) string {
@@ -73,18 +63,20 @@ func StatusMessageSuffix(statusMessage string) string {
 	return statusMessage
 }
 
-func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
-	glipMsg := glipwebhook.GlipWebhookMessage{Icon: IconURL}
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+
 	src, err := TravisciOutMessageFromBytes(bytes)
 	if err != nil {
-		return glipMsg, err
+		return message, err
 	}
 
 	statusMessageSuffix := StatusMessageSuffix(src.StatusMessage)
 
-	glipMsg.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
+	message.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
 
-	attachment := util.NewAttachment()
+	attachment := cc.NewAttachment()
 
 	attachment.Text = fmt.Sprintf(
 		"[Build #%v](%s) for **%s/%s** %s",
@@ -95,7 +87,7 @@ func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 		statusMessageSuffix)
 
 	if len(src.Message) > 0 {
-		field := util.Field{Title: "Message"}
+		field := cc.Field{Title: "Message"}
 		if len(src.CompareUrl) > 0 {
 			field.Value = fmt.Sprintf("[%s](%s)", src.Message, src.CompareUrl)
 		} else {
@@ -103,24 +95,21 @@ func Normalize(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 		}
 		attachment.AddField(field)
 	}
-	if len(src.Branch) > 0 {
-		attachment.AddField(util.Field{Title: "Branch", Value: src.Branch, Short: true})
+	if len(strings.TrimSpace(src.Branch)) > 0 {
+		attachment.AddField(cc.Field{Title: "Branch", Value: strings.TrimSpace(src.Branch), Short: true})
 	}
 	if len(src.Type) > 0 {
-		attachment.AddField(util.Field{Title: "Type", Value: src.Type, Short: true})
+		attachment.AddField(cc.Field{Title: "Type", Value: src.Type, Short: true})
 	}
 	if len(src.AuthorName) > 0 {
-		attachment.AddField(util.Field{Title: "Author", Value: src.AuthorName, Short: true})
+		attachment.AddField(cc.Field{Title: "Author", Value: src.AuthorName, Short: true})
 	}
 	if len(src.CommitterName) > 0 {
-		attachment.AddField(util.Field{Title: "Committer", Value: src.CommitterName, Short: true})
+		attachment.AddField(cc.Field{Title: "Committer", Value: src.CommitterName, Short: true})
 	}
 
-	message := util.NewMessage()
 	message.AddAttachment(attachment)
-
-	glipMsg.Body = glipadapter.RenderMessage(message)
-	return glipMsg, nil
+	return message, nil
 }
 
 type TravisciOutMessage struct {
@@ -154,14 +143,14 @@ func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 	log.WithFields(log.Fields{
 		"type":    "message.raw",
 		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v message.", DISPLAY_NAME))
+	}).Debug(fmt.Sprintf("%v message.", DisplayName))
 	msg := TravisciOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type":  "message.json.unmarshal",
 			"error": fmt.Sprintf("%v\n", err),
-		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DISPLAY_NAME))
+		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DisplayName))
 	}
 	return msg, err
 }

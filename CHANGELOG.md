@@ -1,3 +1,5 @@
+- 2017-02-18
+  - Add multiple adapter support
 - 2017-02-16
   - Add message attachment short fields
 - 2017-02-14

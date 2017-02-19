@@ -1,22 +1,19 @@
 package raygun
 
 import (
-	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/commonchat"
+	//"github.com/grokify/glip-go-webhook"
 )
 
-func ExampleMessageGlip() (glipwebhook.GlipWebhookMessage, error) {
-	msg, err := ExampleMessageSource()
+func ExampleMessage() (commonchat.Message, error) {
+	bytes, err := ExampleMessageBytes()
 	if err != nil {
-		return glipwebhook.GlipWebhookMessage{}, err
+		return commonchat.Message{}, err
 	}
-	return Normalize(msg), nil
+	return Normalize(bytes)
 }
 
-func ExampleMessageSource() (RaygunOutMessage, error) {
-	return RaygunOutMessageFromBytes(ExampleMessageBytes())
-}
-
-func ExampleMessageBytes() []byte {
+func ExampleMessageBytes() ([]byte, error) {
 	return []byte(`{
   "event":"error_notification",
   "eventType":"NewErrorOccurred",
@@ -32,5 +29,5 @@ func ExampleMessageBytes() []byte {
     "name":"application name",
     "url":"http://app.raygun.io/application-url"
   }
-}`)
+}`), nil
 }

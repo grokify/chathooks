@@ -3,63 +3,77 @@ package enchant
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/grokify/gotilla/strings/stringsutil"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DISPLAY_NAME = "Enchant"
-	ICON_URL     = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
+	DisplayName = "Enchant"
+	HandlerKey  = "enchant"
+	IconURL     = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
 )
 
 // FastHttp request handler for Enchant outbound webhook
 // https://dev.enchant.com/webhooks
 type EnchantOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Confluence outbound webhook
-func NewEnchantOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) EnchantOutToGlipHandler {
-	return EnchantOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewEnchantOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) EnchantOutToGlipHandler {
+	return EnchantOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *EnchantOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
+	ccMsg, err := Normalize(ctx.FormValue("payload"))
+
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info("Confluence request is not acceptable.")
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func BuildInboundMessage(ctx *fasthttp.RequestCtx) (EnchantOutMessage, error) {
-	return EnchantOutMessageFromBytes(ctx.FormValue("payload"))
-}
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
-func Normalize(src EnchantOutMessage) glipwebhook.GlipWebhookMessage {
-	glip := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
-	glip.Activity = fmt.Sprintf("%v (%v)", src.ActorName, DISPLAY_NAME)
-	lines := []string{}
-	lines = append(lines, fmt.Sprintf("> %v", src.Model.Subject))
-	lines = append(lines, fmt.Sprintf("| **State** |\n| %v |", stringsutil.ToUpperFirst(src.Model.State)))
-	glip.Body = strings.Join(lines, "\n")
-	return glip
+	src, err := EnchantOutMessageFromBytes(bytes)
+	if err != nil {
+		return message, err
+	}
+
+	if len(src.ActorName) > 0 {
+		message.Activity = src.ActorName
+	}
+
+	attachment := cc.NewAttachment()
+
+	if len(src.Model.Subject) > 0 {
+		attachment.Text = src.Model.Subject
+	}
+	if len(src.Model.State) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "State",
+			Value: stringsutil.ToUpperFirst(src.Model.State)})
+	}
+	message.AddAttachment(attachment)
+	return message, nil
 }
 
 type EnchantOutMessage struct {
@@ -100,14 +114,14 @@ func EnchantOutMessageFromBytes(bytes []byte) (EnchantOutMessage, error) {
 	log.WithFields(log.Fields{
 		"type":    "message.raw",
 		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v message.", DISPLAY_NAME))
+	}).Debug(fmt.Sprintf("%v message.", DisplayName))
 	msg := EnchantOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type":  "message.json.unmarshal",
 			"error": fmt.Sprintf("%v\n", err),
-		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DISPLAY_NAME))
+		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DisplayName))
 	}
 	return msg, err
 }

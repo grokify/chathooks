@@ -6,69 +6,90 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/grokify/glip-go-webhook"
+	cc "github.com/grokify/commonchat"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 	"github.com/grokify/glip-webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DISPLAY_NAME = "Confluence"
-	ICON_URL     = "https://wiki.ucop.edu/images/logo/default-space-logo-256.png"
+	DisplayName = "Confluence"
+	HandlerKey  = "confluence"
+	IconURL     = "https://wiki.ucop.edu/images/logo/default-space-logo-256.png"
 )
 
 // FastHttp request handler for Confluence outbound webhook
 // https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html
 type ConfluenceOutToGlipHandler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
+	Config  config.Configuration
+	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Confluence outbound webhook
-func NewConfluenceOutToGlipHandler(cfg config.Configuration, glip glipwebhook.GlipWebhookClient) ConfluenceOutToGlipHandler {
-	return ConfluenceOutToGlipHandler{Config: cfg, GlipClient: glip}
+func NewConfluenceOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) ConfluenceOutToGlipHandler {
+	return ConfluenceOutToGlipHandler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *ConfluenceOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
+	ccMsg, err := Normalize(ctx.FormValue("payload"))
+
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":   "http.response",
 			"status": fasthttp.StatusNotAcceptable,
-		}).Info("Confluence request is not acceptable.")
+		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
 		return
 	}
-	glipMsg := Normalize(srcMsg)
 
-	util.SendGlipWebhookCtx(ctx, h.GlipClient, glipMsg)
+	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func BuildInboundMessage(ctx *fasthttp.RequestCtx) (ConfluenceOutMessage, error) {
-	return ConfluenceOutMessageFromBytes(ctx.FormValue("payload"))
-}
+func Normalize(bytes []byte) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
 
-func Normalize(src ConfluenceOutMessage) glipwebhook.GlipWebhookMessage {
-	glip := glipwebhook.GlipWebhookMessage{Icon: ICON_URL}
+	src, err := ConfluenceOutMessageFromBytes(bytes)
+	if err != nil {
+		return message, err
+	}
+
 	if !src.IsComment() {
 		if src.Page.IsCreated() {
-			glip.Activity = fmt.Sprintf("%v created page in space %v (%v)", src.Page.CreatorName, src.Page.SpaceKey, DISPLAY_NAME)
-			glip.Body = fmt.Sprintf("> [%v](%v)", src.Page.Title, src.Page.Self)
+			message.Activity = fmt.Sprintf("%v created page", src.Page.CreatorName)
 		} else {
-			glip.Activity = fmt.Sprintf("%v updated page in space %v (%v)", src.Page.CreatorName, src.Page.SpaceKey, DISPLAY_NAME)
-			glip.Body = fmt.Sprintf("> [%v](%v)", src.Page.Title, src.Page.Self)
+			message.Activity = fmt.Sprintf("%v updated page", src.Page.CreatorName)
 		}
 	} else {
 		if src.Comment.IsCreated() {
-			glip.Activity = fmt.Sprintf("%v commented on page in space %v (%v)", src.Comment.CreatorName, src.Comment.Parent.SpaceKey, DISPLAY_NAME)
-			glip.Body = fmt.Sprintf("> [%v](%v)", src.Page.Title, src.Page.Self)
+			message.Activity = fmt.Sprintf("%v commented on page", src.Comment.CreatorName)
 		} else {
-			glip.Activity = fmt.Sprintf("%v updated comment on page in space %v (%v)", src.Page.CreatorName, src.Comment.Parent.SpaceKey, DISPLAY_NAME)
-			glip.Body = fmt.Sprintf("> [%v](%v)", src.Page.Title, src.Page.Self)
+			message.Activity = fmt.Sprintf("%v updated comment on page", src.Comment.CreatorName)
 		}
 	}
-	return glip
+
+	attachment := cc.NewAttachment()
+
+	if len(src.Page.Title) > 0 && len(src.Page.Self) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Page",
+			Value: fmt.Sprintf("[%v](%v)", src.Page.Title, src.Page.Self),
+			Short: true})
+	}
+	if len(src.Page.SpaceKey) > 0 {
+		field := cc.Field{Title: "Space", Short: true}
+		if src.IsComment() {
+			field.Value = src.Comment.Parent.SpaceKey
+		} else {
+			field.Value = src.Page.SpaceKey
+		}
+		attachment.AddField(field)
+	}
+
+	message.AddAttachment(attachment)
+	return message, nil
 }
 
 type ConfluenceOutMessage struct {
@@ -84,14 +105,14 @@ func ConfluenceOutMessageFromBytes(bytes []byte) (ConfluenceOutMessage, error) {
 	log.WithFields(log.Fields{
 		"type":    "message.raw",
 		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v message.", DISPLAY_NAME))
+	}).Debug(fmt.Sprintf("%v message.", DisplayName))
 	msg := ConfluenceOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type":  "message.json.unmarshal",
 			"error": fmt.Sprintf("%v\n", err),
-		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DISPLAY_NAME))
+		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DisplayName))
 	}
 	if msg.IsComment() {
 		msg.Page = msg.Comment.Parent
@@ -161,66 +182,3 @@ func (comment *ConfluenceComment) IsUpdated() bool {
 	}
 	return true
 }
-
-/*
-
-Confluence page_created
-
-Activity: msg.Page.CreatorName created page in space [msg.pPge.SpaceKey]()
-Body []()
-
-{
-   "page": {
-     "spaceKey": "~admin",
-     "modificationDate": 1471926079631,
-     "creatorKey": "ff80808154510724015451074c160001",
-     "creatorName": "admin",
-     "lastModifierKey": "ff80808154510724015451074c160001",
-     "self": "https://cloud-development-environment.atlassian.net/wiki/display/~admin/Some+random+test+page",
-     "lastModifierName": "admin",
-     "id": 16777227,
-     "title": "Some random test page",
-     "creationDate": 1471926079631,
-     "version": 1
-   },
-   "user": "admin",
-   "userKey": "ff80808154510724015451074c160001",
-   "timestamp": 1471926079645,
-   "username": "admin"
- }
-
-Confluence comment_created
-
-{
-   "comment": {
-     "spaceKey": "~admin",
-     "parent": {
-       "spaceKey": "~admin",
-       "modificationDate": 1471926079631,
-       "creatorKey": "ff80808154510724015451074c160001",
-       "creatorName": "admin",
-       "lastModifierKey": "ff80808154510724015451074c160001",
-       "self": "https://cloud-development-environment.atlassian.net/wiki/display/~admin/Some+random+test+page",
-       "lastModifierName": "admin",
-       "id": 16777227,
-       "title": "Some random test page",
-       "creationDate": 1471926079631,
-       "version": 1
-     },
-     "modificationDate": 1471926091465,
-     "creatorKey": "ff80808154510724015451074c160001",
-     "creatorName": "admin",
-     "lastModifierKey": "ff80808154510724015451074c160001",
-     "self": "https://cloud-development-environment/wiki/display/~admin/Some+random+test+page?focusedCommentId=16777228#comment-16777228",
-     "lastModifierName": "admin",
-     "id": 16777228,
-     "creationDate": 1471926091465,
-     "version": 1
-   },
-   "user": "admin",
-   "userKey": "ff80808154510724015451074c160001",
-   "timestamp": 1471926091468,
-   "username": "admin"
- }
-
-*/

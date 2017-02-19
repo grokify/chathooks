@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	//log "github.com/Sirupsen/logrus"
-	"github.com/grokify/glip-go-webhook"
+
+	cc "github.com/grokify/commonchat"
+	"github.com/grokify/glip-webhook-proxy-go/src/adapters"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
+
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/appsignal"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/confluence"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/enchant"
@@ -17,160 +19,102 @@ import (
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/semaphoreci"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/travisci"
 	"github.com/grokify/glip-webhook-proxy-go/src/handlers/userlike"
-	"github.com/grokify/glip-webhook-proxy-go/src/util"
 )
 
 const (
-	GLIP_WEBHOOK_ENV = "GLIP_WEBHOOK"
+	GLIP_WEBHOOK_ENV  = "GLIP_WEBHOOK"
+	SLACK_WEBHOOK_ENV = "SLACK_WEBHOOK"
 )
+
+type Sender struct {
+	Adapter adapters.Adapter
+}
+
+func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
+	if err != nil {
+		panic("Bad Test Message")
+	}
+	_, _, err = sender.Adapter.SendMessage(ccMsg)
+	if err != nil {
+		fmt.Printf("ERROR [%v]\n", err)
+	}
+}
 
 func main() {
 	guidPointer := flag.String("guid", "", "Glip webhook GUID or URL")
 	examplePointer := flag.String("example", "", "Example message type")
+	adapterType := flag.String("adapter", "", "Adapter")
+
 	flag.Parse()
 	guid := strings.TrimSpace(*guidPointer)
 	example := strings.ToLower(strings.TrimSpace(*examplePointer))
 
 	fmt.Printf("LENGUID[%v]\n", len(guid))
-	if len(guid) < 1 {
-		guid = os.Getenv(GLIP_WEBHOOK_ENV)
-		fmt.Printf("HERE [%v]\n", guid)
-	}
-
-	//glip, _ := glipwebhook.NewGlipWebhookClient(guid)
 	fmt.Printf("GUID [%v]\n", guid)
 	fmt.Printf("EXAMPLE [%v]\n", example)
 
 	if len(example) < 1 {
-		panic("Usage: send_example.go -hook=<GUID> -example=raygun")
+		panic("Usage: send_example.go -hook=<GUID> -adapter=glip -example=raygun")
 	}
 
-	glipClient, err := glipwebhook.NewGlipWebhookClient(guid)
-	if err != nil {
-		panic("Incorrect Webhook GUID or URL")
+	sender := Sender{}
+	if *adapterType == "glip" {
+		if len(guid) < 1 {
+			guid = os.Getenv(GLIP_WEBHOOK_ENV)
+			fmt.Printf("GLIP_GUID_ENV [%v]\n", guid)
+		}
+		adapter, err := adapters.NewGlipAdapter(guid)
+		if err != nil {
+			panic("Incorrect Webhook GUID or URL")
+		}
+		sender.Adapter = &adapter
+	} else if *adapterType == "slack" {
+		if len(guid) < 1 {
+			guid = os.Getenv(SLACK_WEBHOOK_ENV)
+			fmt.Printf("SLACK_GUID_ENV [%v]\n", guid)
+		}
+		adapter, err := adapters.NewSlackAdapter(guid)
+		if err != nil {
+			panic("Incorrect Webhook GUID or URL")
+		}
+		sender.Adapter = &adapter
+	} else {
+		panic("Invalid Adapter")
 	}
-
-	config.GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
 
 	switch example {
 	case "appsignal":
-		SendAppsignal(glipClient, guid)
+		sender.SendCcMessage(appsignal.ExampleMessageMarker())
+		sender.SendCcMessage(appsignal.ExampleMessageException())
+		sender.SendCcMessage(appsignal.ExampleMessagePerformance())
 	case "confluence":
-		SendConfluence(glipClient, guid)
+		sender.SendCcMessage(confluence.ExampleMessagePageCreated())
+		sender.SendCcMessage(confluence.ExampleMessageCommentCreated())
 	case "enchant":
-		glipMsg, err := enchant.ExampleMessageGlip()
-		if err != nil {
-			panic("Bad Test Message")
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		sender.SendCcMessage(enchant.ExampleMessage())
 	case "heroku":
-		glipMsg, err := heroku.ExampleMessageGlip()
-		if err != nil {
-			panic("Bad Test Message")
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		sender.SendCcMessage(heroku.ExampleMessage())
 	case "magnumci":
-		glipMsg, err := magnumci.ExampleMessageGlip()
-		if err != nil {
-			panic(fmt.Sprintf("Bad Test Message [%v]", err))
-		}
-		fmt.Println("SENDING")
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		sender.SendCcMessage(magnumci.ExampleMessage())
 	case "raygun":
-		glipMsg, err := raygun.ExampleMessageGlip()
-		if err != nil {
-			panic("Bad Test Message")
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		sender.SendCcMessage(raygun.ExampleMessage())
 	case "semaphoreci":
-		SendSemaphoreci(glipClient, guid)
+		sender.SendCcMessage(semaphoreci.ExampleMessageBuild())
+		sender.SendCcMessage(semaphoreci.ExampleMessageDeploy())
 	case "travisci":
-		glipMsg, err := travisci.ExampleMessageGlip()
-		if err != nil {
-			panic("Bad Test Message")
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
+		sender.SendCcMessage(travisci.ExampleMessage())
 	case "userlike":
-		SendUserlike(glipClient, guid)
+		sender.SendCcMessage(userlike.ExampleMessageChatWidgetConfig())
+		sender.SendCcMessage(userlike.ExampleMessageOfflineMessageReceive())
+		for i, event := range userlike.ChatMetaEvents {
+			fmt.Printf("%v %v\n", i, event)
+			sender.SendCcMessage(userlike.ExampleMessageChatMeta(event))
+		}
+		for j, event := range userlike.OperatorEvents {
+			fmt.Printf("%v %v\n", j, event)
+			sender.SendCcMessage(userlike.ExampleMessageOperator(event))
+		}
 	default:
 		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
-	}
-}
-
-func SendAppsignal(glipClient glipwebhook.GlipWebhookClient, guid string) {
-	glipMsg, err := appsignal.ExampleMarkerMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	glipMsg, err = appsignal.ExampleExceptionMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	glipMsg, err = appsignal.ExamplePerformanceMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-}
-
-func SendConfluence(glipClient glipwebhook.GlipWebhookClient, guid string) {
-	glipMsg, err := confluence.ExamplePageCreatedMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	glipMsg, err = confluence.ExampleCommentCreatedMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-}
-
-func SendSemaphoreci(glipClient glipwebhook.GlipWebhookClient, guid string) {
-	glipMsg, err := semaphoreci.ExampleBuildMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	glipMsg, err = semaphoreci.ExampleDeployMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-}
-
-func SendUserlike(glipClient glipwebhook.GlipWebhookClient, guid string) {
-	glipMsg, err := userlike.ExampleOfflineMessageReceiveMessageGlip()
-	if err != nil {
-		panic(fmt.Sprintf("Bad Test Message [%v]", err))
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-
-	glipMsg, err = userlike.ExampleChatWidgetConfigMessageGlip()
-	if err != nil {
-		panic("Bad Test Message")
-	}
-	util.SendGlipWebhook(glipClient, guid, glipMsg)
-	//return
-	if 1 == 1 {
-		for i, event := range userlike.ChatMetaEvents {
-			//continue
-			fmt.Printf("%v %v\n", i, event)
-			glipMsg, err := userlike.ExampleUserlikeChatMetaMessageGlip(event)
-			if err != nil {
-				panic(fmt.Sprintf("Bad Test Message: %v", err))
-			}
-			util.SendGlipWebhook(glipClient, guid, glipMsg)
-		}
-	}
-	for i, event := range userlike.OperatorEvents {
-		fmt.Printf("%v %v\n", i, event)
-		glipMsg, err := userlike.ExampleUserlikeOperatorMessageGlip(event)
-		if err != nil {
-			panic(fmt.Sprintf("Bad Test Message: %v", err))
-		}
-		util.SendGlipWebhook(glipClient, guid, glipMsg)
 	}
 }
