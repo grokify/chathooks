@@ -3,8 +3,8 @@ package adapters
 import (
 	"fmt"
 
-	cc "github.com/grokify/commonchat"
-	ccglip "github.com/grokify/commonchat/glip"
+	cc "github.com/commonchat/commonchat-go"
+	ccglip "github.com/commonchat/commonchat-go/glip"
 	"github.com/grokify/glip-go-webhook"
 	"github.com/valyala/fasthttp"
 )

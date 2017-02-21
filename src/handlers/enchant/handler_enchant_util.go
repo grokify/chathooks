@@ -1,7 +1,7 @@
 package enchant
 
 import (
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 )
 
 func ExampleMessage() (cc.Message, error) {

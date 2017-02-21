@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/glip-webhook-proxy-go/src/config"
 )
 

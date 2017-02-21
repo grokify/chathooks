@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/glip-go-webhook"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/valyala/fasthttp"

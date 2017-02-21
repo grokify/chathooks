@@ -1,7 +1,7 @@
 package confluence
 
 import (
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 )
 
 func ExampleMessagePageCreated() (cc.Message, error) {

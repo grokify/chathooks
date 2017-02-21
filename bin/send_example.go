@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 
 	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"

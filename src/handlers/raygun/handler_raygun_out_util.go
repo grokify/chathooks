@@ -1,7 +1,7 @@
 package raygun
 
 import (
-	"github.com/grokify/commonchat"
+	"github.com/commonchat/commonchat-go"
 )
 
 func ExampleMessage() (commonchat.Message, error) {

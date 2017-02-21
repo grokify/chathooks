@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/grokify/commonchat"
+	"github.com/commonchat/commonchat-go"
 	"github.com/grokify/webhook-proxy-go/src/config"
 )
 

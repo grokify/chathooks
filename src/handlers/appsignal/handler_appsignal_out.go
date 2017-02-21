@@ -6,7 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	cc "github.com/grokify/commonchat"
+	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/gotilla/time/timeutil"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/config"
