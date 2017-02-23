@@ -1,0 +1,31 @@
+{
+    "alert":{
+        "id":5846005,
+        "name":"collectd.high.load",
+        "runbook_url":"http://example.com/runbook.pdf",
+        "version":2
+    },
+    "account":"m@example.com",
+    "trigger_time":1444177459,
+    "conditions":[
+        {
+            "id":1150670,
+            "type":"above",
+            "threshold":2,
+            "duration":300
+        }
+    ],
+    "violations":{
+        "example-ubuntu-14.04":[
+            {
+                "metric":"collectd.load.load.shortterm",
+                "value":7.190000057220459,
+                "recorded_at":1444177454,
+                "condition_violated":1150670,
+                "count":31,
+                "begin":1444177140,
+                "end":1444177440
+            }
+        ]
+    }
+}

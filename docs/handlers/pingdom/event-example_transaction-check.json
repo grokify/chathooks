@@ -1,0 +1,28 @@
+{
+    "check_id":12345,
+    "check_name":"Name of transaction check",
+    "check_type":"TRANSACTION",
+    "check_params":{
+        "encryption":true,
+        "port":443,
+        "url":"https://www.example.com/"
+    },
+    "tags":[
+        "example_tag"
+    ],
+    "previous_state":"FAILING",
+    "current_state":"SUCCESS",
+    "state_changed_timestamp":1451610061,
+    "state_changed_utc_time":"2016-01-01T01:01:01",
+    "description":"Error message",
+    "first_probe":{
+        "ip":"123.4.5.6",
+        "ipv6":"2001:4800:1020:209::5",
+        "location":"Stockholm, Sweden"
+    },
+    "second_probe":{
+        "ip":"123.4.5.6",
+        "ipv6":"2001:4800:1020:209::5",
+        "location":"Austin, US"
+    }
+}

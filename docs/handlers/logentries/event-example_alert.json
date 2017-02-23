@@ -1,0 +1,20 @@
+{
+    "alert":{
+        "name":"500 error"
+    },
+    "host":{
+        "name":"Web",
+        "hostname":"web.example.com"
+    },
+    "log":{
+        "name":"access.log"
+    },
+    "event":"Event",
+    "context":[
+        {
+            "t":1346202355889,
+            "s":40634540484,
+            "m":"[26/Aug/2012:10:58:50 +0100] POST /api..."
+        }
+    ]
+}

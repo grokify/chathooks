@@ -1,0 +1,13 @@
+{
+    "threshold_value":"1",
+    "triggering_value":"4",
+    "incident_time":"2015-01-05T18:15:56.976000",
+    "description":"Alert on Crittercism at 06:15 PM UTC. Crashes threshold 4 exceeds 1.",
+    "metric":"Crashes",
+    "crittercism_app_id":"54aab27451de5e9f042ec7ee",
+    "trigger_id":"54aabecc1787845ae400000f",
+    "state":"TRIGGERED",
+    "alert_url":"https://app.crittercism.com/developers/alerts/54aab27451de5e9f042ec7ee?incidentId=54aad4dcf39917103e0041b6",
+    "filters":"{}",
+    "application_name":"Crittercism"
+}

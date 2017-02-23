@@ -1,0 +1,19 @@
+{
+    "page":{
+        "spaceKey":"~admin",
+        "modificationDate":1471926079631,
+        "creatorKey":"ff80808154510724015451074c160001",
+        "creatorName":"admin",
+        "lastModifierKey":"ff80808154510724015451074c160001",
+        "self":"https://cloud-development-environment.atlassian.net/wiki/display/~admin/Some+random+test+page",
+        "lastModifierName":"admin",
+        "id":16777227,
+        "title":"Some random test page",
+        "creationDate":1471926079631,
+        "version":1
+    },
+    "user":"admin",
+    "userKey":"ff80808154510724015451074c160001",
+    "timestamp":1471926079645,
+    "username":"admin"
+}

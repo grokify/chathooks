@@ -1,0 +1,11 @@
+{
+    "threshold_value":"1",
+    "description":"The Crashes alert on Crittercism was resolved at 06:40 PM UTC.",
+    "metric":"Crashes",
+    "crittercism_app_id":"54aab27451de5e9f042ec7ee",
+    "trigger_id":"54aabecc1787845ae400000f",
+    "state":"RESOLVED",
+    "alert_url":"https://app.crittercism.com/developers/alerts/54aab27451de5e9f042ec7ee?alertId=54aabecc1787845ae400000f",
+    "filters":"{}",
+    "application_name":"Crittercism"
+}

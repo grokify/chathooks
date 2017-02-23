@@ -1,0 +1,26 @@
+[
+    {
+        "objectId":1246965,
+        "propertyName":"lifecyclestage",
+        "propertyValue":"subscriber",
+        "changeSource":"ACADEMY",
+        "eventId":3816279340,
+        "subscriptionId":25,
+        "portalId":33,
+        "appId":1160452,
+        "occurredAt":1462216307945,
+        "subscriptionType":"contact.propertyChange",
+        "attemptNumber":0
+    },
+    {
+        "objectId":1246978,
+        "changeSource":"IMPORT",
+        "eventId":3816279480,
+        "subscriptionId":22,
+        "portalId":33,
+        "appId":1160452,
+        "occurredAt":1462216307945,
+        "subscriptionType":"contact.creation",
+        "attemptNumber":0
+    }
+]

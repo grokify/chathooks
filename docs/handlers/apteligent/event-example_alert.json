@@ -1,0 +1,13 @@
+{
+    "threshold_value":"2",
+    "triggering_value":"9",
+    "incident_time":"2014-05-08T01:30:24.230000",
+    "description":"Alert on Zapier Demo at 01:30 AM UTC. App Loads threshold 9 exceeds 2.",
+    "metric":"App Loads",
+    "crittercism_app_id":"5351712740ec921171000003",
+    "trigger_id":"536add5b0729df3fe9000008",
+    "state":"TRIGGERED",
+    "alert_url":"https://app.crittercism.com/developers/alerts/5351712740ec921171000003?incidentId=536ade306f10274d97000008",
+    "filters":"{}",
+    "application_name":"Zapier Demo"
+}
