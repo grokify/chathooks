@@ -15,6 +15,7 @@ import (
 
 const (
 	DisplayName = "Raygun"
+	HandlerKey  = "raygun"
 	IconURL     = "https://raygun.com/upload/raygun-icon.svg"
 	ICON_URL2   = "https://raygun.com/images/logo/raygun-logo-og.jpg"
 	ICON_URL3   = "https://a.slack-edge.com/ae7f/img/services/raygun_512.png"

@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
-	DOC_HANDLERS_REL_DIR                   = "../docs/handlers"
+	//GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
+	DocHandlersDir = "../docs/handlers"
 )
 
 // Configuration is the webhook proxy configuration struct.

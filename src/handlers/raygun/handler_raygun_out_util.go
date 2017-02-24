@@ -1,32 +1,14 @@
 package raygun
 
 import (
-	"github.com/commonchat/commonchat-go"
+	cc "github.com/commonchat/commonchat-go"
+	"github.com/grokify/webhook-proxy-go/src/util"
 )
 
-func ExampleMessage() (commonchat.Message, error) {
-	bytes, err := ExampleMessageBytes()
+func ExampleMessage(data util.ExampleData) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, "error")
 	if err != nil {
-		return commonchat.Message{}, err
+		return cc.Message{}, err
 	}
 	return Normalize(bytes)
-}
-
-func ExampleMessageBytes() ([]byte, error) {
-	return []byte(`{
-  "event":"error_notification",
-  "eventType":"NewErrorOccurred",
-  "error": {
-    "url":"http://app.raygun.io/error-url",
-    "message":"",
-    "firstOccurredOn":"1970-01-28T01:49:36Z",
-    "lastOccurredOn":"1970-01-28T01:49:36Z",
-    "usersAffected":1,
-    "totalOccurrences":1
-  },
-  "application": {
-    "name":"application name",
-    "url":"http://app.raygun.io/application-url"
-  }
-}`), nil
 }

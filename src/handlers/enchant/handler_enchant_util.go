@@ -2,6 +2,20 @@ package enchant
 
 import (
 	cc "github.com/commonchat/commonchat-go"
+	"github.com/grokify/webhook-proxy-go/src/util"
+)
+
+func ExampleMessage(data util.ExampleData) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, "notification")
+	if err != nil {
+		return cc.Message{}, err
+	}
+	return Normalize(bytes)
+}
+
+/*
+import (
+	cc "github.com/commonchat/commonchat-go"
 )
 
 func ExampleMessage() (cc.Message, error) {
@@ -46,8 +60,6 @@ func ExampleMessageBytes() ([]byte, error) {
   }
 }`), nil
 }
-
-/*
 
 {
   "id": "7f94629",

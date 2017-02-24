@@ -1,29 +1,14 @@
 package magnumci
 
 import (
-	"io/ioutil"
-	"path"
-
-	"github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhook-proxy-go/src/config"
+	cc "github.com/commonchat/commonchat-go"
+	"github.com/grokify/webhook-proxy-go/src/util"
 )
 
-var (
-	ExamplePayloadBuildFile = "example__build.json"
-)
-
-func ExampleMessage() (commonchat.Message, error) {
-	bytes, err := ExampleMessageBytes()
+func ExampleMessage(data util.ExampleData) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, "build")
 	if err != nil {
-		return commonchat.Message{}, err
+		return cc.Message{}, err
 	}
 	return Normalize(bytes)
-}
-
-func ExampleMessageBytes() ([]byte, error) {
-	filepath := path.Join(
-		config.DOC_HANDLERS_REL_DIR,
-		HandlerKey,
-		ExamplePayloadBuildFile)
-	return ioutil.ReadFile(filepath)
 }

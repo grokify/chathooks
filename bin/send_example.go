@@ -6,8 +6,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/grokify/gotilla/fmt/fmtutil"
+
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
+	"github.com/grokify/webhook-proxy-go/src/util"
 
 	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
@@ -31,7 +34,7 @@ type Sender struct {
 
 func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 	if err != nil {
-		panic("Bad Test Message")
+		panic(fmt.Sprintf("Bad Test Message: %v\n", err))
 	}
 	_, _, err = sender.Adapter.SendMessage(ccMsg)
 	if err != nil {
@@ -81,37 +84,42 @@ func main() {
 		panic("Invalid Adapter")
 	}
 
+	exampleData, err := util.NewExampleData()
+	if err != nil {
+		panic(fmt.Sprintf("Invalid Example Data: %v\n", err))
+	}
+	fmtutil.PrintJSON(exampleData)
+
 	switch example {
 	case "appsignal":
-		sender.SendCcMessage(appsignal.ExampleMessageMarker())
-		sender.SendCcMessage(appsignal.ExampleMessageException())
-		sender.SendCcMessage(appsignal.ExampleMessagePerformance())
-	case "confluence":
-		sender.SendCcMessage(confluence.ExampleMessagePageCreated())
-		sender.SendCcMessage(confluence.ExampleMessageCommentCreated())
-	case "enchant":
-		sender.SendCcMessage(enchant.ExampleMessage())
-	case "heroku":
-		sender.SendCcMessage(heroku.ExampleMessage())
-	case "magnumci":
-		sender.SendCcMessage(magnumci.ExampleMessage())
-	case "raygun":
-		sender.SendCcMessage(raygun.ExampleMessage())
-	case "semaphoreci":
-		sender.SendCcMessage(semaphoreci.ExampleMessageBuild())
-		sender.SendCcMessage(semaphoreci.ExampleMessageDeploy())
-	case "travisci":
-		sender.SendCcMessage(travisci.ExampleMessage())
-	case "userlike":
-		sender.SendCcMessage(userlike.ExampleMessageChatWidgetConfig())
-		sender.SendCcMessage(userlike.ExampleMessageOfflineMessageReceive())
-		for i, event := range userlike.ChatMetaEvents {
-			fmt.Printf("%v %v\n", i, event)
-			sender.SendCcMessage(userlike.ExampleMessageChatMeta(event))
+		source := exampleData.Data[appsignal.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(appsignal.ExampleMessage(exampleData, eventSlug))
 		}
-		for j, event := range userlike.OperatorEvents {
-			fmt.Printf("%v %v\n", j, event)
-			sender.SendCcMessage(userlike.ExampleMessageOperator(event))
+	case "confluence":
+		source := exampleData.Data[confluence.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(confluence.ExampleMessage(exampleData, eventSlug))
+		}
+	case "enchant":
+		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
+	case "heroku":
+		sender.SendCcMessage(heroku.ExampleMessage(exampleData))
+	case "magnumci":
+		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
+	case "raygun":
+		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
+	case "semaphoreci":
+		source := exampleData.Data[semaphoreci.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(semaphoreci.ExampleMessage(exampleData, eventSlug))
+		}
+	case "travisci":
+		sender.SendCcMessage(travisci.ExampleMessage(exampleData))
+	case "userlike":
+		source := exampleData.Data[userlike.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(userlike.ExampleMessage(exampleData, eventSlug))
 		}
 	default:
 		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
