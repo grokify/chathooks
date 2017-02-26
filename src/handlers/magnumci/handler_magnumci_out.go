@@ -17,7 +17,9 @@ import (
 const (
 	DisplayName = "Magnum CI"
 	HandlerKey  = "magnumci"
-	IconURL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	IconURLOrig = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	IconURLY    = "https://a.slack-edge.com/ae7f/plugins/statuspageio/assets/service_512.png"
+	IconURL     = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
