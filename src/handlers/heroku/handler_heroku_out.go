@@ -86,18 +86,8 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 
 	if len(strings.TrimSpace(src.App)) > 0 {
 		message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
-	}
-
-	if 1 == 0 {
-		if len(strings.TrimSpace(src.User)) > 0 {
-			message.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DisplayName)
-		} else {
-			if len(strings.TrimSpace(src.App)) > 0 {
-				message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
-			} else {
-				message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
-			}
-		}
+	} else {
+		message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
 	}
 
 	attachment := cc.NewAttachment()
@@ -116,6 +106,9 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 	}
 	if len(strings.TrimSpace(src.Release)) > 0 {
 		attachment.AddField(cc.Field{Title: "Release", Value: src.Release, Short: true})
+	}
+	if len(strings.TrimSpace(src.User)) > 0 {
+		attachment.AddField(cc.Field{Title: "User", Value: src.User, Short: true})
 	}
 
 	message.AddAttachment(attachment)
