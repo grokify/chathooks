@@ -67,25 +67,27 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		timeString := ""
 		if src.EventType == "ErrorReoccurred" {
 			timeString = " again"
-		} else if src.EventType == "OneMinuteFollowUp" {
-			timeString = " 1 minute ago"
-		} else if src.Event == "FiveMinuteFollowUp" {
-			timeString = " 5 minutes ago"
-		} else if src.Event == "TenMinuteFollowUp" {
-			timeString = " 10 minutes ago"
-		} else if src.Event == "ThirtyMinuteFollowUp" {
-			timeString = " 30 minutes ago"
-		} else if src.Event == "HourlyFollowUp" {
-			timeString = " 1 hour ago"
 		}
 		if len(src.Application.Name) > 0 {
-			message.Activity = fmt.Sprintf("%v encountered an error%v", src.Application.Name)
+			message.Activity = fmt.Sprintf("%v encountered an error%v", src.Application.Name, timeString)
 		} else {
 			message.Activity = fmt.Sprintf("An error occurred%v", timeString)
 		}
 	}
 
 	attachment := cc.NewAttachment()
+
+	followups := map[string]string{
+		"OneMinuteFollowUp":    "One Minute Follow Up",
+		"FiveMinuteFollowUp":   "5 Minute Follow Up",
+		"TenMinuteFollowUp":    "10 Minute Follow Up",
+		"ThirtyMinuteFollowUp": "30 Minute Follow Up",
+		"HourlyFollowUp":       "Hourly Follow Up"}
+	if desc, ok := followups[src.EventType]; ok {
+		attachment.AddField(cc.Field{
+			Title: "Follow Up",
+			Value: desc})
+	}
 
 	if len(src.Application.URL) > 0 {
 		if len(src.Application.Name) > 0 {
@@ -94,9 +96,11 @@ func Normalize(bytes []byte) (cc.Message, error) {
 				Value: fmt.Sprintf("[%v](%v)", src.Application.Name, src.Application.URL)})
 		} else {
 			attachment.AddField(cc.Field{
-				Value: fmt.Sprintf("[Application Details](%v)", src.Application.URL)})
+				Title: "Application",
+				Value: fmt.Sprintf("[%v](%v)", src.Application.URL, src.Application.URL)})
 		}
 	}
+
 	if len(src.Error.URL) > 0 {
 		if len(src.Error.Message) > 0 {
 			attachment.AddField(cc.Field{
@@ -104,8 +108,11 @@ func Normalize(bytes []byte) (cc.Message, error) {
 				Value: fmt.Sprintf("[%v](%v)", src.Error.Message, src.Error.URL)})
 		} else {
 			attachment.AddField(cc.Field{
-				Value: fmt.Sprintf("[Error Details](%v)", src.Error.URL)})
+				Title: "Error",
+				Value: fmt.Sprintf("[%v](%v)", src.Error.URL, src.Error.URL)})
 		}
+		attachment.AddField(cc.Field{Title: "Users Affected", Value: fmt.Sprintf("%v", src.Error.UsersAffected), Short: true})
+		attachment.AddField(cc.Field{Title: "Total Occurrences", Value: fmt.Sprintf("%v", src.Error.TotalOccurrences), Short: true})
 	}
 
 	message.AddAttachment(attachment)
