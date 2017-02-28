@@ -84,13 +84,19 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 
-	if len(strings.TrimSpace(src.User)) > 0 {
-		message.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DisplayName)
-	} else {
-		if len(strings.TrimSpace(src.App)) > 0 {
-			message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
+	if len(strings.TrimSpace(src.App)) > 0 {
+		message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
+	}
+
+	if 1 == 0 {
+		if len(strings.TrimSpace(src.User)) > 0 {
+			message.Activity = fmt.Sprintf("%v deployed an app on %v", src.User, DisplayName)
 		} else {
-			message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
+			if len(strings.TrimSpace(src.App)) > 0 {
+				message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
+			} else {
+				message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
+			}
 		}
 	}
 
@@ -112,9 +118,7 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 		attachment.AddField(cc.Field{Title: "Release", Value: src.Release, Short: true})
 	}
 
-	//message := util.NewMessage()
 	message.AddAttachment(attachment)
-	//gmsg.Body = adapters.RenderMessage(message)
 	return message, nil
 }
 

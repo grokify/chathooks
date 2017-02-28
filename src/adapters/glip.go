@@ -11,7 +11,7 @@ import (
 
 var (
 	AdaptersGlipActivityIncludeIntegrationName = false
-	AdaptersGlipMarkdownQuote                  = true
+	AdaptersGlipMarkdownQuote                  = false
 	AdaptersGlipUseShortFields                 = false
 	EmojiURLFormat                             = ""
 	WebhookURLOrUID                            = ""
@@ -26,10 +26,12 @@ type GlipAdapter struct {
 
 func NewGlipAdapter(webhookURLOrUID string) (GlipAdapter, error) {
 	glip, err := glipwebhook.NewGlipWebhookClient(webhookURLOrUID)
+	converter := ccglip.NewGlipMessageConverter()
+	converter.UseShortFields = AdaptersGlipUseShortFields
 	return GlipAdapter{
 		GlipClient:      glip,
 		WebhookURLOrUID: webhookURLOrUID,
-		CommonConverter: ccglip.NewGlipMessageConverter()}, err
+		CommonConverter: converter}, err
 }
 
 func (adapter *GlipAdapter) SendWebhook(urlOrUid string, message cc.Message) (*fasthttp.Request, *fasthttp.Response, error) {
