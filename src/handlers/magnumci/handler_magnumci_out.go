@@ -17,9 +17,9 @@ import (
 const (
 	DisplayName = "Magnum CI"
 	HandlerKey  = "magnumci"
-	IconURLOrig = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	IconURL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
 	IconURLY    = "https://a.slack-edge.com/ae7f/plugins/statuspageio/assets/service_512.png"
-	IconURL     = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
+	IconURLZ    = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
 )
 
 // FastHttp request handler for Semaphore CI outbound webhook
@@ -58,10 +58,13 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		return message, err
 	}
 
+	message.Activity = fmt.Sprintf("Build %v", src.State)
+
 	if len(src.Title) > 0 {
-		message.Activity = fmt.Sprintf("%v", src.Title)
+		message.Title = fmt.Sprintf("[Build #%v](%v) **%v**", src.Number, src.BuildURL, src.Title)
+		//message.Title = src.Title
 	} else {
-		message.Activity = fmt.Sprintf("%s Notification", DisplayName)
+		message.Title = fmt.Sprintf("Build #%v](%v)", src.Number, src.BuildURL)
 	}
 
 	attachment := cc.NewAttachment()
@@ -69,11 +72,11 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	if len(src.Message) > 0 {
 		if len(src.CommitURL) > 0 {
 			attachment.AddField(cc.Field{
-				Title: "Commit",
+				Title: "Message",
 				Value: fmt.Sprintf("[%v](%v)", src.Message, src.CommitURL)})
 		} else {
 			attachment.AddField(cc.Field{
-				Title: "Commit",
+				Title: "Message",
 				Value: fmt.Sprintf("%v", src.Message)})
 		}
 	} else if len(src.CommitURL) > 0 {
@@ -88,15 +91,17 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Value: src.Author,
 			Short: true})
 	}
+	if len(src.Committer) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Committer",
+			Value: src.Committer,
+			Short: true})
+	}
 	if len(src.DurationString) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Duration",
 			Value: src.DurationString,
 			Short: true})
-	}
-	if len(src.BuildURL) > 0 {
-		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[View Build](%v)", src.BuildURL)})
 	}
 
 	if len(src.Title) < 1 && len(attachment.Fields) == 0 {

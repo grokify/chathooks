@@ -9,6 +9,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
+	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/config"
 	"github.com/grokify/webhook-proxy-go/src/util"
@@ -18,6 +19,7 @@ import (
 const (
 	DisplayName = "Semaphore"
 	HandlerKey  = "semaphoreci"
+	IconURLX    = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/semaphore.png"
 	IconURL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
 	ICON_URL_2  = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
@@ -80,33 +82,60 @@ func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) cc.Mess
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 
-	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-		// Joe Cool build #15 passed
-		message.Activity = fmt.Sprintf("%v's %v #%v %v%v", src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-	} else {
-		message.Activity = fmt.Sprintf("%v's %v %v%v", src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-	}
+	message.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
+
+	/*
+		if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
+			// Joe Cool's build #15 passed
+			//message.Activity = fmt.Sprintf("%v %v #%v %v%v", src.ProjectName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
+			message.Activity = fmt.Sprintf("%v %v", stringsutil.ToUpperFirst(src.Event), src.Result)
+		} else {
+			message.Activity = fmt.Sprintf("%v %v %v%v", src.ProjectName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
+		}
+	*/
+	message.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
+		stringsutil.ToUpperFirst(src.Event),
+		src.BuildNumber,
+		src.BuildURL,
+		src.ProjectName,
+		src.BranchName,
+		src.Result,
+		src.Commit.Id[:7],
+		src.Commit.URL)
 
 	attachment := cc.NewAttachment()
 
 	if len(src.Commit.Message) > 0 {
-		attachment.Text = src.Commit.Message
-	}
-	if len(src.ProjectName) > 0 {
 		attachment.AddField(cc.Field{
-			Title: "Project",
-			Value: src.ProjectName,
+			Title: "Message",
+			Value: src.Commit.Message,
 			Short: true})
 	}
-	if len(src.BranchName) > 0 {
-		attachment.AddField(cc.Field{
-			Title: "Branch",
-			Value: src.BranchName,
-			Short: true})
+	if 1 == 0 {
+		if len(src.ProjectName) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Project",
+				Value: src.ProjectName,
+				Short: true})
+		}
+		if len(src.BranchName) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Branch",
+				Value: src.BranchName,
+				Short: true})
+		}
+		if len(src.Event) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Event",
+				Value: src.Event,
+				Short: true})
+		}
 	}
-	if len(src.BuildURL) > 0 {
+	if len(src.Commit.AuthorName) > 0 {
 		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[View details](%v)", src.BuildURL)})
+			Title: "Committer",
+			Value: src.Commit.AuthorName,
+			Short: true})
 	}
 
 	message.AddAttachment(attachment)
@@ -117,34 +146,85 @@ func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) cc.Me
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 
-	if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-		message.Activity = fmt.Sprintf("%v's %v #%v %v%v",
-			src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-	} else {
-		message.Activity = fmt.Sprintf("%v's %v %v%v",
-			src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-	}
+	message.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
+
+	message.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
+		stringsutil.ToUpperFirst(src.Event),
+		src.Number, src.HtmlURL,
+		src.ProjectName,
+		src.BranchName,
+		src.Result,
+		src.Commit.Id[:7],
+		src.Commit.URL)
+
+	/*
+				if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
+					message.Activity = fmt.Sprintf("%v's %v #%v %v%v",
+						src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
+				} else {
+					message.Activity = fmt.Sprintf("%v's %v %v%v",
+						src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
+				}
+
+				{
+		    "project_name":"heroku-deploy-test",
+		    "project_hash_id":"123-aga-471-6a8",
+		    "result":"passed",
+		    "event":"deploy",
+		    "server_name":"server-heroku-master-automatic-2",
+		    "number":2,
+		    "created_at":"2013-07-30T13:52:33Z",
+		    "updated_at":"2013-07-30T13:53:21Z",
+		    "started_at":"2013-07-30T13:52:38Z",
+		    "finished_at":"2013-07-30T13:53:21Z",
+		    "html_url":"https://semaphoreci.com/projects/2420/servers/81/deploys/2",
+		    "build_number":10,
+		    "branch_name":"master",
+		    "branch_html_url":"https://semaphoreci.com/projects/2420/branches/58394",
+		    "build_html_url":"https://semaphoreci.com/projects/2420/branches/58394/builds/7",
+		    "commit":{
+		        "author_email":"rastasheep3@gmail.com",
+		        "author_name":"Aleksandar Diklic",
+		        "id":"43ddb7516ecc743f0563abd7418f0bd3617348c4",
+		        "message":"One more time",
+		        "timestamp":"2013-07-19T12:56:25Z",
+		        "url":"https://github.com/rastasheep/heroku-deploy-test/commit/43ddb7516ecc743f0563abd7418f0bd3617348c4"
+		    }
+		}
+	*/
 
 	attachment := cc.NewAttachment()
 
 	if len(src.Commit.Message) > 0 {
-		attachment.Text = src.Commit.Message
-	}
-	if len(src.ProjectName) > 0 {
 		attachment.AddField(cc.Field{
-			Title: "Project",
-			Value: src.ProjectName,
+			Title: "Message",
+			Value: src.Commit.Message})
+	}
+	if 1 == 0 {
+		if len(src.ProjectName) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Project",
+				Value: src.ProjectName,
+				Short: true})
+		}
+		if len(src.BranchName) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Branch",
+				Value: src.BranchName,
+				Short: true})
+		}
+		if len(src.Event) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Event",
+				Value: src.Event,
+				Short: true})
+		}
+	}
+	if len(src.Commit.AuthorName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Committer",
+			Value: src.Commit.AuthorName,
 			Short: true})
-	}
-	if len(src.BranchName) > 0 {
-		attachment.AddField(cc.Field{
-			Title: "Branch",
-			Value: src.BranchName,
-			Short: true})
-	}
-	if len(src.HtmlURL) > 0 {
-		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[View details](%v)", src.HtmlURL)})
 	}
 
 	message.AddAttachment(attachment)

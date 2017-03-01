@@ -57,43 +57,69 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	}
 
 	if len(src.Marker.URL) > 0 {
-		message.Activity = fmt.Sprintf("%v Deployed by %v (%v)", src.Marker.Site, src.Marker.User, DisplayName)
+		message.Activity = fmt.Sprintf("%v deployed", src.Marker.Site)
 
 		attachment := cc.NewAttachment()
+		if len(src.Marker.Revision) > 0 {
+			field := cc.Field{Title: "Build", Short: true}
+			if len(src.Marker.URL) > 0 {
+				field.Value = fmt.Sprintf("[%v](%v)", src.Marker.Revision[:7], src.Marker.URL)
+			} else {
+				field.Value = src.Marker.Revision[:7]
+			}
+			attachment.AddField(field)
+		} else if len(src.Marker.URL) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Build",
+				Value: src.Marker.URL})
+		}
 		if len(src.Marker.Environment) > 0 {
 			attachment.AddField(cc.Field{
 				Title: "Environment",
 				Value: src.Marker.Environment})
 		}
-		if len(src.Marker.URL) > 0 {
+		if len(src.Marker.User) > 0 {
 			attachment.AddField(cc.Field{
-				Value: fmt.Sprintf("[View Details](%v)", src.Marker.URL)})
+				Title: "User",
+				Value: src.Marker.User,
+				Short: true})
 		}
 		message.AddAttachment(attachment)
 	} else if len(src.Exception.URL) > 0 {
 		if len(src.Exception.Site) > 0 {
-			message.Activity = fmt.Sprintf("%v Exception Incident (%v)", src.Exception.Site, DisplayName)
+			message.Activity = fmt.Sprintf("%v exception incident", src.Exception.Site)
 		} else {
-			message.Activity = fmt.Sprintf("Exception Incident (%v)", DisplayName)
+			message.Activity = fmt.Sprintf("Exception incident")
 		}
 
 		attachment := cc.NewAttachment()
 
+		if len(src.Exception.URL) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Incident Type",
+				Value: fmt.Sprintf("[Exception Incident: %v](%v)", src.Exception.Exception, src.Exception.URL),
+				Short: true})
+		} else {
+			attachment.AddField(cc.Field{
+				Title: "Incident Type",
+				Value: fmt.Sprintf("Exception Incident: %v", src.Exception.Exception),
+				Short: true})
+		}
 		if len(src.Exception.Message) > 0 {
 			attachment.AddField(cc.Field{
+				Title: "Message",
 				Value: src.Exception.Message,
-				Short: false})
+				Short: true})
+		} else if len(src.Exception.URL) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Exception",
+				Value: src.Exception.URL,
+				Short: true})
 		}
 		if len(src.Exception.Environment) > 0 {
 			attachment.AddField(cc.Field{
 				Title: "Environment",
 				Value: src.Exception.Environment,
-				Short: true})
-		}
-		if len(src.Exception.Exception) > 0 {
-			attachment.AddField(cc.Field{
-				Title: "Exception",
-				Value: src.Exception.Exception,
 				Short: true})
 		}
 		if len(src.Exception.User) > 0 {
@@ -102,27 +128,40 @@ func Normalize(bytes []byte) (cc.Message, error) {
 				Value: src.Exception.User,
 				Short: true})
 		}
-		if len(src.Exception.URL) > 0 {
-			attachment.AddField(cc.Field{
-				Value: fmt.Sprintf("[View Details](%v)", src.Exception.URL),
-				Short: true})
-		}
+
 		message.AddAttachment(attachment)
 	} else if len(src.Performance.URL) > 0 {
-		message.Activity = fmt.Sprintf("%v Performance Incident (%v)", src.Performance.Site, DisplayName)
+		message.Activity = fmt.Sprintf("%v performance incident", src.Performance.Site)
 
 		attachment := cc.NewAttachment()
 
-		if len(src.Performance.Environment) > 0 {
+		if len(src.Performance.URL) > 0 {
 			attachment.AddField(cc.Field{
-				Title: "Environment",
-				Value: src.Performance.Environment,
+				Title: "Incident Type",
+				Value: fmt.Sprintf("[%v](%v)", "Performance Incident", src.Performance.URL),
+				Short: true})
+		} else {
+			attachment.AddField(cc.Field{
+				Title: "Incident Type",
+				Value: "Performance Incident",
 				Short: true})
 		}
 		if len(src.Performance.Hostname) > 0 {
 			attachment.AddField(cc.Field{
 				Title: "Hostname",
 				Value: src.Performance.Hostname,
+				Short: true})
+		}
+		if len(src.Performance.Environment) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Environment",
+				Value: src.Performance.Environment,
+				Short: true})
+		}
+		if len(src.Performance.Action) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Action",
+				Value: src.Performance.Action,
 				Short: true})
 		}
 		if src.Performance.Duration > 0.0 {
@@ -138,10 +177,6 @@ func Normalize(bytes []byte) (cc.Message, error) {
 					Value: fmt.Sprintf("%v", src.Performance.Duration),
 					Short: true})
 			}
-		}
-		if len(src.Performance.URL) > 0 {
-			attachment.AddField(cc.Field{
-				Value: fmt.Sprintf("[View Details](%v)", src.Performance.URL)})
 		}
 		message.AddAttachment(attachment)
 	}

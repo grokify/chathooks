@@ -13,6 +13,7 @@ var (
 	AdaptersGlipActivityIncludeIntegrationName = false
 	AdaptersGlipMarkdownQuote                  = false
 	AdaptersGlipUseShortFields                 = false
+	AdatpersGlipUseFieldExtraSpacing           = true
 	EmojiURLFormat                             = ""
 	WebhookURLOrUID                            = ""
 )
@@ -28,6 +29,7 @@ func NewGlipAdapter(webhookURLOrUID string) (GlipAdapter, error) {
 	glip, err := glipwebhook.NewGlipWebhookClient(webhookURLOrUID)
 	converter := ccglip.NewGlipMessageConverter()
 	converter.UseShortFields = AdaptersGlipUseShortFields
+	converter.UseFieldExtraSpacing = AdatpersGlipUseFieldExtraSpacing
 	return GlipAdapter{
 		GlipClient:      glip,
 		WebhookURLOrUID: webhookURLOrUID,

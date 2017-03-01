@@ -78,15 +78,23 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	attachment := cc.NewAttachment()
 
 	followups := map[string]string{
+		"NewErrorOccurred":     "New Error",
+		"ErrorReoccurred":      "Error Reoccurred",
 		"OneMinuteFollowUp":    "One Minute Follow Up",
 		"FiveMinuteFollowUp":   "5 Minute Follow Up",
 		"TenMinuteFollowUp":    "10 Minute Follow Up",
 		"ThirtyMinuteFollowUp": "30 Minute Follow Up",
 		"HourlyFollowUp":       "Hourly Follow Up"}
-	if desc, ok := followups[src.EventType]; ok {
-		attachment.AddField(cc.Field{
-			Title: "Follow Up",
-			Value: desc})
+	if len(src.EventType) > 0 {
+		if desc, ok := followups[src.EventType]; ok {
+			attachment.AddField(cc.Field{
+				Title: "Message Type",
+				Value: desc})
+		} else {
+			attachment.AddField(cc.Field{
+				Title: "Message Type",
+				Value: src.EventType})
+		}
 	}
 
 	if len(src.Application.URL) > 0 {
