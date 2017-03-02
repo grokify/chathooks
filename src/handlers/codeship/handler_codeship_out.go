@@ -16,7 +16,7 @@ import (
 const (
 	DisplayName      = "Codeship"
 	HandlerKey       = "codeship"
-	IconURL          = "https://res.cloudinary.com/crunchbase-production/image/upload/v1408220431/yr2j599ysmtkfevjpvll.png"
+	IconURL          = "http://chaindock.com/wp-content/uploads/2016/10/codeship.png"
 	DocumentationURL = "https://documentation.codeship.com/basic/getting-started/webhooks/"
 )
 
