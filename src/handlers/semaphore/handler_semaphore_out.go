@@ -1,4 +1,4 @@
-package semaphoreci
+package semaphore
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ import (
 
 const (
 	DisplayName = "Semaphore"
-	HandlerKey  = "semaphoreci"
+	HandlerKey  = "semaphore"
 	IconURLX    = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/semaphore.png"
 	IconURL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
 	ICON_URL_2  = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"

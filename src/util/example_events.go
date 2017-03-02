@@ -42,7 +42,7 @@ func ExampleDataRaw() []byte {
         	"file_extension": "txt",
         	"event_slugs":["build"]
         },
-        "semaphoreci":{
+        "semaphore":{
         	"event_slugs":["build","deploy"]
         },
         "userlike":{

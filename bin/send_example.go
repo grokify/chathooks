@@ -13,12 +13,13 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/util"
 
 	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
+	"github.com/grokify/webhook-proxy-go/src/handlers/codeship"
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
-	"github.com/grokify/webhook-proxy-go/src/handlers/semaphoreci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/semaphore"
 	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
 )
@@ -96,6 +97,8 @@ func main() {
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(appsignal.ExampleMessage(exampleData, eventSlug))
 		}
+	case "codeship":
+		sender.SendCcMessage(codeship.ExampleMessage(exampleData))
 	case "confluence":
 		source := exampleData.Data[confluence.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
@@ -109,10 +112,10 @@ func main() {
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
 	case "raygun":
 		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
-	case "semaphoreci":
-		source := exampleData.Data[semaphoreci.HandlerKey]
+	case "semaphore":
+		source := exampleData.Data[semaphore.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(semaphoreci.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(semaphore.ExampleMessage(exampleData, eventSlug))
 		}
 	case "travisci":
 		sender.SendCcMessage(travisci.ExampleMessage(exampleData))

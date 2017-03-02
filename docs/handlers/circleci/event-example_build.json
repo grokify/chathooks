@@ -1,0 +1,90 @@
+{
+    "payload":{
+        "vcs_url":"https://github.com/circleci/mongofinil",
+        "build_url":"https://circleci.com/gh/circleci/mongofinil/22",
+        "build_num":22,
+        "branch":"master",
+        "vcs_revision":"1d231626ba1d2838e599c5c598d28e2306ad4e48",
+        "committer_name":"Allen Rohner",
+        "committer_email":"arohner@gmail.com",
+        "subject":"Don't explode when the system clock shifts backwards",
+        "body":"",
+        "why":"github",
+        "dont_build":null,
+        "queued_at":"2013-02-12T21:33:30Z",
+        "start_time":"2013-02-12T21:33:38Z",
+        "stop_time":"2013-02-12T21:34:01Z",
+        "build_time_millis":23505,
+        "username":"circleci",
+        "reponame":"mongofinil",
+        "lifecycle":"finished",
+        "outcome":"success",
+        "status":"success",
+        "retry_of":null,
+        "steps":[
+            {
+                "name":"configure the build",
+                "actions":[
+                    {
+                        "bash_command":null,
+                        "run_time_millis":1646,
+                        "start_time":"2013-02-12T21:33:38Z",
+                        "end_time":"2013-02-12T21:33:39Z",
+                        "name":"configure the build",
+                        "exit_code":null,
+                        "type":"infrastructure",
+                        "index":0,
+                        "status":"success"
+                    }
+                ]
+            },
+            {
+                "name":"lein2 deps",
+                "actions":[
+                    {
+                        "bash_command":"lein2 deps",
+                        "run_time_millis":7555,
+                        "start_time":"2013-02-12T21:33:47Z",
+                        "messages":[
+
+                        ],
+                        "step":1,
+                        "exit_code":0,
+                        "end_time":"2013-02-12T21:33:54Z",
+                        "index":0,
+                        "status":"success",
+                        "type":"dependencies",
+                        "source":"inference",
+                        "failed":null
+                    }
+                ]
+            },
+            {
+                "name":"lein2 trampoline midje",
+                "actions":[
+                    {
+                        "bash_command":"lein2 trampoline midje",
+                        "run_time_millis":2310,
+                        "continue":null,
+                        "parallel":true,
+                        "start_time":"2013-02-12T21:33:59Z",
+                        "name":"lein2 trampoline midje",
+                        "messages":[
+
+                        ],
+                        "step":6,
+                        "exit_code":1,
+                        "end_time":"2013-02-12T21:34:01Z",
+                        "index":0,
+                        "status":"failed",
+                        "timedout":null,
+                        "infrastructure_fail":null,
+                        "type":"test",
+                        "source":"inference",
+                        "failed":true
+                    }
+                ]
+            }
+        ]
+    }
+}
