@@ -1,3 +1,5 @@
+- 2017-03-02
+  - Add codeship sample message
 - 2017-02-18
   - Add multiple adapter support
 - 2017-02-16
