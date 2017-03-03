@@ -42,6 +42,9 @@ func ExampleDataRaw() []byte {
         	"file_extension": "txt",
         	"event_slugs":["build"]
         },
+        "pingdom":{
+        	"event_slugs":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]
+        },
         "semaphore":{
         	"event_slugs":["build","deploy"]
         },

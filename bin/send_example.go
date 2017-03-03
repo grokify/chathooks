@@ -18,6 +18,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
 	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
 	"github.com/grokify/webhook-proxy-go/src/handlers/semaphore"
@@ -111,6 +112,11 @@ func main() {
 		sender.SendCcMessage(heroku.ExampleMessage(exampleData))
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
+	case "pingdom":
+		source := exampleData.Data[pingdom.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(pingdom.ExampleMessage(exampleData, eventSlug))
+		}
 	case "raygun":
 		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
 	case "runscope":
