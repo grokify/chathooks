@@ -19,6 +19,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
+	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
 	"github.com/grokify/webhook-proxy-go/src/handlers/semaphore"
 	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
@@ -112,6 +113,8 @@ func main() {
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
 	case "raygun":
 		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
+	case "runscope":
+		sender.SendCcMessage(runscope.ExampleMessage(exampleData))
 	case "semaphore":
 		source := exampleData.Data[semaphore.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {

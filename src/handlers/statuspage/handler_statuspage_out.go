@@ -1,5 +1,6 @@
 package statuspage
 
+/*
 import (
 	"encoding/json"
 	"errors"
@@ -175,6 +176,7 @@ func StatuspageOutMessageFromBytes(bytes []byte) (StatuspageOutMessage, error) {
 	err := json.Unmarshal(bytes, &msg)
 	return msg, err
 }
+*/
 
 /*
 type MagnumciOutMessage struct {

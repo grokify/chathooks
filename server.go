@@ -9,15 +9,18 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/config"
 	"github.com/grokify/webhook-proxy-go/src/handlers"
+	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
 	"github.com/grokify/webhook-proxy-go/src/handlers/slack"
 	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
 )
 
 const (
-	ROUTE_SLACK_IN_GLIP           = "/webhook/slack/in/glip/:webhookuid"
-	ROUTE_SLACK_IN_GLIP_SLASH     = "/webhook/slack/in/glip/:webhookuid/"
-	ROUTE_TRAVISCI_OUT_GLIP       = "/webhook/travisci/out/glip/:webhookuid"
-	ROUTE_TRAVISCI_OUT_GLIP_SLASH = "/webhook/travisci/out/glip/:webhookuid/"
+	RouteSlackInToGlip          = "/webhook/slack/in/glip/:webhookuid"
+	RouteSlackInToGlipSlash     = "/webhook/slack/in/glip/:webhookuid/"
+	RouteTravisciOutToGlip      = "/webhook/travisci/out/glip/:webhookuid"
+	RouteTravisciOutToGlipSlash = "/webhook/travisci/out/glip/:webhookuid/"
+	RouteRunscopeOutToGlip      = "/webhook/runscope/out/glip/:webhookuid"
+	RouteRunscopeOutToGlipSlash = "/webhook/runscope/out/glip/:webhookuid/"
 )
 
 // StartServer initializes and starts the webhook proxy server
@@ -34,13 +37,17 @@ func StartServer(cfg config.Configuration) {
 
 	router.GET("/", handlers.HomeHandler)
 
+	runscopeOutHandler := runscope.NewRunscopeOutToGlipHandler(cfg, &adapter)
+	router.POST(RouteRunscopeOutToGlip, runscopeOutHandler.HandleFastHTTP)
+	router.POST(RouteRunscopeOutToGlipSlash, runscopeOutHandler.HandleFastHTTP)
+
 	slackInHandler := slack.NewSlackToGlipHandler(cfg, &adapter)
-	router.POST(ROUTE_SLACK_IN_GLIP, slackInHandler.HandleFastHTTP)
-	router.POST(ROUTE_SLACK_IN_GLIP_SLASH, slackInHandler.HandleFastHTTP)
+	router.POST(RouteSlackInToGlip, slackInHandler.HandleFastHTTP)
+	router.POST(RouteSlackInToGlipSlash, slackInHandler.HandleFastHTTP)
 
 	travisciOutHandler := travisci.NewTravisciOutToGlipHandler(cfg, &adapter)
-	router.POST(ROUTE_TRAVISCI_OUT_GLIP, travisciOutHandler.HandleFastHTTP)
-	router.POST(ROUTE_TRAVISCI_OUT_GLIP_SLASH, travisciOutHandler.HandleFastHTTP)
+	router.POST(RouteTravisciOutToGlip, travisciOutHandler.HandleFastHTTP)
+	router.POST(RouteTravisciOutToGlipSlash, travisciOutHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(cfg.Address(), router.Handler))
 }
