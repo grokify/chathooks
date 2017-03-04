@@ -157,42 +157,6 @@ func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) cc.Me
 		src.Commit.Id[:7],
 		src.Commit.URL)
 
-	/*
-				if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-					message.Activity = fmt.Sprintf("%v's %v #%v %v%v",
-						src.Commit.AuthorName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-				} else {
-					message.Activity = fmt.Sprintf("%v's %v %v%v",
-						src.Commit.AuthorName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-				}
-
-				{
-		    "project_name":"heroku-deploy-test",
-		    "project_hash_id":"123-aga-471-6a8",
-		    "result":"passed",
-		    "event":"deploy",
-		    "server_name":"server-heroku-master-automatic-2",
-		    "number":2,
-		    "created_at":"2013-07-30T13:52:33Z",
-		    "updated_at":"2013-07-30T13:53:21Z",
-		    "started_at":"2013-07-30T13:52:38Z",
-		    "finished_at":"2013-07-30T13:53:21Z",
-		    "html_url":"https://semaphoreci.com/projects/2420/servers/81/deploys/2",
-		    "build_number":10,
-		    "branch_name":"master",
-		    "branch_html_url":"https://semaphoreci.com/projects/2420/branches/58394",
-		    "build_html_url":"https://semaphoreci.com/projects/2420/branches/58394/builds/7",
-		    "commit":{
-		        "author_email":"rastasheep3@gmail.com",
-		        "author_name":"Aleksandar Diklic",
-		        "id":"43ddb7516ecc743f0563abd7418f0bd3617348c4",
-		        "message":"One more time",
-		        "timestamp":"2013-07-19T12:56:25Z",
-		        "url":"https://github.com/rastasheep/heroku-deploy-test/commit/43ddb7516ecc743f0563abd7418f0bd3617348c4"
-		    }
-		}
-	*/
-
 	attachment := cc.NewAttachment()
 
 	if len(src.Commit.Message) > 0 {

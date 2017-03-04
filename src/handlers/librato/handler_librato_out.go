@@ -137,7 +137,7 @@ func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolati
 	}
 
 	if violation.RecordedAt > 0 {
-		dt := time.Unix(violation.RecordedAt, 0)
+		dt := time.Unix(violation.RecordedAt, 0).UTC()
 		attachment.AddField(cc.Field{
 			Title: "Recorded At",
 			Value: dt.Format(time.RFC1123)})
@@ -159,7 +159,7 @@ func NormalizeSourceCleared(src LibratoOutMessage) cc.Message {
 
 	triggerTime := ""
 	if src.TriggerTime > 0 {
-		dt := time.Unix(src.TriggerTime, 0)
+		dt := time.Unix(src.TriggerTime, 0).UTC()
 		triggerTime = fmt.Sprintf(" at %v", dt.Format(time.RFC1123))
 	}
 
