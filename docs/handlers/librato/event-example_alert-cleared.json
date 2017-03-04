@@ -1,5 +1,4 @@
 {
-    "payload":{
         "alert":{
             "id":6268092,
             "name":"a.test.name",
@@ -9,5 +8,4 @@
         "account":"youremail@yourdomain.com",
         "trigger_time":1457040045,
         "clear":"normal"
-    }
 }

@@ -22,8 +22,9 @@ const (
 
 // FastHttp request handler for Travis CI outbound webhook
 type RunscopeOutToGlipHandler struct {
-	Config  config.Configuration
-	Adapter adapters.Adapter
+	Config             config.Configuration
+	Adapter            adapters.Adapter
+	FilterFailuresOnly bool
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook

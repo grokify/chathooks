@@ -17,6 +17,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
+	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
@@ -110,6 +111,11 @@ func main() {
 		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
 	case "heroku":
 		sender.SendCcMessage(heroku.ExampleMessage(exampleData))
+	case "librato":
+		source := exampleData.Data[librato.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(librato.ExampleMessage(exampleData, eventSlug))
+		}
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
 	case "pingdom":

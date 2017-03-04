@@ -85,7 +85,7 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 	message.IconURL = IconURL
 
 	if len(strings.TrimSpace(src.App)) > 0 {
-		message.Activity = fmt.Sprintf("%v deployed on %v", src.App, DisplayName)
+		message.Activity = fmt.Sprintf("%v deployed on %v\n\n", src.App, DisplayName)
 	} else {
 		message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
 	}

@@ -42,6 +42,9 @@ func ExampleDataRaw() []byte {
         	"file_extension": "txt",
         	"event_slugs":["build"]
         },
+        "librato":{
+        	"event_slugs":["alert-triggered","alert-cleared"]
+        },
         "pingdom":{
         	"event_slugs":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]
         },
