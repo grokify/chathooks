@@ -1,5 +1,5 @@
 - 2017-04-04
-  - Add handlers `circleci`, `librato`, `papertrail
+  - Add handlers `circleci`, `gosquared`, `librato`, `papertrail
 - 2017-03-02
   - Add handlers `runscope`, `pingdom`
   - Add samples: `codeship`, `sendgrid`

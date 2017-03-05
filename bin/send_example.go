@@ -17,6 +17,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/codeship"
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
+	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
@@ -113,6 +114,11 @@ func main() {
 		}
 	case "enchant":
 		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
+	case "gosquared":
+		source := exampleData.Data[gosquared.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(gosquared.ExampleMessage(exampleData, eventSlug))
+		}
 	case "heroku":
 		sender.SendCcMessage(heroku.ExampleMessage(exampleData))
 	case "librato":

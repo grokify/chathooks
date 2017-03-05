@@ -38,6 +38,9 @@ func ExampleDataRaw() []byte {
         "confluence":{
             "event_slugs": ["page-created","comment-created"]
         },
+        "gosquared":{
+            "event_slugs": ["site-traffic","smart-group"]
+        },
         "heroku":{
             "file_extension": "txt",
             "event_slugs":["build"]
