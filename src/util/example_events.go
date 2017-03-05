@@ -39,11 +39,14 @@ func ExampleDataRaw() []byte {
             "event_slugs": ["page-created","comment-created"]
         },
         "heroku":{
-        	"file_extension": "txt",
-        	"event_slugs":["build"]
+            "file_extension": "txt",
+            "event_slugs":["build"]
         },
         "librato":{
-        	"event_slugs":["alert-triggered","alert-cleared"]
+            "event_slugs":["alert-triggered","alert-cleared"]
+        },
+        "papertrail":{
+            "event_slugs":["notifications-array-len-1","notifications-array"]
         },
         "pingdom":{
         	"event_slugs":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]

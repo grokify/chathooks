@@ -18,7 +18,7 @@ import (
 const (
 	DisplayName      = "Librato"
 	HandlerKey       = "librato"
-	IconURL          = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/librato.png"
+	IconURL          = "https://raw.githubusercontent.com/grokify/webhook-proxy-go/master/images/icons/librato_128x128.png"
 	IconURLX         = "https://a.slack-edge.com/ae7f/plugins/librato/assets/service_512.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )
@@ -169,21 +169,7 @@ func NormalizeSourceCleared(src LibratoOutMessage) cc.Message {
 	} else {
 		message.Title = fmt.Sprintf("%s cleared%s", alertName, triggerTime)
 	}
-	/*
-	   {
-	       "payload":{
-	           "alert":{
-	               "id":6268092,
-	               "name":"a.test.name",
-	               "runbook_url":"",
-	               "version":2
-	           },
-	           "account":"youremail@yourdomain.com",
-	           "trigger_time":1457040045,
-	           "clear":"normal"
-	       }
-	   }
-	*/
+
 	return message
 }
 
