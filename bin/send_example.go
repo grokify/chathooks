@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/util"
+	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
 	"github.com/grokify/webhook-proxy-go/src/handlers/circleci"
@@ -21,6 +23,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/opsgenie"
 	"github.com/grokify/webhook-proxy-go/src/handlers/papertrail"
 	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
@@ -43,10 +46,13 @@ func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 	if err != nil {
 		panic(fmt.Sprintf("Bad Test Message: %v\n", err))
 	}
-	_, _, err = sender.Adapter.SendMessage(ccMsg)
+	req, resp, err := sender.Adapter.SendMessage(ccMsg)
+	fmt.Printf("RESPONSE_STATUS_CODE [%v]\n", resp.StatusCode())
 	if err != nil {
 		fmt.Printf("ERROR [%v]\n", err)
 	}
+	fasthttp.ReleaseRequest(req)
+	fasthttp.ReleaseResponse(resp)
 }
 
 func main() {
@@ -128,6 +134,14 @@ func main() {
 		}
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
+	case "opsgenie":
+		source := exampleData.Data[opsgenie.HandlerKey]
+		for i, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(opsgenie.ExampleMessage(exampleData, eventSlug))
+			if i == 8 {
+				time.Sleep(2000 * time.Millisecond)
+			}
+		}
 	case "papertrail":
 		source := exampleData.Data[papertrail.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {

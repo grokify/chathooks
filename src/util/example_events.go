@@ -48,6 +48,13 @@ func ExampleDataRaw() []byte {
         "librato":{
             "event_slugs":["alert-triggered","alert-cleared"]
         },
+        "opsgenie":{
+            "event_slugs_":["create","close","delete",
+            "acknowledge","unacknowledge",
+            "add-note","add-recipient","add-tags","add-team"],
+            "event_slugs":["remove-tags","assign-ownership","take-ownership", "escalate",
+            "custom-action-test-action"]
+        },
         "papertrail":{
             "event_slugs":["notifications-array-len-1","notifications-array"]
         },
