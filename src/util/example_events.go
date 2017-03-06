@@ -71,7 +71,8 @@ func ExampleDataRaw() []byte {
             "event_slugs":["incident-updates","incident-updates-create","component-updates"]
         },
         "userlike":{
-        	"event_slugs":["chat-meta_feedback","chat-meta_forward","chat-meta_rating","chat-meta_receive","chat-meta_start","chat-meta_survey","chat-widget_config","offline-message_receive","operator_away","operator_back","operator_offline","operator_online"]
+        	"event_slugs_":["chat-meta_feedback","chat-meta_forward","chat-meta_rating","chat-meta_receive","chat-meta_start","chat-meta_survey"],
+            "event_slugs":["chat-widget_config","offline-message_receive","operator_away","operator_back","operator_offline","operator_online"]
         }
     }
 }`)

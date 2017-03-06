@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 
@@ -103,25 +104,27 @@ func GlipActivityForChat(event string, feedback string) string {
 			eventDisplay = displayTry
 		}
 	}
-	return fmt.Sprintf("%s chat %s", DisplayName, eventDisplay)
+	return fmt.Sprintf("Chat %s", eventDisplay)
 }
 
 func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) cc.Message {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 
-	clientName := src.ClientName
-	if len(clientName) < 1 {
-		clientName = "Website Visitor"
-	}
-	message.Activity = fmt.Sprintf("%s sent a new Offline Message%v", clientName, adapters.IntegrationActivitySuffix(DisplayName))
+	message.Activity = fmt.Sprintf("Offline message received%v", adapters.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
 	attachment.ThumbnailURL = IconURL
 
 	if len(src.URL) > 0 {
 		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[View message](%v)", src.URL)})
+			Title: "Message",
+			Value: fmt.Sprintf("[%s](%v)", src.Message, src.URL)})
+	}
+	if len(src.ClientName) > 0 {
+		attachment.AddField(cc.Field{
+			Title: "Client Name",
+			Value: fmt.Sprintf("%s", src.ClientName)})
 	}
 
 	if len(attachment.Fields) > 0 {
@@ -139,35 +142,40 @@ func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
 	attachment := cc.NewAttachment()
 	attachment.ThumbnailURL = IconURL
 
+	displayedUrl := false
+
 	if src.Event == "rating" || src.Event == "survey" { // includes feedback
 		if len(src.FeedbackMessage) > 0 {
+			url, linked := LinkifyURL(src.FeedbackMessage, src.URL, displayedUrl)
+			displayedUrl = linked
 			attachment.AddField(cc.Field{
 				Title: "Feedback",
-				Value: src.FeedbackMessage,
+				Value: url,
 				Short: false})
 		}
 		if len(src.PostSurveyOption) > 0 {
+			url, linked := LinkifyURL(src.PostSurveyOption, src.URL, displayedUrl)
+			displayedUrl = linked
 			attachment.AddField(cc.Field{
 				Title: "Rating",
-				Value: src.PostSurveyOption,
+				Value: url,
 				Short: true})
 		}
 	}
 	if len(src.ClientName) > 0 {
+		url, linked := LinkifyURL(src.ClientName, src.URL, displayedUrl)
+		displayedUrl = linked
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
-			Value: src.ClientName,
+			Value: url,
 			Short: true})
 	} else {
+		url, linked := LinkifyURL("Unknown", src.URL, displayedUrl)
+		displayedUrl = linked
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
-			Value: "Unknown",
+			Value: url,
 			Short: true})
-	}
-
-	if len(src.URL) > 0 {
-		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[View details](%v)", src.URL)})
 	}
 
 	if len(attachment.Fields) > 0 {
@@ -176,10 +184,38 @@ func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
 	return message
 }
 
+func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
+	//linked := false
+	if len(innerHtml) == 0 && len(url) > 0 {
+		innerHtml = url
+	}
+	if skipLinking == true {
+		return innerHtml, skipLinking
+	}
+	if len(url) < 1 {
+		return innerHtml, false
+	}
+	if len(innerHtml) > 0 {
+		return fmt.Sprintf("[%s](%s)", innerHtml, url), true
+	}
+	return fmt.Sprintf("[%s](%s)", url, url), true
+}
+
 func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 	message.Activity = fmt.Sprintf("Chat widget configuration updated%s", adapters.IntegrationActivitySuffix(DisplayName))
+
+	titleParts := []string{}
+	if len(src.StatusUrl) > 0 {
+		titleParts = append(titleParts, fmt.Sprintf("[Check status](%s)", src.StatusUrl))
+	}
+	if len(src.TestUrl) > 0 {
+		titleParts = append(titleParts, fmt.Sprintf("[test widget](%s)", src.TestUrl))
+	}
+	if len(titleParts) > 0 {
+		message.Title = strings.Join(titleParts, " and ")
+	}
 
 	attachment := cc.NewAttachment()
 	attachment.ThumbnailURL = IconURL
@@ -200,16 +236,6 @@ func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
 			Value: fmt.Sprintf("%v", src.WidgetExternalType),
 			Short: true})
 	}
-	if len(src.StatusUrl) > 0 {
-		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[Widget Status](%v)", src.StatusUrl),
-			Short: false})
-	}
-	if len(src.TestUrl) > 0 {
-		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[Test Widget](%v)", src.TestUrl),
-			Short: false})
-	}
 
 	message.AddAttachment(attachment)
 	return message
@@ -218,24 +244,17 @@ func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
 func NormalizeOperator(src UserlikeOperatorOutMessage) cc.Message {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
-	message.Activity = fmt.Sprintf("%s (operator) is %s%s",
-		src.Name, src.Event, adapters.IntegrationActivitySuffix(DisplayName))
-	/*
-		gmsg := glipwebhook.GlipWebhookMessage{
-			Activity: fmt.Sprintf("%s is %s as operator%s",
-				src.Name, src.Event, adapters.IntegrationActivitySuffix(DISPLAY_NAME)),
-			Icon: ICON_URL}
-	*/
-	//message := util.NewMessage()
+	message.Activity = fmt.Sprintf("Operator is %s%s",
+		src.Event, adapters.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
 
 	if len(src.DashboardUrl) > 0 {
 		attachment.AddField(cc.Field{
-			Value: fmt.Sprintf("[Operator Details](%v)", src.DashboardUrl)})
+			Title: "Operator",
+			Value: fmt.Sprintf("[%s](%s)", src.Name, src.DashboardUrl)})
 	}
 
-	//gmsg.Body = adapters.RenderMessage(message)
 	message.AddAttachment(attachment)
 	return message
 }
