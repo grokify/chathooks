@@ -15,6 +15,7 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
+	"github.com/grokify/webhook-proxy-go/src/handlers/apteligent"
 	"github.com/grokify/webhook-proxy-go/src/handlers/circleci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/codeship"
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
@@ -109,6 +110,11 @@ func main() {
 		source := exampleData.Data[appsignal.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(appsignal.ExampleMessage(exampleData, eventSlug))
+		}
+	case "apteligent":
+		source := exampleData.Data[apteligent.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(apteligent.ExampleMessage(exampleData, eventSlug))
 		}
 	case "circleci":
 		sender.SendCcMessage(circleci.ExampleMessage(exampleData))

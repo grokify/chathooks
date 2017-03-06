@@ -1,3 +1,5 @@
+- 2017-04-05
+  - Add handlers `apteligent`, `statuspage`
 - 2017-04-04
   - Add handlers `circleci`, `gosquared`, `librato`, `opsgenie`, `papertrail
 - 2017-03-02

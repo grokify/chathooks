@@ -35,6 +35,9 @@ func ExampleDataRaw() []byte {
             "file_extension": "json",
             "event_slugs": ["marker","exception","performance"]
         },
+        "apteligent":{
+            "event_slugs": ["alert","alert-open","alert-close"]
+        },
         "confluence":{
             "event_slugs": ["page-created","comment-created"]
         },
