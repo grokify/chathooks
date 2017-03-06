@@ -1,5 +1,15 @@
-Adding Userlike Notifications to Glip
-=====================================
+How to add a Userlike Bot
+=========================
+
+## Configuring Webhook
+
+Use the following steps to configure a webhook connection in Userlike.
+
+1. Login to *Userlike* and then, on the left navigation menu, click **Config**.
+2. On the *Config* menu, click **Addons Settings**.
+3. In the *SERVICE* column and the *API* row, click the **Edit** icon in the *ACTION* column to display the *Configure Callback API* page.
+4. In the *Configure* section's **Callback URL** field, enter your Userlike proxy URL.
+5. Select one or more events in the next sections that will trigger a webhook alert message, and then click **Update Settings**.
 
 ## Events
 
