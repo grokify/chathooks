@@ -1,6 +1,5 @@
 package statuspage
 
-/*
 import (
 	"encoding/json"
 	"errors"
@@ -9,6 +8,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
+	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/config"
 	"github.com/grokify/webhook-proxy-go/src/util"
@@ -66,29 +66,68 @@ func NormalizeComponentUpdate(src StatuspageOutMessage) (cc.Message, error) {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
 
-	message.Activity = "Status Changed"
+	message.Activity = "Component status changed"
+
 	componentURL, err := src.PageURL()
 	if err == nil {
-		message.Title = fmt.Sprintf("[%s](%s) status changed", src.Component.Name)
+		message.Title = fmt.Sprintf("[%s](%s) component status udpated from **%s** to **%s**",
+			src.Component.Name,
+			componentURL,
+			src.ComponentUpdate.OldStatus,
+			src.ComponentUpdate.NewStatus)
 	} else {
-		message.Title = fmt.Sprintf("%s status changed", src.Component.Name)
+		message.Title = fmt.Sprintf("%s component status udpated from **%s** to **%s**",
+			src.Component.Name,
+			src.ComponentUpdate.OldStatus,
+			src.ComponentUpdate.NewStatus)
 	}
-	attachment := cc.Attachment{}
 
-	if len(src.ComponentUpdate.NewStatus) > 0 {
+	return message, nil
+}
+
+func ToUpperFirstWorlds(input string, sep1 string, sep2 string) string {
+	return ""
+}
+
+func NormalizeIncidentUpdate(src StatuspageOutMessage) (cc.Message, error) {
+	message := cc.NewMessage()
+	message.IconURL = IconURL
+
+	if len(src.Incident.IncidentUpdates) == 0 {
+		return message, errors.New("No incident update found")
+	} else if len(src.Incident.IncidentUpdates) == 1 {
+		message.Activity = "New incident created"
+	} else {
+		message.Activity = "Incident updated"
+	}
+
+	thisUpdate := src.Incident.IncidentUpdates[0]
+
+	if len(src.Incident.IncidentUpdates) == 1 {
+		message.Title = fmt.Sprintf("[%s](%s) incident created with status **%s**",
+			src.Page.StatusDescription,
+			src.Incident.Shortlink,
+			stringsutil.ToUpperFirst(thisUpdate.Status))
+	} else if len(src.Incident.IncidentUpdates) > 1 {
+		prevUpdate := src.Incident.IncidentUpdates[1]
+		message.Title = fmt.Sprintf("[%s](%s) incident updated from **%s** to **%s**",
+			src.Page.StatusDescription,
+			src.Incident.Shortlink,
+			stringsutil.ToUpperFirst(prevUpdate.Status),
+			stringsutil.ToUpperFirst(thisUpdate.Status))
+	}
+
+	attachment := cc.NewAttachment()
+	if len(thisUpdate.Body) > 0 {
 		attachment.AddField(cc.Field{
-			Title: "New Status",
-			Value: src.ComponentUpdate.NewStatus})
+			Title: "Message",
+			Value: thisUpdate.Body})
 	}
 
-	if len(src.ComponentUpdate.OldStatus) > 0 {
-		attachment.AddField(cc.Field{
-			Title: "Old Status",
-			Value: src.ComponentUpdate.OldStatus})
+	if len(attachment.Fields) > 0 {
+		message.AddAttachment(attachment)
 	}
-
-	message.AddAttachment(attachment)
-	return message
+	return message, nil
 }
 
 type StatuspageOutMessage struct {
@@ -104,7 +143,11 @@ func (msg *StatuspageOutMessage) PageURL() (string, error) {
 	if len(msg.Page.Id) < 1 {
 		return "", errors.New("Page Id Not Found")
 	}
-	return fmt.Sprintf(ComponentURLFormat, msg.Page.Id)
+	return fmt.Sprintf(ComponentURLFormat, msg.Page.Id), nil
+}
+
+func (msg *StatuspageOutMessage) IncidentURL() string {
+	return fmt.Sprintf("")
 }
 
 type StatuspageOutMeta struct {
@@ -176,34 +219,3 @@ func StatuspageOutMessageFromBytes(bytes []byte) (StatuspageOutMessage, error) {
 	err := json.Unmarshal(bytes, &msg)
 	return msg, err
 }
-*/
-
-/*
-type MagnumciOutMessage struct {
-	Id             int64  `json:"id,omitempty"`
-	ProjectId      int64  `json:"project_id,omitempty"`
-	Title          string `json:"title,omitempty"`
-	Number         int64  `json:"number,omitempty"`
-	Commit         string `json:"commit,omitempty"`
-	Author         string `json:"author,omitempty"`
-	Committer      string `json:"committer,omitempty"`
-	Message        string `json:"message,omitempty"`
-	Branch         string `json:"branch,omitempty"`
-	State          string `json:"state,omitempty"`
-	Status         string `json:"status,omitempty"`
-	Result         int64  `json:"result,omitempty"`
-	Duration       int64  `json:"duration,omitempty"`
-	DurationString string `json:"duration_string,omitempty"`
-	CommitURL      string `json:"commit_url,omitempty"`
-	CompareURL     string `json:"compare_url,omitempty"`
-	BuildURL       string `json:"build_url,omitempty"`
-	StartedAt      string `json:"started_at,omitempty"`
-	FinishedAt     string `json:"finished_at,omitempty"`
-}
-
-func MagnumciOutMessageFromBytes(bytes []byte) (MagnumciOutMessage, error) {
-	msg := MagnumciOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
-}
-*/

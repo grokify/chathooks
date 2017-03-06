@@ -62,7 +62,10 @@ func ExampleDataRaw() []byte {
         	"event_slugs":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]
         },
         "semaphore":{
-        	"event_slugs":["build","deploy"]
+            "event_slugs":["build","deploy"]
+        },
+        "statuspage":{
+            "event_slugs":["incident-updates","incident-updates-create","component-updates"]
         },
         "userlike":{
         	"event_slugs":["chat-meta_feedback","chat-meta_forward","chat-meta_rating","chat-meta_receive","chat-meta_start","chat-meta_survey","chat-widget_config","offline-message_receive","operator_away","operator_back","operator_offline","operator_online"]

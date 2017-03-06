@@ -29,6 +29,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
 	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
 	"github.com/grokify/webhook-proxy-go/src/handlers/semaphore"
+	"github.com/grokify/webhook-proxy-go/src/handlers/statuspage"
 	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
 )
@@ -160,6 +161,11 @@ func main() {
 		source := exampleData.Data[semaphore.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(semaphore.ExampleMessage(exampleData, eventSlug))
+		}
+	case "statuspage":
+		source := exampleData.Data[statuspage.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(statuspage.ExampleMessage(exampleData, eventSlug))
 		}
 	case "travisci":
 		sender.SendCcMessage(travisci.ExampleMessage(exampleData))
