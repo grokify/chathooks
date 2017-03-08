@@ -9,6 +9,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/adapters"
 	"github.com/grokify/webhook-proxy-go/src/config"
 	"github.com/grokify/webhook-proxy-go/src/handlers"
+	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
 	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
 	"github.com/grokify/webhook-proxy-go/src/handlers/slack"
@@ -16,14 +17,16 @@ import (
 )
 
 const (
-	RouteSlackInToGlip          = "/webhook/slack/in/glip/:webhookuid"
-	RouteSlackInToGlipSlash     = "/webhook/slack/in/glip/:webhookuid/"
-	RoutePingdomOutToGlip       = "/webhook/pingdom/out/glip/:webhookuid"
-	RoutePingdomOutToGlipSlash  = "/webhook/pingdom/out/glip/:webhookuid/"
-	RouteRunscopeOutToGlip      = "/webhook/runscope/out/glip/:webhookuid"
-	RouteRunscopeOutToGlipSlash = "/webhook/runscope/out/glip/:webhookuid/"
-	RouteTravisciOutToGlip      = "/webhook/travisci/out/glip/:webhookuid"
-	RouteTravisciOutToGlipSlash = "/webhook/travisci/out/glip/:webhookuid/"
+	RouteAppsignalOutToGlip      = "/webhook/appsignal/out/glip/:webhookuid"
+	RouteAppsignalOutToGlipSlash = "/webhook/appsignal/out/glip/:webhookuid/"
+	RouteSlackInToGlip           = "/webhook/slack/in/glip/:webhookuid"
+	RouteSlackInToGlipSlash      = "/webhook/slack/in/glip/:webhookuid/"
+	RoutePingdomOutToGlip        = "/webhook/pingdom/out/glip/:webhookuid"
+	RoutePingdomOutToGlipSlash   = "/webhook/pingdom/out/glip/:webhookuid/"
+	RouteRunscopeOutToGlip       = "/webhook/runscope/out/glip/:webhookuid"
+	RouteRunscopeOutToGlipSlash  = "/webhook/runscope/out/glip/:webhookuid/"
+	RouteTravisciOutToGlip       = "/webhook/travisci/out/glip/:webhookuid"
+	RouteTravisciOutToGlipSlash  = "/webhook/travisci/out/glip/:webhookuid/"
 )
 
 // StartServer initializes and starts the webhook proxy server
@@ -39,6 +42,10 @@ func StartServer(cfg config.Configuration) {
 	router := fasthttprouter.New()
 
 	router.GET("/", handlers.HomeHandler)
+
+	appsignalOutHandler := appsignal.NewAppsignalOutToGlipHandler(cfg, &adapter)
+	router.POST(RouteAppsignalOutToGlip, appsignalOutHandler.HandleFastHTTP)
+	router.POST(RouteAppsignalOutToGlipSlash, appsignalOutHandler.HandleFastHTTP)
 
 	pingdomOutHandler := pingdom.NewPingdomOutToGlipHandler(cfg, &adapter)
 	router.POST(RoutePingdomOutToGlip, pingdomOutHandler.HandleFastHTTP)

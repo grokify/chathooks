@@ -12,6 +12,8 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/config"
 	"github.com/grokify/webhook-proxy-go/src/util"
 	"github.com/valyala/fasthttp"
+
+	"github.com/grokify/gotilla/fmt/fmtutil"
 )
 
 const (
@@ -33,6 +35,13 @@ func NewAppsignalOutToGlipHandler(cfg config.Configuration, adapter adapters.Ada
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *AppsignalOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+	log.WithFields(log.Fields{
+		"event":   "incoming.webhook",
+		"handler": DisplayName}).Info("HANDLE_FASTHTTP")
+	log.WithFields(log.Fields{
+		"event":   "incoming.webhook",
+		"handler": DisplayName}).Info(string(ctx.PostBody()))
+
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {
@@ -50,11 +59,13 @@ func (h *AppsignalOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 func Normalize(bytes []byte) (cc.Message, error) {
 	message := cc.NewMessage()
 	message.IconURL = IconURL
-
+	fmt.Println("NORMALIZE")
 	src, err := AppsignalOutMessageFromBytes(bytes)
 	if err != nil {
 		return message, err
 	}
+	fmt.Println("HERE")
+	fmtutil.PrintJSON(src)
 
 	if len(src.Marker.URL) > 0 {
 		message.Activity = "App deployed"
@@ -204,6 +215,7 @@ type AppsignalOutMessage struct {
 	Marker      AppsignalMarker      `json:"marker,omitempty"`
 	Exception   AppsignalException   `json:"exception,omitempty"`
 	Performance AppsignalPerformance `json:"performance,omitempty"`
+	Test        string               `json:"test,omitempty"`
 }
 
 func AppsignalOutMessageFromBytes(bytes []byte) (AppsignalOutMessage, error) {
@@ -229,10 +241,32 @@ type AppsignalException struct {
 	Path               string `json:"path,omitempty"`
 	Revision           string `json:"revision,omitempty"`
 	User               string `json:"user,omitempty"`
+	Hostname           string `json:"hostname,omitempty"`
 	FirstBacktraceLine string `json:"first_backtrace_line,omitempty"`
 	URL                string `json:"url,omitempty"`
 	Environment        string `json:"environment,omitempty"`
+	Namespace          string `json:"namespace,omitempty"`
 }
+
+/*
+
+{
+  "exception":{
+    "exception":"RuntimeError",
+    "site":"My Glip App",
+    "message":"Test Exception",
+    "action":"GET /",
+    "path":"/","revision":"No deploy yet",
+    "user":"N/A",
+    "hostname":"lmrc6152.rcoffice.ringcentral.com",
+    "first_backtrace_line":"oauth2.rb:17:in `block in \u003cmain\u003e'",
+    "url":"https://appsignal.com/grokbase/sites/58bdbb7c16b7e2656bfc3bed/web/exceptions/GET%20-slash-/RuntimeError",
+    "environment":"development",
+    "metadata":{},
+    "namespace":"web"
+  }
+}
+*/
 
 type AppsignalPerformance struct {
 	Site        string  `json:"site,omitempty"`
