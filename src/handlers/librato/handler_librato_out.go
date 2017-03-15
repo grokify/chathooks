@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -21,6 +22,10 @@ const (
 	IconURL          = "https://raw.githubusercontent.com/grokify/webhook-proxy-go/master/images/icons/librato_128x128.png"
 	IconURLX         = "https://a.slack-edge.com/ae7f/plugins/librato/assets/service_512.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
+)
+
+var (
+	IncludeRecordedAt = false
 )
 
 // FastHttp request handler for outbound webhook
@@ -73,23 +78,68 @@ func NormalizeSourceTriggered(src LibratoOutMessage) cc.Message {
 	message.Activity = "Alert triggered"
 
 	if len(src.Alert.Name) > 0 {
-		message.Title = fmt.Sprintf("[%v](%s) alert triggered!",
-			src.Alert.Name, src.Alert.RunbookURL)
+		if len(src.Alert.RunbookURL) > 0 {
+			message.Title = fmt.Sprintf("Alert [%v](%s) has triggered!",
+				src.Alert.Name, src.Alert.RunbookURL)
+		} else {
+			message.Title = fmt.Sprintf("Alert %v has triggered!",
+				src.Alert.Name)
+		}
 	}
 
 	for violationName, violationSet := range src.Violations {
-		for _, violation := range violationSet {
+		n := len(violationSet)
+		for i, violation := range violationSet {
 			violation.Name = violationName
-			message.AddAttachment(BuildViolationAttachment(src, violation))
+			violationSuffix := ""
+			if n > 1 {
+				violationSuffix = fmt.Sprintf(" %v", i+1)
+			}
+			message.AddAttachment(BuildViolationAttachment(src, violation, violationSuffix))
 		}
 	}
 
 	return message
 }
 
-func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolation) cc.Attachment {
-
+func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolation, violationSuffix string) cc.Attachment {
 	attachment := cc.NewAttachment()
+
+	condition, errNoCondition := src.GetCondition(violation.ConditionViolated)
+
+	IncludeRecordedAt = true
+	violationRecordedAtSuffix := ""
+	if IncludeRecordedAt && violation.RecordedAt > 0 {
+		dt := time.Unix(violation.RecordedAt, 0).UTC()
+		violationRecordedAtSuffix = fmt.Sprintf(" recorded at %v", dt.Format(time.RFC1123))
+	}
+
+	if errNoCondition == nil {
+		conditionComparison := "above"
+		if float64(violation.Value) < condition.Threshold {
+			conditionComparison = "below"
+		}
+
+		attachment.AddField(cc.Field{
+			Title: fmt.Sprintf("Violation%s", violationSuffix),
+			Value: fmt.Sprintf("%s metric `%v` was **%s** threshold %v with value %v%s",
+				violation.Name,
+				violation.Metric,
+				conditionComparison,
+				strconv.FormatFloat(condition.Threshold, 'f', -1, 64),
+				violation.Value,
+				violationRecordedAtSuffix)})
+	} else {
+		attachment.AddField(cc.Field{
+			Title: "Violation",
+			Value: fmt.Sprintf("%v: metric `%v` with value %v%s",
+				violation.Name,
+				violation.Metric,
+				violation.Value,
+				violationRecordedAtSuffix)})
+	}
+
+	return attachment
 
 	if len(violation.Name) > 0 {
 		attachment.AddField(cc.Field{

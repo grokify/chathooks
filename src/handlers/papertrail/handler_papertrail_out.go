@@ -3,6 +3,7 @@ package papertrail
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 
@@ -20,13 +21,13 @@ const (
 	DocumentationURL = "http://help.papertrailapp.com/kb/how-it-works/web-hooks/"
 )
 
-// FastHttp request handler for Travis CI outbound webhook
+// FastHttp request handler for outbound webhook
 type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Travis CI outbound webhook
+// FastHttp request handler constructor for outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
@@ -83,16 +84,31 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		attachment := cc.NewAttachment()
 
 		if len(event.Message) > 0 {
+			hostString := ""
+			hostParts := []string{}
+			if len(event.Hostname) > 0 {
+				hostParts = append(hostParts, event.Hostname)
+			}
+			if len(event.Facility) > 0 {
+				hostParts = append(hostParts, event.Facility)
+			}
+			if len(hostParts) > 0 {
+				hostPartsString := strings.Join(hostParts, "/")
+				hostString = fmt.Sprintf(" (%v)", hostPartsString)
+			}
 			if len(event.Severity) > 0 {
 				attachment.AddField(cc.Field{
 					Title: fmt.Sprintf("Event%v", eventNumberDisplay),
-					Value: fmt.Sprintf("[%s] %s", event.Severity, event.Message)})
+					Value: fmt.Sprintf("[%s] %s%s", event.Severity, event.Message, hostString)})
 			} else {
 				attachment.AddField(cc.Field{
 					Title: fmt.Sprintf("Event%v", eventNumberDisplay),
-					Value: fmt.Sprintf("%s", event.Message)})
+					Value: fmt.Sprintf("%s%s", event.Message, hostString)})
 			}
 		}
+
+		message.AddAttachment(attachment)
+		continue
 		if len(event.SourceName) > 0 {
 			source := event.SourceName
 			if len(event.SourceIP) > 0 {

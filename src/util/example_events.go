@@ -49,7 +49,7 @@ func ExampleDataRaw() []byte {
             "event_slugs":["build"]
         },
         "librato":{
-            "event_slugs":["alert-triggered","alert-cleared"]
+            "event_slugs":["2","alert-triggered","alert-cleared"]
         },
         "opsgenie":{
             "event_slugs_":["create","close","delete",
