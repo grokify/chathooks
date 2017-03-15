@@ -21,18 +21,18 @@ const (
 )
 
 // FastHttp request handler for Travis CI outbound webhook
-type GosquaredOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook
-func NewGosquaredOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) GosquaredOutToGlipHandler {
-	return GosquaredOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *GosquaredOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {
@@ -79,7 +79,7 @@ func NormalizeSiteTraffic(bytes []byte) (cc.Message, error) {
 		pluralSuffix = ""
 	}
 
-	message.Title = fmt.Sprintf("[%s](%s) has %v visitor%s online - [Project Dashboard](%s)",
+	message.Title = fmt.Sprintf("[%s](%s) has [%v visitor%s online](%s)",
 		src.SiteDetails.SiteName,
 		src.SiteDetails.URL,
 		src.Concurrents,
@@ -104,12 +104,11 @@ func NormalizeSmartGroup(bytes []byte) (cc.Message, error) {
 	}
 
 	message.Activity = fmt.Sprintf("User has %s Smart Group", verb)
-	message.Title = fmt.Sprintf("%s has %s %v - [Project People](%s)",
+	message.Title = fmt.Sprintf("%s has %s [%s](%s)",
 		src.Person.Name,
 		verb,
 		src.Group.Name,
-		PeopleEveryoneURL(src.SiteToken))
-
+		src.GroupURL())
 	return message, nil
 }
 
@@ -154,6 +153,12 @@ func GosquaredOutMessageSmartGroupFromBytes(bytes []byte) (GosquaredOutMessageSm
 type GosquaredOutGroup struct {
 	Name string `json:"name,omitempty"`
 	Id   string `json:"id,omitempty"`
+}
+
+func (msg *GosquaredOutMessageSmartGroup) GroupURL() string {
+	// https://www.gosquared.com/people/GSN-466237-B/last-seen-1-day
+	return fmt.Sprintf("https://www.gosquared.com/people/%s/%s",
+		msg.SiteToken, msg.Group.Id)
 }
 
 type GosquaredOutPerson struct {

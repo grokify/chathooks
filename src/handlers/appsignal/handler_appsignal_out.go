@@ -22,19 +22,19 @@ const (
 	IconURL     = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
 )
 
-// FastHttp request handler for Semaphore CI outbound webhook
-type AppsignalOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewAppsignalOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) AppsignalOutToGlipHandler {
-	return AppsignalOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *AppsignalOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	log.WithFields(log.Fields{
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info("HANDLE_FASTHTTP")

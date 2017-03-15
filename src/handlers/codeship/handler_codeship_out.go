@@ -20,19 +20,19 @@ const (
 	DocumentationURL = "https://documentation.codeship.com/basic/getting-started/webhooks/"
 )
 
-// FastHttp request handler for Semaphore CI outbound webhook
-type CodeshipOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewCodeshipOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) CodeshipOutToGlipHandler {
-	return CodeshipOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *CodeshipOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

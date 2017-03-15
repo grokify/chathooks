@@ -20,20 +20,20 @@ const (
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )
 
-// FastHttp request handler for Travis CI outbound webhook
-type RunscopeOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config             config.Configuration
 	Adapter            adapters.Adapter
 	FilterFailuresOnly bool
 }
 
-// FastHttp request handler constructor for Travis CI outbound webhook
-func NewRunscopeOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) RunscopeOutToGlipHandler {
-	return RunscopeOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *RunscopeOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Printf(string(ctx.PostBody()))
 	ccMsg, err := Normalize(ctx.PostBody())
 

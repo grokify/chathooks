@@ -53,8 +53,11 @@ func ExampleDataRaw() []byte {
         },
         "opsgenie":{
             "event_slugs_":["create","close","delete",
-            "acknowledge","unacknowledge",
+            "acknowledge","unacknowledge"],
+
+            "event_slugs__": [
             "add-note","add-recipient","add-tags","add-team"],
+
             "event_slugs":["remove-tags","assign-ownership","take-ownership", "escalate",
             "custom-action-test-action"]
         },

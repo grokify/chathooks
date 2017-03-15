@@ -1,0 +1,6 @@
+{
+    "activity":"Incident was created",
+    "title":"Incident [INC00100200](https://example.com/) was created",
+    "text":"**Short Description**\nI cannot login to my account although my username and password are correct",
+    "icon_url":"http://milindhg.github.io/portfolio/images/SNOW_Icon.png"
+}

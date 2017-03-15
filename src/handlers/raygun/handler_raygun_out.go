@@ -22,18 +22,18 @@ const (
 )
 
 // FastHttp request handler for Travis CI outbound webhook
-type RaygunOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook
-func NewRaygunOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) RaygunOutToGlipHandler {
-	return RaygunOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *RaygunOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

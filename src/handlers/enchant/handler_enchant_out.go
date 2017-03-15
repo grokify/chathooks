@@ -21,20 +21,20 @@ const (
 	IconURL     = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
 )
 
-// FastHttp request handler for Enchant outbound webhook
+// FastHttp request handler for outbound webhook
 // https://dev.enchant.com/webhooks
-type EnchantOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Confluence outbound webhook
-func NewEnchantOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) EnchantOutToGlipHandler {
-	return EnchantOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *EnchantOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.FormValue("payload"))
 
 	if err != nil {

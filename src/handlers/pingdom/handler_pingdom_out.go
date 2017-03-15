@@ -22,18 +22,18 @@ const (
 )
 
 // FastHttp request handler for Travis CI outbound webhook
-type PingdomOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook
-func NewPingdomOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) PingdomOutToGlipHandler {
-	return PingdomOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *PingdomOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

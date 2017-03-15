@@ -19,19 +19,19 @@ const (
 	IconURL     = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/circleci.png"
 )
 
-// FastHttp request handler for Travis CI outbound webhook
-type CircleciOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Travis CI outbound webhook
-func NewCircleciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) CircleciOutToGlipHandler {
-	return CircleciOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *CircleciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

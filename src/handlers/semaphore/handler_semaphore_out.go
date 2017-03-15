@@ -24,19 +24,19 @@ const (
 	ICON_URL_2  = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
 
-// FastHttp request handler for Semaphore CI outbound webhook
-type SemaphoreciOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewSemaphoreciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) SemaphoreciOutToGlipHandler {
-	return SemaphoreciOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for Soutbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *SemaphoreciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

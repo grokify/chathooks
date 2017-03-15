@@ -21,18 +21,18 @@ const (
 )
 
 // FastHttp request handler for Travis CI outbound webhook
-type PapertrailOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Travis CI outbound webhook
-func NewPapertrailOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) PapertrailOutToGlipHandler {
-	return PapertrailOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *PapertrailOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

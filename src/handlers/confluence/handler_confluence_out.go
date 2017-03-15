@@ -21,18 +21,18 @@ const (
 
 // FastHttp request handler for Confluence outbound webhook
 // https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html
-type ConfluenceOutToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Confluence outbound webhook
-func NewConfluenceOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) ConfluenceOutToGlipHandler {
-	return ConfluenceOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *ConfluenceOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.FormValue("payload"))
 
 	if err != nil {

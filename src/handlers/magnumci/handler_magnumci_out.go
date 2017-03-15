@@ -22,19 +22,19 @@ const (
 	IconURLZ    = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
 )
 
-// FastHttp request handler for Semaphore CI outbound webhook
-type MagnumciOutToGlipHandler struct {
+// FastHttp request handler for outbound webhook
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
-// FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewMagnumciOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) MagnumciOutToGlipHandler {
-	return MagnumciOutToGlipHandler{Config: cfg, Adapter: adapter}
+// FastHttp request handler constructor for outbound webhook
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *MagnumciOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

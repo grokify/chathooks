@@ -17,16 +17,16 @@ import (
 )
 
 const (
-	RouteAppsignalOutToGlip      = "/webhook/appsignal/out/glip/:webhookuid"
-	RouteAppsignalOutToGlipSlash = "/webhook/appsignal/out/glip/:webhookuid/"
-	RouteSlackInToGlip           = "/webhook/slack/in/glip/:webhookuid"
-	RouteSlackInToGlipSlash      = "/webhook/slack/in/glip/:webhookuid/"
-	RoutePingdomOutToGlip        = "/webhook/pingdom/out/glip/:webhookuid"
-	RoutePingdomOutToGlipSlash   = "/webhook/pingdom/out/glip/:webhookuid/"
-	RouteRunscopeOutToGlip       = "/webhook/runscope/out/glip/:webhookuid"
-	RouteRunscopeOutToGlipSlash  = "/webhook/runscope/out/glip/:webhookuid/"
-	RouteTravisciOutToGlip       = "/webhook/travisci/out/glip/:webhookuid"
-	RouteTravisciOutToGlipSlash  = "/webhook/travisci/out/glip/:webhookuid/"
+	RouteAppsignalOut      = "/webhook/appsignal/out/:webhookuid"
+	RouteAppsignalOutSlash = "/webhook/appsignal/out/:webhookuid/"
+	RouteSlackIn           = "/webhook/slack/in/:webhookuid"
+	RouteSlackInSlash      = "/webhook/slack/in/:webhookuid/"
+	RoutePingdomOut        = "/webhook/pingdom/out/:webhookuid"
+	RoutePingdomOutSlash   = "/webhook/pingdom/out/:webhookuid/"
+	RouteRunscopeOut       = "/webhook/runscope/out/:webhookuid"
+	RouteRunscopeOutSlash  = "/webhook/runscope/out/:webhookuid/"
+	RouteTravisciOut       = "/webhook/travisci/out/:webhookuid"
+	RouteTravisciOutSlash  = "/webhook/travisci/out/:webhookuid/"
 )
 
 // StartServer initializes and starts the webhook proxy server
@@ -43,25 +43,25 @@ func StartServer(cfg config.Configuration) {
 
 	router.GET("/", handlers.HomeHandler)
 
-	appsignalOutHandler := appsignal.NewAppsignalOutToGlipHandler(cfg, &adapter)
-	router.POST(RouteAppsignalOutToGlip, appsignalOutHandler.HandleFastHTTP)
-	router.POST(RouteAppsignalOutToGlipSlash, appsignalOutHandler.HandleFastHTTP)
+	appsignalOutHandler := appsignal.NewHandler(cfg, &adapter)
+	router.POST(RouteAppsignalOut, appsignalOutHandler.HandleFastHTTP)
+	router.POST(RouteAppsignalOutSlash, appsignalOutHandler.HandleFastHTTP)
 
-	pingdomOutHandler := pingdom.NewPingdomOutToGlipHandler(cfg, &adapter)
-	router.POST(RoutePingdomOutToGlip, pingdomOutHandler.HandleFastHTTP)
-	router.POST(RoutePingdomOutToGlipSlash, pingdomOutHandler.HandleFastHTTP)
+	pingdomOutHandler := pingdom.NewHandler(cfg, &adapter)
+	router.POST(RoutePingdomOut, pingdomOutHandler.HandleFastHTTP)
+	router.POST(RoutePingdomOutSlash, pingdomOutHandler.HandleFastHTTP)
 
-	runscopeOutHandler := runscope.NewRunscopeOutToGlipHandler(cfg, &adapter)
-	router.POST(RouteRunscopeOutToGlip, runscopeOutHandler.HandleFastHTTP)
-	router.POST(RouteRunscopeOutToGlipSlash, runscopeOutHandler.HandleFastHTTP)
+	runscopeOutHandler := runscope.NewHandler(cfg, &adapter)
+	router.POST(RouteRunscopeOut, runscopeOutHandler.HandleFastHTTP)
+	router.POST(RouteRunscopeOutSlash, runscopeOutHandler.HandleFastHTTP)
 
-	slackInHandler := slack.NewSlackToGlipHandler(cfg, &adapter)
-	router.POST(RouteSlackInToGlip, slackInHandler.HandleFastHTTP)
-	router.POST(RouteSlackInToGlipSlash, slackInHandler.HandleFastHTTP)
+	slackInHandler := slack.NewHandler(cfg, &adapter)
+	router.POST(RouteSlackIn, slackInHandler.HandleFastHTTP)
+	router.POST(RouteSlackInSlash, slackInHandler.HandleFastHTTP)
 
-	travisciOutHandler := travisci.NewTravisciOutToGlipHandler(cfg, &adapter)
-	router.POST(RouteTravisciOutToGlip, travisciOutHandler.HandleFastHTTP)
-	router.POST(RouteTravisciOutToGlipSlash, travisciOutHandler.HandleFastHTTP)
+	travisciOutHandler := travisci.NewHandler(cfg, &adapter)
+	router.POST(RouteTravisciOut, travisciOutHandler.HandleFastHTTP)
+	router.POST(RouteTravisciOutSlash, travisciOutHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(cfg.Address(), router.Handler))
 }

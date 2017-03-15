@@ -19,18 +19,18 @@ const (
 )
 
 // FastHttp request handler constructor for Slack inbound webhook
-type SlackToGlipHandler struct {
+type Handler struct {
 	Config  config.Configuration
 	Adapter adapters.Adapter
 }
 
 // FastHttp request handler constructor for Slack in bound webhook
-func NewSlackToGlipHandler(config config.Configuration, adapter adapters.Adapter) SlackToGlipHandler {
-	return SlackToGlipHandler{Config: config, Adapter: adapter}
+func NewHandler(config config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: config, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *SlackToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(BuildInboundMessageBytes(ctx))
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)

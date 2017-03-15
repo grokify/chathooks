@@ -23,19 +23,19 @@ const (
 
 // FastHttp request handler for Heroku outbound webhook
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
-type HerokuOutToGlipHandler struct {
+type Handler struct {
 	Config     config.Configuration
 	GlipClient glipwebhook.GlipWebhookClient
 	Adapter    adapters.Adapter
 }
 
 // FastHttp request handler constructor for Confluence outbound webhook
-func NewHerokuOutToGlipHandler(cfg config.Configuration, adapter adapters.Adapter) HerokuOutToGlipHandler {
-	return HerokuOutToGlipHandler{Config: cfg, Adapter: adapter}
+func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
+	return Handler{Config: cfg, Adapter: adapter}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *HerokuOutToGlipHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	srcMsg, err := BuildInboundMessage(ctx)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
