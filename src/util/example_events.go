@@ -65,7 +65,8 @@ func ExampleDataRaw() []byte {
             "event_slugs":["notifications-array-len-1","notifications-array"]
         },
         "pingdom":{
-        	"event_slugs":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]
+            "event_slugs":["http-check"],
+        	"event_slugs_":["dns-check","http-check","http-custom-check","imap-check","ping-check","pop3-check","smtp-check","tcp-check","transaction-check","udp-check"]
         },
         "semaphore":{
             "event_slugs":["build","deploy"]

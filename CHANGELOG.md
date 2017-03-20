@@ -1,6 +1,8 @@
-- 2017-04-05
+- 2017-03-19
+  - Add handlers `datadog`, `deskdotcom`, `marketo`, `victorops`
+- 2017-03-05
   - Add handlers `apteligent`, `statuspage`
-- 2017-04-04
+- 2017-03-04
   - Add handlers `circleci`, `gosquared`, `librato`, `opsgenie`, `papertrail
 - 2017-03-02
   - Add handlers `runscope`, `pingdom`

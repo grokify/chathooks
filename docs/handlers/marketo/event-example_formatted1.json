@@ -1,0 +1,25 @@
+{
+    "activity":"Contact us form filled",
+    "attachments":[
+    	{
+    		"fields":[
+    			{
+    				"title":"Name",
+    				"value":"Jenna"
+    			},
+    			{
+    				"title":"Email",
+    				"value":"jennamolby@gmail.com"
+    			},
+    			{
+    				"title":"Company",
+    				"value":"Hooli"
+    			},
+    			{
+    				"title":"Message",
+    				"value":"Hello, I'm looking to speak to someone about buying your product."
+    			}
+    		]
+    	}
+    ]
+}

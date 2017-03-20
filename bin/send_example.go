@@ -19,11 +19,14 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/circleci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/codeship"
 	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
+	"github.com/grokify/webhook-proxy-go/src/handlers/datadog"
+	"github.com/grokify/webhook-proxy-go/src/handlers/deskdotcom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
 	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
+	"github.com/grokify/webhook-proxy-go/src/handlers/marketo"
 	"github.com/grokify/webhook-proxy-go/src/handlers/opsgenie"
 	"github.com/grokify/webhook-proxy-go/src/handlers/papertrail"
 	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
@@ -33,6 +36,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/statuspage"
 	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
 	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
+	"github.com/grokify/webhook-proxy-go/src/handlers/victorops"
 )
 
 const (
@@ -125,6 +129,10 @@ func main() {
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(confluence.ExampleMessage(exampleData, eventSlug))
 		}
+	case "datadog":
+		sender.SendCcMessage(datadog.ExampleMessage(exampleData))
+	case "deskdotcom":
+		sender.SendCcMessage(deskdotcom.ExampleMessage(exampleData))
 	case "enchant":
 		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
 	case "gosquared":
@@ -141,6 +149,8 @@ func main() {
 		}
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
+	case "marketo":
+		sender.SendCcMessage(marketo.ExampleMessage(exampleData))
 	case "opsgenie":
 		source := exampleData.Data[opsgenie.HandlerKey]
 		for i, eventSlug := range source.EventSlugs {
@@ -180,6 +190,8 @@ func main() {
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(userlike.ExampleMessage(exampleData, eventSlug))
 		}
+	case "victorops":
+		sender.SendCcMessage(victorops.ExampleMessage(exampleData))
 	default:
 		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
 	}
