@@ -78,7 +78,6 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	if verb, ok = actions[src.Action]; ok {
 		message.Activity = fmt.Sprintf("Alert %s", verb)
 	} else {
-		verb = ""
 		message.Activity = fmt.Sprintf("Alert %s", src.Action)
 	}
 
