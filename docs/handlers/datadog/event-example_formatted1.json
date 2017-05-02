@@ -12,8 +12,6 @@
                     "title":"Alert",
                     "value":"system.load.1 over host:my-host was > 0 at least once during the last 1m"
                 }
-
-
             ]
         }
     ]

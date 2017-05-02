@@ -2,8 +2,8 @@
     "activity":"Event triggered",
     "title":"[Event 1234567](https://portal.victorops.com/client/-/popoutIncident?incidentName=1): [Triggered] [Memory Alert]",
     "attachments":[
-    	{
-    		"fields":[
+        {
+            "fields":[
                 {
                     "title":"Priority",
                     "value":"normal"
@@ -12,7 +12,7 @@
                     "title":"Alert",
                     "value":"system.load.1 over host:my-host was > 0 at least once during the last 1m"
                 }
-    		]
-    	}
+            ]
+        }
     ]
 }

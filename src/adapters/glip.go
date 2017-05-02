@@ -1,8 +1,10 @@
 package adapters
 
 import (
+	"encoding/json"
 	"fmt"
 
+	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
 	ccglip "github.com/commonchat/commonchat-go/glip"
 	"github.com/grokify/glip-go-webhook"
@@ -37,7 +39,15 @@ func NewGlipAdapter(webhookURLOrUID string) (GlipAdapter, error) {
 }
 
 func (adapter *GlipAdapter) SendWebhook(urlOrUid string, message cc.Message) (*fasthttp.Request, *fasthttp.Response, error) {
-	return adapter.GlipClient.PostWebhookGUIDFast(urlOrUid, adapter.CommonConverter.ConvertCommonMessage(message))
+	glipMessage := adapter.CommonConverter.ConvertCommonMessage(message)
+
+	glipMessageString, err := json.Marshal(glipMessage)
+	if err == nil {
+		log.WithFields(log.Fields{
+			"event":   "outgoing.webhook.glip",
+			"handler": "Glip Adapter"}).Info(string(glipMessageString))
+	}
+	return adapter.GlipClient.PostWebhookGUIDFast(urlOrUid, glipMessage)
 }
 
 func (adapter *GlipAdapter) SendMessage(message cc.Message) (*fasthttp.Request, *fasthttp.Response, error) {
@@ -45,6 +55,6 @@ func (adapter *GlipAdapter) SendMessage(message cc.Message) (*fasthttp.Request, 
 }
 
 func (adapter *GlipAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error) {
-	webhookUID := fmt.Sprintf("%s", ctx.UserValue("webhookuid"))
+	webhookUID := fmt.Sprintf("%s")
 	return webhookUID, nil
 }

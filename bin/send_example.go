@@ -23,6 +23,7 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/handlers/deskdotcom"
 	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
 	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared"
+	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared2"
 	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
 	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
 	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
@@ -139,6 +140,11 @@ func main() {
 		source := exampleData.Data[gosquared.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(gosquared.ExampleMessage(exampleData, eventSlug))
+		}
+	case "gosquared2":
+		source := exampleData.Data[gosquared.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(gosquared2.ExampleMessage(exampleData, eventSlug))
 		}
 	case "heroku":
 		sender.SendCcMessage(heroku.ExampleMessage(exampleData))

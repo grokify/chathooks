@@ -57,11 +57,27 @@ func Normalize(bytes []byte) (cc.Message, error) {
 
 /*
 
+{
+  "activity":"Event triggered",
+  "title":"[Event ${{STATE.ENTITY_ID}}](https://portal.victorops.com/client/-/popoutIncident?incidentName=${{STATE.ENTITY_ID}}): ${{ALERT.entity_display_name}}",
+  "body":"**State**\n${{ALERT.entity_state}}\n\n**Message**\n${{STATE.ACK_MSG}}\n\n**URL**\n${{ALERT.alert_url}}"}
+}
+
 Incident Alert
 [${{ALERT.entity_display_name}}](${{ALERT.alert_url}})
 Incident:${{STATE.INCIDENT_NAME}}
 State: ${{STATE.CURRENT_STATE}}
 Host:${{STATE.HOST}}
+
+{
+  "activity":"Event triggered",
+  "title":"[Event ${{STATE.ENTITY_ID}}](https://portal.victorops.com/client/-/popoutIncident?incidentName=${{STATE.ENTITY_ID}}): ${{ALERT.entity_display_name}}",
+  "body":"**State**\n${{ALERT.entity_state}}\n\n**Message**\n${{STATE.ACK_MSG}}"}
+
+{
+  "activity":"Incident alert",
+  "body":"[${{ALERT.entity_display_name}}](https://portal.victorops.com/client/grokbase/popoutIncident?incidentName=${{STATE.INCIDENT_NAME}})\n**Incident**\n${{STATE.INCIDENT_NAME}}\n**State**\n${{STATE.CURRENT_STATE}}"
+}
 
 */
 
