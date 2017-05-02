@@ -70,13 +70,13 @@ func NormalizeComponentUpdate(src StatuspageOutMessage) (cc.Message, error) {
 
 	componentURL, err := src.PageURL()
 	if err == nil {
-		message.Title = fmt.Sprintf("[%s](%s) component status udpated from **%s** to **%s**",
+		message.Title = fmt.Sprintf("[%s](%s) component status updated from **%s** to **%s**",
 			src.Component.Name,
 			componentURL,
 			src.ComponentUpdate.OldStatus,
 			src.ComponentUpdate.NewStatus)
 	} else {
-		message.Title = fmt.Sprintf("%s component status udpated from **%s** to **%s**",
+		message.Title = fmt.Sprintf("%s component status updated from **%s** to **%s**",
 			src.Component.Name,
 			src.ComponentUpdate.OldStatus,
 			src.ComponentUpdate.NewStatus)

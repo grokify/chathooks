@@ -167,9 +167,9 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		if src.Performance.Duration > 0.0 {
 			durationString, err := timeutil.DurationStringMinutesSeconds(int64(src.Performance.Duration))
 			if err == nil {
-				message.Title = fmt.Sprintf("%v performance incident has occured for %v", src.Performance.Site, durationString)
+				message.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, durationString)
 			} else {
-				message.Title = fmt.Sprintf("%v performance incident has occured for %v", src.Performance.Site, src.Performance.Duration)
+				message.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, src.Performance.Duration)
 			}
 		}
 
