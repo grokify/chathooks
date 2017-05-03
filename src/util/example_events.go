@@ -42,7 +42,7 @@ func ExampleDataRaw() []byte {
             "event_slugs": ["page-created","comment-created"]
         },
         "gosquared":{
-            "event_slugs": ["site-traffic","smart-group"]
+            "event_slugs": ["site-traffic","smart-group","live-chat"]
         },
         "heroku":{
             "file_extension": "txt",

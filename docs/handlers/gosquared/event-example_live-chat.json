@@ -1,0 +1,80 @@
+{
+    "version":"0.0.1",
+    "site_token":"GSN-67890-A",
+    "timestamp":"2017-05-02T05:19:34.252Z",
+    "person":{
+        "id":"Anon Chat: bba4b6264b073a17c74f1b0da7720114",
+        "email":"",
+        "name":"",
+        "avatar":"",
+        "chat":{
+            "archived":null,
+            "latest":{
+                "message":{
+                    "type":"message",
+                    "id":"167c06cf-ff7c-4d09-880c-5533795f9673",
+                    "content":"hello world",
+                    "timestamp":1493702374252,
+                    "from":"client",
+                    "private":false,
+                    "session":{
+                        "title":"",
+                        "href":"http://127.0.0.1:2015/"
+                    },
+                    "data":{
+
+                    },
+                    "entities":[
+
+                    ]
+                },
+                "timestamp":1493702374252
+            },
+            "agent":{
+                "assigned":"31e043150da1d922ff90f3e54940600d",
+                "read":1493373060143,
+                "delivered":1493372637305
+            },
+            "client":{
+                "read":1493702374252,
+                "delivered":1493372587362
+            }
+        },
+        "lead":{
+            "email":"johndoe@example.com"
+        },
+        "status":"",
+        "presence":"online",
+        "_anon":{
+            "name":"Anon: Steel Blue Shoeprints",
+            "color":"#4B77BE",
+            "shape":"human-shoes-footprints"
+        },
+        "_links":[
+            {
+                "rel":"self",
+                "href":"https://api.gosquared.com/chat/v1/chats/Anon%20Chat%3A%20bba4b6264b073a17c74f1b0da7720114",
+                "method":"GET"
+            }
+        ]
+    },
+    "message":{
+        "type":"message",
+        "id":"167c06cf-ff7c-4d09-880c-5533795f9673",
+        "content":"hello world",
+        "timestamp":1493702374252,
+        "from":"client",
+        "private":false,
+        "session":{
+            "title":"",
+            "href":"http://127.0.0.1:2015/"
+        },
+        "data":{
+
+        },
+        "entities":[
+
+        ],
+        "person_id":"Anon Chat: bba4b6264b073a17c74f1b0da7720114"
+    }
+}
