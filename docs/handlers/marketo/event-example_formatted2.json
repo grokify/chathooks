@@ -1,5 +1,5 @@
 {
-    "activity":"Contact Us form fill",
+    "activity":"New lead visit",
     "attachments":[
         {
             "fields":[
@@ -16,8 +16,8 @@
                     "value":"Example.com"
                 },
                 {
-                    "title":"Message",
-                    "value":"Hello, I'm looking to speak to someone about buying your product."
+                    "title":"Visited URL",
+                    "value":"https://example.com/integrating-glip-with-marketo"
                 }
             ]
         }

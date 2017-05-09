@@ -16,7 +16,9 @@ import (
 const (
 	DisplayName = "Marketo"
 	HandlerKey  = "marketo"
-	IconURL     = "http://www.ngagemarketingservices.com/wp-content/uploads/2014/05/Marketo-logo-icon-250.jpeg"
+	IconURL     = "https://www.bedrockdata.com/hs-fs/hubfs/Marketo-logo-icon-250.jpeg"
+	IconURL1    = "https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_1489695596/marketo.jpg"
+	IconURL2    = "http://seeklogo.com/images/M/marketo-logo-05AEB1316A-seeklogo.com.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook

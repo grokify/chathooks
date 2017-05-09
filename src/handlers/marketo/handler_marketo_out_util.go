@@ -5,8 +5,8 @@ import (
 	"github.com/grokify/webhook-proxy-go/src/util"
 )
 
-func ExampleMessage(data util.ExampleData) (cc.Message, error) {
-	bytes, err := data.ExampleMessageBytes(HandlerKey, "formatted1")
+func ExampleMessage(data util.ExampleData, eventSlug string) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, eventSlug)
 	if err != nil {
 		return cc.Message{}, err
 	}

@@ -5,19 +5,19 @@
             "fields":[
                 {
                     "title":"Name",
-                    "value":"Jane Doe"
+                    "value":"{{lead.First Name:default= }} {{lead.Last Name:default= }}"
                 },
                 {
                     "title":"Email",
-                    "value":"jane.doe@example.com"
+                    "value":"{{lead.Email Address:default= }}"
                 },
                 {
                     "title":"Company",
-                    "value":"Example.com"
+                    "value":"{{lead.Company:default= }}"
                 },
                 {
                     "title":"Message",
-                    "value":"Hello, I'm looking to speak to someone about buying your product."
+                    "value":"{{lead.Message:default= }}"
                 }
             ]
         }

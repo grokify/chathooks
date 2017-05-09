@@ -51,6 +51,9 @@ func ExampleDataRaw() []byte {
         "librato":{
             "event_slugs":["2","alert-triggered","alert-cleared"]
         },
+        "marketo":{
+            "event_slugs":["formatted1","formatted2"]
+        },
         "opsgenie":{
             "event_slugs_":["create","close","delete",
             "acknowledge","unacknowledge"],

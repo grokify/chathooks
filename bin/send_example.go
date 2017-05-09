@@ -156,7 +156,10 @@ func main() {
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
 	case "marketo":
-		sender.SendCcMessage(marketo.ExampleMessage(exampleData))
+		source := exampleData.Data[marketo.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(marketo.ExampleMessage(exampleData, eventSlug))
+		}
 	case "opsgenie":
 		source := exampleData.Data[opsgenie.HandlerKey]
 		for i, eventSlug := range source.EventSlugs {
