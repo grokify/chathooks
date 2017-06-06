@@ -1,0 +1,122 @@
+{
+    "version":"0.0.1",
+    "site_token":"GSN-1234567-X",
+    "timestamp":"2015-06-08T15:22:01.663Z",
+    "group":{
+        "name":"New Customers",
+        "id":"triggers-users"
+    },
+    "boundary":"enter",
+    "person":{
+        "company":{
+            "position":"CTO",
+            "name":"GoSquared Ltd."
+        },
+        "created_at":"2006-02-03T08:00:00.000Z",
+        "phone":"1234567890",
+        "avatar":"https://d2ojpxxtu63wzl.cloudfront.net/static/952bc51b4d9fe3397473aae67096b8e7_e790791c744d912c694fd7d235e542f980cd46acd99f666950ca7c0bb406fd55",
+        "description":"Co-founder + CTO of GoSquared. I build web services on cloud infrastructure using the best tech for the job.",
+        "username":"TheDeveloper",
+        "email":"support@gosquared.com",
+        "name":"John Wang",
+        "id":"1",
+        "avatar_secure":"https://avatars.gosquared.com/92b28fd35a07f2196ae4814ad8c838f8207e162d/68747470733a2f2f64326f6a70787874753633777a6c2e636c6f756466726f6e742e6e65742f7374617469632f39353262633531623464396665333339373437336161653637303936623865375f65373930373931633734346439313263363934666437643233356535343266393830636434366163643939663636363935306361376330626234303666643535",
+        "events":{
+            "Viewed Post":{
+                "last":"2015-05-19T09:47:27.951Z",
+                "first":"2015-04-30T15:59:12.661Z",
+                "count":10
+            },
+            "Logged in":{
+                "last":"2015-03-03T14:34:17.232Z",
+                "first":"2015-01-27T19:10:48.801Z",
+                "count":3
+            },
+            "Exited Smart Group":{
+                "last":"2015-06-08T10:07:47.016Z",
+                "first":"2015-05-07T02:02:23.584Z",
+                "count":106
+            },
+            "Entered Smart Group":{
+                "last":"2015-06-08T15:20:01.472Z",
+                "first":"2015-03-13T10:34:24.128Z",
+                "count":118
+            }
+        },
+        "custom":{
+
+        },
+        "totals":{
+            "stitches":8,
+            "time_on_site":1393162301,
+            "engaged_time":119268282,
+            "pageviews":6927,
+            "visits":557
+        },
+        "last":{
+            "location":{
+                "coordinates":[
+                    51.5,
+                    -0.12999999523162842
+                ],
+                "continent":"EU",
+                "country":{
+                    "code":"GB",
+                    "name":"United Kingdom"
+                },
+                "region":"",
+                "city":"",
+                "timezone_offset":-60
+            },
+            "device":"MzUyMzkzNDA=",
+            "language":"en-gb",
+            "organisation":"ISP",
+            "ip":"x.x.x.x",
+            "exit":"2015-06-08T14:39:59.110Z",
+            "visit":"2015-06-08T15:16:17.854Z",
+            "seen":"2015-06-08T15:19:31.772Z"
+        },
+        "first":{
+            "referrer":{
+                "type":"direct"
+            },
+            "seen":"2015-01-09T11:19:23.404Z"
+        },
+        "social":{
+            "status":200,
+            "requested":"2015-05-10T06:20:19.426Z",
+            "updated":"2015-05-10T06:20:39.241Z",
+            "klout":{
+                "score":45
+            },
+            "profiles":[
+                {
+                    "username":"TheDeveloper",
+                    "followers":1595,
+                    "name":"Twitter",
+                    "photo":"https://d2ojpxxtu63wzl.cloudfront.net/static/952bc51b4d9fe3397473aae67096b8e7_e790791c744d912c694fd7d235e542f980cd46acd99f666950ca7c0bb406fd55",
+                    "following":671,
+                    "bio":"Co-founder + CTO of GoSquared. I build web services on cloud infrastructure using the best tech for the job.",
+                    "type":"twitter",
+                    "url":"https://twitter.com/TheDeveloper",
+                    "id":"18001569"
+                },
+                {
+                    "photo":"https://d2ojpxxtu63wzl.cloudfront.net/static/d4385a0aa97d5248e400989e9be71f65_fc256b6d36c725176a6e93ec561749045e3a198ad2d69e930a070f80cc5d7a58",
+                    "username":"geoffwagstaff",
+                    "bio":"Co-Founder & CTO, Go Squared Ltd.",
+                    "type":"linkedin",
+                    "url":"https://www.linkedin.com/in/geoffwagstaff",
+                    "name":"LinkedIn"
+                },
+                {
+                    "username":"TheDeveloper",
+                    "type":"klout",
+                    "url":"http://klout.com/TheDeveloper",
+                    "id":"29554877319740885",
+                    "name":"Klout"
+                }
+            ]
+        }
+    }
+}
