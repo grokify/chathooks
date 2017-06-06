@@ -170,8 +170,7 @@ func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
 			Value: url,
 			Short: true})
 	} else {
-		url, linked := LinkifyURL("Unknown", src.URL, displayedUrl)
-		displayedUrl = linked
+		url, _ := LinkifyURL("Unknown", src.URL, displayedUrl)
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
 			Value: url,
@@ -185,7 +184,6 @@ func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
 }
 
 func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
-	//linked := false
 	if len(innerHtml) == 0 && len(url) > 0 {
 		innerHtml = url
 	}
