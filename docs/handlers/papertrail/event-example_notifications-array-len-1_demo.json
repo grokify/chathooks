@@ -1,0 +1,26 @@
+{
+    "events":[
+        {
+            "id":7711561783320576,
+            "received_at":"2011-05-18T20:30:02-07:00",
+            "display_received_at":"May 18 20:30:02",
+            "source_ip":"208.75.57.121",
+            "source_name":"abc",
+            "source_id":2,
+            "hostname":"localhost",
+            "program":"sshd",
+            "severity":"Error",
+            "facility":"sshd",
+            "message":"Cound not load host key: /etc/ssh/ssh_host_abc123_key"
+        }
+    ],
+    "saved_search":{
+        "id":42,
+        "name":"SSH key missing",
+        "query":"Could not load host key",
+        "html_edit_url":"https://papertrailapp.com/searches/42/edit",
+        "html_search_url":"https://papertrailapp.com/searches/42"
+    },
+    "max_id":7711582041804800,
+    "min_id":7711561783320576
+}
