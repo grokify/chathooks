@@ -9,9 +9,9 @@ import (
 	"github.com/grokify/gotilla/strings/stringsutil"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhook-proxy-go/src/adapters"
-	"github.com/grokify/webhook-proxy-go/src/config"
-	"github.com/grokify/webhook-proxy-go/src/util"
+	"github.com/grokify/chatmore/src/adapters"
+	"github.com/grokify/chatmore/src/config"
+	"github.com/grokify/chatmore/src/util"
 	"github.com/valyala/fasthttp"
 )
 

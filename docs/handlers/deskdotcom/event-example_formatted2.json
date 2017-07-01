@@ -1,0 +1,18 @@
+{
+    "activity":"New email case",
+    "title":"New email case from John Smith from example.com - #36",
+    "attachments":[
+        {
+            "fields":[
+                {
+                    "title":"Assigned To",
+                    "value":"(Unassigned)"
+                },
+                {
+                    "title":"Case Body",
+                    "value":"I can't log into my account"
+                }
+            ]
+        }
+    ]
+}

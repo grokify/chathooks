@@ -10,34 +10,34 @@ import (
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhook-proxy-go/src/adapters"
-	"github.com/grokify/webhook-proxy-go/src/util"
+	"github.com/grokify/chatmore/src/adapters"
+	"github.com/grokify/chatmore/src/util"
 	"github.com/valyala/fasthttp"
 
-	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
-	"github.com/grokify/webhook-proxy-go/src/handlers/apteligent"
-	"github.com/grokify/webhook-proxy-go/src/handlers/circleci"
-	"github.com/grokify/webhook-proxy-go/src/handlers/codeship"
-	"github.com/grokify/webhook-proxy-go/src/handlers/confluence"
-	"github.com/grokify/webhook-proxy-go/src/handlers/datadog"
-	"github.com/grokify/webhook-proxy-go/src/handlers/deskdotcom"
-	"github.com/grokify/webhook-proxy-go/src/handlers/enchant"
-	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared"
-	"github.com/grokify/webhook-proxy-go/src/handlers/gosquared2"
-	"github.com/grokify/webhook-proxy-go/src/handlers/heroku"
-	"github.com/grokify/webhook-proxy-go/src/handlers/librato"
-	"github.com/grokify/webhook-proxy-go/src/handlers/magnumci"
-	"github.com/grokify/webhook-proxy-go/src/handlers/marketo"
-	"github.com/grokify/webhook-proxy-go/src/handlers/opsgenie"
-	"github.com/grokify/webhook-proxy-go/src/handlers/papertrail"
-	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
-	"github.com/grokify/webhook-proxy-go/src/handlers/raygun"
-	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
-	"github.com/grokify/webhook-proxy-go/src/handlers/semaphore"
-	"github.com/grokify/webhook-proxy-go/src/handlers/statuspage"
-	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
-	"github.com/grokify/webhook-proxy-go/src/handlers/userlike"
-	"github.com/grokify/webhook-proxy-go/src/handlers/victorops"
+	"github.com/grokify/chatmore/src/handlers/appsignal"
+	"github.com/grokify/chatmore/src/handlers/apteligent"
+	"github.com/grokify/chatmore/src/handlers/circleci"
+	"github.com/grokify/chatmore/src/handlers/codeship"
+	"github.com/grokify/chatmore/src/handlers/confluence"
+	"github.com/grokify/chatmore/src/handlers/datadog"
+	"github.com/grokify/chatmore/src/handlers/deskdotcom"
+	"github.com/grokify/chatmore/src/handlers/enchant"
+	"github.com/grokify/chatmore/src/handlers/gosquared"
+	"github.com/grokify/chatmore/src/handlers/gosquared2"
+	"github.com/grokify/chatmore/src/handlers/heroku"
+	"github.com/grokify/chatmore/src/handlers/librato"
+	"github.com/grokify/chatmore/src/handlers/magnumci"
+	"github.com/grokify/chatmore/src/handlers/marketo"
+	"github.com/grokify/chatmore/src/handlers/opsgenie"
+	"github.com/grokify/chatmore/src/handlers/papertrail"
+	"github.com/grokify/chatmore/src/handlers/pingdom"
+	"github.com/grokify/chatmore/src/handlers/raygun"
+	"github.com/grokify/chatmore/src/handlers/runscope"
+	"github.com/grokify/chatmore/src/handlers/semaphore"
+	"github.com/grokify/chatmore/src/handlers/statuspage"
+	"github.com/grokify/chatmore/src/handlers/travisci"
+	"github.com/grokify/chatmore/src/handlers/userlike"
+	"github.com/grokify/chatmore/src/handlers/victorops"
 )
 
 const (
@@ -133,7 +133,10 @@ func main() {
 	case "datadog":
 		sender.SendCcMessage(datadog.ExampleMessage(exampleData))
 	case "deskdotcom":
-		sender.SendCcMessage(deskdotcom.ExampleMessage(exampleData))
+		source := exampleData.Data[deskdotcom.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(deskdotcom.ExampleMessage(exampleData, eventSlug))
+		}
 	case "enchant":
 		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
 	case "gosquared":

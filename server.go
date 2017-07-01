@@ -6,14 +6,14 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 
-	"github.com/grokify/webhook-proxy-go/src/adapters"
-	"github.com/grokify/webhook-proxy-go/src/config"
-	"github.com/grokify/webhook-proxy-go/src/handlers"
-	"github.com/grokify/webhook-proxy-go/src/handlers/appsignal"
-	"github.com/grokify/webhook-proxy-go/src/handlers/pingdom"
-	"github.com/grokify/webhook-proxy-go/src/handlers/runscope"
-	"github.com/grokify/webhook-proxy-go/src/handlers/slack"
-	"github.com/grokify/webhook-proxy-go/src/handlers/travisci"
+	"github.com/grokify/chatmore/src/adapters"
+	"github.com/grokify/chatmore/src/config"
+	"github.com/grokify/chatmore/src/handlers"
+	"github.com/grokify/chatmore/src/handlers/appsignal"
+	"github.com/grokify/chatmore/src/handlers/pingdom"
+	"github.com/grokify/chatmore/src/handlers/runscope"
+	"github.com/grokify/chatmore/src/handlers/slack"
+	"github.com/grokify/chatmore/src/handlers/travisci"
 )
 
 const (

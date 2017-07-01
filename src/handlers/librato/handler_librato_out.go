@@ -10,16 +10,16 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhook-proxy-go/src/adapters"
-	"github.com/grokify/webhook-proxy-go/src/config"
-	"github.com/grokify/webhook-proxy-go/src/util"
+	"github.com/grokify/chatmore/src/adapters"
+	"github.com/grokify/chatmore/src/config"
+	"github.com/grokify/chatmore/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
 	DisplayName      = "Librato"
 	HandlerKey       = "librato"
-	IconURL          = "https://raw.githubusercontent.com/grokify/webhook-proxy-go/master/images/icons/librato_128x128.png"
+	IconURL          = "https://raw.githubusercontent.com/grokify/chatmore/master/images/icons/librato_128x128.png"
 	IconURLX         = "https://a.slack-edge.com/ae7f/plugins/librato/assets/service_512.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )

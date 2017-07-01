@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/grokify/webhook-proxy-go/src/config"
+	"github.com/grokify/chatmore/src/config"
 )
 
 const (
@@ -40,6 +40,9 @@ func ExampleDataRaw() []byte {
         },
         "confluence":{
             "event_slugs": ["page-created","comment-created"]
+        },
+        "deskdotcom":{
+            "event_slugs": ["formatted1","formatted2"]
         },
         "gosquared":{
             "event_slugs": ["site-traffic","smart-group","live-chat"]
