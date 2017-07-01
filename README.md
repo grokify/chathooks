@@ -7,7 +7,7 @@ Chatmore - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-Chatmore is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+Chatmore is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat). This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
@@ -164,15 +164,15 @@ Glip Webhook Proxy is built using:
 * [fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [logrus](https://github.com/sirupsen/logrus)
 
- [build-status-svg]: https://api.travis-ci.org/grokify/webhook-proxy-go.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/webhook-proxy-go
- [coverage-status-svg]: https://coveralls.io/repos/grokify/webhook-proxy-go/badge.svg?branch=master
- [coverage-status-link]: https://coveralls.io/r/grokify/webhook-proxy-go?branch=master
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/webhook-proxy-go
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/webhook-proxy-go
- [codeclimate-status-svg]: https://codeclimate.com/github/grokify/webhook-proxy-go/badges/gpa.svg
- [codeclimate-status-link]: https://codeclimate.com/github/grokify/webhook-proxy-go
+ [build-status-svg]: https://api.travis-ci.org/grokify/chatmore.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/chatmore
+ [coverage-status-svg]: https://coveralls.io/repos/grokify/chatmore/badge.svg?branch=master
+ [coverage-status-link]: https://coveralls.io/r/grokify/chatmore?branch=master
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chatmore
+ [goreport-link]: https://goreportcard.com/report/github.com/grokify/chatmore
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/chatmore/badges/gpa.svg
+ [codeclimate-status-link]: https://codeclimate.com/github/grokify/chatmore
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/webhook-proxy-go
+ [docs-godoc-link]: https://godoc.org/github.com/grokify/chatmore
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/webhook-proxy-go/blob/master/LICENSE.md
+ [license-link]: https://github.com/grokify/chatmore/blob/master/LICENSE.md
