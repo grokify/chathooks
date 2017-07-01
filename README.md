@@ -1,5 +1,5 @@
-Glip Webhook Proxy
-==================
+Chatmore - A webhook proxy
+==========================
 
 [![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
