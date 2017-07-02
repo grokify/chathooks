@@ -7,16 +7,17 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Confluence"
-	HandlerKey  = "confluence"
-	IconURL     = "https://wiki.ucop.edu/images/logo/default-space-logo-256.png"
+	DisplayName      = "Confluence"
+	HandlerKey       = "confluence"
+	MessageDirection = "out"
+	IconURL          = "https://wiki.ucop.edu/images/logo/default-space-logo-256.png"
 )
 
 // FastHttp request handler for Confluence outbound webhook
@@ -29,6 +30,14 @@ type Handler struct {
 // FastHttp request handler constructor for Confluence outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
+}
+
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.

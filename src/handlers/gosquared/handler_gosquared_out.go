@@ -11,9 +11,9 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 

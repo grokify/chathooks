@@ -10,16 +10,17 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
 	DisplayName      = "Librato"
 	HandlerKey       = "librato"
-	IconURL          = "https://raw.githubusercontent.com/grokify/chatmore/master/images/icons/librato_128x128.png"
+	MessageDirection = "out"
+	IconURL          = "https://raw.githubusercontent.com/grokify/webhookproxy/master/images/icons/librato_128x128.png"
 	IconURLX         = "https://a.slack-edge.com/ae7f/plugins/librato/assets/service_512.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )
@@ -38,6 +39,14 @@ type Handler struct {
 // FastHttp request handler constructor for outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
+}
+
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.

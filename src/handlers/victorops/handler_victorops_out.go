@@ -7,16 +7,17 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "VictorOps"
-	HandlerKey  = "victorops"
-	IconURL     = "https://victorops.com/wp-content/uploads/2015/04/download.png"
+	DisplayName      = "VictorOps"
+	HandlerKey       = "victorops"
+	MessageDirection = "out"
+	IconURL          = "https://victorops.com/wp-content/uploads/2015/04/download.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -30,9 +31,22 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
+
+	iconURL, err := h.Config.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -47,39 +61,12 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 }
 
 func Normalize(bytes []byte) (cc.Message, error) {
-	message, err := CcMessageFromBytes(bytes)
+	ccMsg, err := CcMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
-	message.IconURL = IconURL
-	return message, nil
+	return ccMsg, nil
 }
-
-/*
-
-{
-  "activity":"Event triggered",
-  "title":"[Event ${{STATE.ENTITY_ID}}](https://portal.victorops.com/client/-/popoutIncident?incidentName=${{STATE.ENTITY_ID}}): ${{ALERT.entity_display_name}}",
-  "body":"**State**\n${{ALERT.entity_state}}\n\n**Message**\n${{STATE.ACK_MSG}}\n\n**URL**\n${{ALERT.alert_url}}"}
-}
-
-Incident Alert
-[${{ALERT.entity_display_name}}](${{ALERT.alert_url}})
-Incident:${{STATE.INCIDENT_NAME}}
-State: ${{STATE.CURRENT_STATE}}
-Host:${{STATE.HOST}}
-
-{
-  "activity":"Event triggered",
-  "title":"[Event ${{STATE.ENTITY_ID}}](https://portal.victorops.com/client/-/popoutIncident?incidentName=${{STATE.ENTITY_ID}}): ${{ALERT.entity_display_name}}",
-  "body":"**State**\n${{ALERT.entity_state}}\n\n**Message**\n${{STATE.ACK_MSG}}"}
-
-{
-  "activity":"Incident alert",
-  "body":"[${{ALERT.entity_display_name}}](https://portal.victorops.com/client/grokbase/popoutIncident?incidentName=${{STATE.INCIDENT_NAME}})\n**Incident**\n${{STATE.INCIDENT_NAME}}\n**State**\n${{STATE.CURRENT_STATE}}"
-}
-
-*/
 
 func CcMessageFromBytes(bytes []byte) (cc.Message, error) {
 	msg := cc.Message{}

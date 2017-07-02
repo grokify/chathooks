@@ -2,7 +2,7 @@ package enchant
 
 import (
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/util"
 )
 
 func ExampleMessage(data util.ExampleData) (cc.Message, error) {

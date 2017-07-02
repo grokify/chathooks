@@ -9,16 +9,17 @@ import (
 	"github.com/grokify/gotilla/strings/stringsutil"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Enchant"
-	HandlerKey  = "enchant"
-	IconURL     = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
+	DisplayName      = "Enchant"
+	HandlerKey       = "enchant"
+	MessageDirection = "out"
+	IconURL          = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -31,6 +32,14 @@ type Handler struct {
 // FastHttp request handler constructor for outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
+}
+
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.

@@ -7,15 +7,16 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Slack"
-	HandlerKey  = "slack"
+	DisplayName      = "Slack"
+	HandlerKey       = "slack"
+	MessageDirection = "in"
 )
 
 // FastHttp request handler constructor for Slack inbound webhook
@@ -29,8 +30,16 @@ func NewHandler(config config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: config, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(BuildInboundMessageBytes(ctx))
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)

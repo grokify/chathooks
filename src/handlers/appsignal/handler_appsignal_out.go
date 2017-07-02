@@ -7,19 +7,20 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
 	"github.com/grokify/gotilla/time/timeutil"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 )
 
 const (
-	DisplayName = "AppSignal"
-	HandlerKey  = "appsignal"
-	IconURL     = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
+	DisplayName      = "AppSignal"
+	HandlerKey       = "appsignal"
+	MessageDirection = "out"
+	IconURL          = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -33,8 +34,16 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	log.WithFields(log.Fields{
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info("HANDLE_FASTHTTP")

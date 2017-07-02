@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/grokify/chatmore/src/config"
+	"github.com/grokify/webhookproxy/src/config"
 )
 
 const (

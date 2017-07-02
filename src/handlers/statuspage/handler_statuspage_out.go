@@ -8,16 +8,17 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
 	"github.com/grokify/gotilla/strings/stringsutil"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
 	DisplayName        = "StatusPage"
 	HandlerKey         = "statuspage"
+	MessageDirection   = "out"
 	IconURL            = "https://pbs.twimg.com/profile_images/643541964051357696/TFppCn6j.png"
 	ComponentURLFormat = "http://manage.statuspage.io/pages/%s/components"
 )
@@ -33,8 +34,16 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

@@ -9,19 +9,20 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
 	"github.com/grokify/gotilla/strings/stringsutil"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Semaphore"
-	HandlerKey  = "semaphore"
-	IconURLX    = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/semaphore.png"
-	IconURL     = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
-	ICON_URL_2  = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
+	DisplayName      = "Semaphore"
+	HandlerKey       = "semaphore"
+	MessageDirection = "out"
+	IconURLX         = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/semaphore.png"
+	IconURL          = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
+	ICON_URL_2       = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -35,8 +36,16 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

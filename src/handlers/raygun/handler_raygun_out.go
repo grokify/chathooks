@@ -7,18 +7,19 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Raygun"
-	HandlerKey  = "raygun"
-	IconURL     = "https://raygun.com/upload/raygun-icon.svg"
-	ICON_URL2   = "https://raygun.com/images/logo/raygun-logo-og.jpg"
-	ICON_URL3   = "https://a.slack-edge.com/ae7f/img/services/raygun_512.png"
+	DisplayName      = "Raygun"
+	HandlerKey       = "raygun"
+	MessageDirection = "out"
+	IconURL          = "https://raygun.com/upload/raygun-icon.svg"
+	ICON_URL2        = "https://raygun.com/images/logo/raygun-logo-og.jpg"
+	ICON_URL3        = "https://a.slack-edge.com/ae7f/img/services/raygun_512.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -32,8 +33,16 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
 }
 
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
+}
+
 // HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	ccMsg, err := Normalize(ctx.PostBody())
 
 	if err != nil {

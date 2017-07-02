@@ -1,33 +1,52 @@
-package webhookproxy
+package main
 
 import (
-	log "github.com/Sirupsen/logrus"
+	"fmt"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/handlers"
-	"github.com/grokify/chatmore/src/handlers/appsignal"
-	"github.com/grokify/chatmore/src/handlers/pingdom"
-	"github.com/grokify/chatmore/src/handlers/runscope"
-	"github.com/grokify/chatmore/src/handlers/slack"
-	"github.com/grokify/chatmore/src/handlers/travisci"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/handlers"
+	"github.com/grokify/webhookproxy/src/handlers/appsignal"
+	"github.com/grokify/webhookproxy/src/handlers/pingdom"
+	"github.com/grokify/webhookproxy/src/handlers/raygun"
+	"github.com/grokify/webhookproxy/src/handlers/runscope"
+	"github.com/grokify/webhookproxy/src/handlers/semaphore"
+	"github.com/grokify/webhookproxy/src/handlers/slack"
+	"github.com/grokify/webhookproxy/src/handlers/statuspage"
+	"github.com/grokify/webhookproxy/src/handlers/travisci"
+	"github.com/grokify/webhookproxy/src/handlers/userlike"
+	"github.com/grokify/webhookproxy/src/handlers/victorops"
 )
 
 const (
-	RouteAppsignalOut      = "/webhook/appsignal/out/:webhookuid"
-	RouteAppsignalOutSlash = "/webhook/appsignal/out/:webhookuid/"
-	RouteSlackIn           = "/webhook/slack/in/:webhookuid"
-	RouteSlackInSlash      = "/webhook/slack/in/:webhookuid/"
-	RoutePingdomOut        = "/webhook/pingdom/out/:webhookuid"
-	RoutePingdomOutSlash   = "/webhook/pingdom/out/:webhookuid/"
-	RouteRunscopeOut       = "/webhook/runscope/out/:webhookuid"
-	RouteRunscopeOutSlash  = "/webhook/runscope/out/:webhookuid/"
-	RouteTravisciOut       = "/webhook/travisci/out/:webhookuid"
-	RouteTravisciOutSlash  = "/webhook/travisci/out/:webhookuid/"
+	RouteSlackIn      = "/hook/slack/in/:webhookuid"
+	RouteSlackInSlash = "/hook/slack/in/:webhookuid/"
 )
+
+func buildHookOutRoutes(handlerKey string, msgDir string) []string {
+	routes := []string{}
+	routes = append(routes, fmt.Sprintf("/hook/%s/%s/:webhookuid", handlerKey, msgDir))
+	routes = append(routes, fmt.Sprintf("/hook/%s/%s/:webhookuid/", handlerKey, msgDir))
+	return routes
+}
+
+func addRoutes(router *fasthttprouter.Router, handler WebhookHandler) *fasthttprouter.Router {
+	routes := buildHookOutRoutes(handler.HandlerKey(), handler.MessageDirection())
+	for _, route := range routes {
+		router.POST(route, handler.HandleFastHTTP)
+	}
+	return router
+}
+
+type WebhookHandler interface {
+	HandlerKey() string
+	MessageDirection() string
+	HandleFastHTTP(*fasthttp.RequestCtx)
+}
 
 // StartServer initializes and starts the webhook proxy server
 func StartServer(cfg config.Configuration) {
@@ -43,25 +62,34 @@ func StartServer(cfg config.Configuration) {
 
 	router.GET("/", handlers.HomeHandler)
 
-	appsignalOutHandler := appsignal.NewHandler(cfg, &adapter)
-	router.POST(RouteAppsignalOut, appsignalOutHandler.HandleFastHTTP)
-	router.POST(RouteAppsignalOutSlash, appsignalOutHandler.HandleFastHTTP)
+	// Add handlers for services sending outbound formatted hooks
+	router = addRoutes(router, appsignal.NewHandler(cfg, &adapter))
+	router = addRoutes(router, pingdom.NewHandler(cfg, &adapter))
+	router = addRoutes(router, raygun.NewHandler(cfg, &adapter))
+	router = addRoutes(router, semaphore.NewHandler(cfg, &adapter))
+	router = addRoutes(router, runscope.NewHandler(cfg, &adapter))
+	router = addRoutes(router, statuspage.NewHandler(cfg, &adapter))
+	router = addRoutes(router, travisci.NewHandler(cfg, &adapter))
+	router = addRoutes(router, userlike.NewHandler(cfg, &adapter))
+	router = addRoutes(router, victorops.NewHandler(cfg, &adapter))
 
-	pingdomOutHandler := pingdom.NewHandler(cfg, &adapter)
-	router.POST(RoutePingdomOut, pingdomOutHandler.HandleFastHTTP)
-	router.POST(RoutePingdomOutSlash, pingdomOutHandler.HandleFastHTTP)
+	// Add handlers for services sending inbound hooks for Slack
+	router = addRoutes(router, slack.NewHandler(cfg, &adapter))
 
-	runscopeOutHandler := runscope.NewHandler(cfg, &adapter)
-	router.POST(RouteRunscopeOut, runscopeOutHandler.HandleFastHTTP)
-	router.POST(RouteRunscopeOutSlash, runscopeOutHandler.HandleFastHTTP)
-
-	slackInHandler := slack.NewHandler(cfg, &adapter)
-	router.POST(RouteSlackIn, slackInHandler.HandleFastHTTP)
-	router.POST(RouteSlackInSlash, slackInHandler.HandleFastHTTP)
-
-	travisciOutHandler := travisci.NewHandler(cfg, &adapter)
-	router.POST(RouteTravisciOut, travisciOutHandler.HandleFastHTTP)
-	router.POST(RouteTravisciOutSlash, travisciOutHandler.HandleFastHTTP)
+	log.WithFields(log.Fields{
+		"type": "http.server.start"}).
+		Info(fmt.Sprintf("Listening on port %v", cfg.Port))
 
 	log.Fatal(fasthttp.ListenAndServe(cfg.Address(), router.Handler))
+
+}
+
+func main() {
+	cfg := config.Configuration{
+		Port:           8080,
+		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
+		IconBaseURL:    "http://grokify.github.io/webhookproxy/images/icons/",
+		LogLevel:       log.DebugLevel}
+
+	StartServer(cfg)
 }

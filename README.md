@@ -158,7 +158,7 @@ poster.send_message 'BOO!'
 
 ## Notes
 
-Glip Webhook Proxy is built using:
+Chatmore is built using:
 
 * [fasthttp](https://github.com/valyala/fasthttp)
 * [fasthttprouter](https://github.com/buaazp/fasthttprouter)

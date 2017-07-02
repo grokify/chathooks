@@ -8,15 +8,16 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
 	DisplayName          = "OpsGenie"
 	HandlerKey           = "opsgenie"
+	MessageDirection     = "out"
 	IconURL              = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/opsgenie.png"
 	AlertURLFormat       = "https://app.opsgenie.com/alert/V2#/show/%s"
 	UserProfileURLFormat = "https://app.opsgenie.com/user/profile#/user/%s"
@@ -31,6 +32,14 @@ type Handler struct {
 // FastHttp request handler constructor for Travis CI outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
+}
+
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.

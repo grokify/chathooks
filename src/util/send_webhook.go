@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/webhookproxy/src/adapters"
 	"github.com/valyala/fasthttp"
 )
 

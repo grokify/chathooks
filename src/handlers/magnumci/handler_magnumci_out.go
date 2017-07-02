@@ -8,18 +8,19 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/chatmore/src/adapters"
-	"github.com/grokify/chatmore/src/config"
-	"github.com/grokify/chatmore/src/util"
+	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	DisplayName = "Magnum CI"
-	HandlerKey  = "magnumci"
-	IconURL     = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
-	IconURLY    = "https://a.slack-edge.com/ae7f/plugins/statuspageio/assets/service_512.png"
-	IconURLZ    = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
+	DisplayName      = "Magnum CI"
+	HandlerKey       = "magnumci"
+	MessageDirection = "out"
+	IconURL          = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
+	IconURLY         = "https://a.slack-edge.com/ae7f/plugins/statuspageio/assets/service_512.png"
+	IconURLZ         = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -31,6 +32,14 @@ type Handler struct {
 // FastHttp request handler constructor for outbound webhook
 func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 	return Handler{Config: cfg, Adapter: adapter}
+}
+
+func (h Handler) HandlerKey() string {
+	return HandlerKey
+}
+
+func (h Handler) MessageDirection() string {
+	return MessageDirection
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.

@@ -1,3 +1,5 @@
+- 2017-06-30
+  - Renamed to `chatmore` from `webhook-proxy-go`
 - 2017-03-19
   - Add handlers `datadog`, `deskdotcom`, `marketo`, `victorops`
 - 2017-03-05
