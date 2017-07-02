@@ -1,5 +1,5 @@
-Chatmore - A webhook proxy
-==========================
+WebhookProxy - A webhook proxy
+==============================
 
 [![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
@@ -7,7 +7,7 @@ Chatmore - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-Chatmore is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat). This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+WebhookProxy is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat). This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
