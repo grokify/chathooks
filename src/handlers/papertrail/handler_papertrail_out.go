@@ -119,33 +119,34 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		}
 
 		ccMsg.AddAttachment(attachment)
-		continue
-		if len(event.SourceName) > 0 {
-			source := event.SourceName
-			if len(event.SourceIP) > 0 {
-				source = fmt.Sprintf("%s (%s)", event.SourceName, event.SourceIP)
+		if 1 == 0 {
+			if len(event.SourceName) > 0 {
+				source := event.SourceName
+				if len(event.SourceIP) > 0 {
+					source = fmt.Sprintf("%s (%s)", event.SourceName, event.SourceIP)
+				}
+				attachment.AddField(cc.Field{
+					Title: "Source",
+					Value: source})
 			}
-			attachment.AddField(cc.Field{
-				Title: "Source",
-				Value: source})
-		}
-		if len(event.Program) > 0 {
-			attachment.AddField(cc.Field{
-				Title: "Program",
-				Value: event.Program})
-		}
-		if len(event.Facility) > 0 {
-			attachment.AddField(cc.Field{
-				Title: "Facility",
-				Value: event.Facility})
-		}
-		if len(event.ReceivedAt) > 0 {
-			attachment.AddField(cc.Field{
-				Title: "Received At",
-				Value: event.ReceivedAt})
-		}
+			if len(event.Program) > 0 {
+				attachment.AddField(cc.Field{
+					Title: "Program",
+					Value: event.Program})
+			}
+			if len(event.Facility) > 0 {
+				attachment.AddField(cc.Field{
+					Title: "Facility",
+					Value: event.Facility})
+			}
+			if len(event.ReceivedAt) > 0 {
+				attachment.AddField(cc.Field{
+					Title: "Received At",
+					Value: event.ReceivedAt})
+			}
 
-		ccMsg.AddAttachment(attachment)
+			ccMsg.AddAttachment(attachment)
+		}
 	}
 
 	return ccMsg, nil

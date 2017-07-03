@@ -148,58 +148,58 @@ func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolati
 				violationRecordedAtSuffix)})
 	}
 
-	return attachment
-
-	if len(violation.Name) > 0 {
-		attachment.AddField(cc.Field{
-			Title: "Violation Name",
-			Value: violation.Name,
-			Short: true})
-	}
-
-	if len(violation.Metric) > 0 {
-		attachment.AddField(cc.Field{
-			Title: "Metric",
-			Value: violation.Metric,
-			Short: true})
-	}
-
-	condition, err := src.GetCondition(violation.ConditionViolated)
-	if err == nil {
-		attachment.AddField(cc.Field{
-			Title: "Threshold",
-			Value: fmt.Sprintf("%v", condition.Threshold),
-			Short: true})
-	}
-	if violation.Value > 0.0 {
-		attachment.AddField(cc.Field{
-			Title: "Value",
-			Value: fmt.Sprintf("%v", violation.Value),
-			Short: true})
-	}
-
 	if 1 == 0 {
-		field := cc.Field{}
-
 		if len(violation.Name) > 0 {
-			field.Title = violation.Name
+			attachment.AddField(cc.Field{
+				Title: "Violation Name",
+				Value: violation.Name,
+				Short: true})
+		}
+
+		if len(violation.Metric) > 0 {
+			attachment.AddField(cc.Field{
+				Title: "Metric",
+				Value: violation.Metric,
+				Short: true})
 		}
 
 		condition, err := src.GetCondition(violation.ConditionViolated)
 		if err == nil {
-			field.Value = fmt.Sprintf("Metric %s was above threshold %v with value %v",
-				violation.Metric,
-				condition.Threshold,
-				violation.Value)
+			attachment.AddField(cc.Field{
+				Title: "Threshold",
+				Value: fmt.Sprintf("%v", condition.Threshold),
+				Short: true})
 		}
-		attachment.AddField(field)
-	}
+		if violation.Value > 0.0 {
+			attachment.AddField(cc.Field{
+				Title: "Value",
+				Value: fmt.Sprintf("%v", violation.Value),
+				Short: true})
+		}
 
-	if violation.RecordedAt > 0 {
-		dt := time.Unix(violation.RecordedAt, 0).UTC()
-		attachment.AddField(cc.Field{
-			Title: "Recorded At",
-			Value: dt.Format(time.RFC1123)})
+		if 1 == 0 {
+			field := cc.Field{}
+
+			if len(violation.Name) > 0 {
+				field.Title = violation.Name
+			}
+
+			condition, err := src.GetCondition(violation.ConditionViolated)
+			if err == nil {
+				field.Value = fmt.Sprintf("Metric %s was above threshold %v with value %v",
+					violation.Metric,
+					condition.Threshold,
+					violation.Value)
+			}
+			attachment.AddField(field)
+		}
+
+		if violation.RecordedAt > 0 {
+			dt := time.Unix(violation.RecordedAt, 0).UTC()
+			attachment.AddField(cc.Field{
+				Title: "Recorded At",
+				Value: dt.Format(time.RFC1123)})
+		}
 	}
 
 	return attachment
