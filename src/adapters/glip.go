@@ -2,7 +2,6 @@ package adapters
 
 import (
 	"encoding/json"
-	"fmt"
 
 	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
@@ -55,6 +54,6 @@ func (adapter *GlipAdapter) SendMessage(message cc.Message) (*fasthttp.Request, 
 }
 
 func (adapter *GlipAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error) {
-	webhookUID := fmt.Sprintf("%s")
+	webhookUID := adapter.WebhookURLOrUID
 	return webhookUID, nil
 }

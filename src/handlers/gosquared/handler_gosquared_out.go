@@ -318,9 +318,9 @@ func (msg *GosquaredOutMessageSmartGroup) GroupURL() string {
 }
 
 type GosquaredOutPerson struct {
-	CreatedAt   string `json:"person,omitempty"`
-	Phone       string `json:"person,omitempty"`
-	Avatar      string `json:"person,omitempty"`
+	CreatedAt   string `json:"created_at,omitempty"`
+	Phone       string `json:"phone,omitempty"`
+	Avatar      string `json:"avatar,omitempty"`
 	Description string `json:"description,omitempty"`
 	Username    string `json:"username,omitempty"`
 	Email       string `json:"email,omitempty"`

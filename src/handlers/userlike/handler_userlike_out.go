@@ -342,8 +342,8 @@ type UserlikeChatMetaStartOutMessage struct {
 	FeedbackMessage   string             `json:"feedback_message,omitempty"`
 	Id                int64              `json:"id,omitempty"`
 	InitialURL        string             `json:"initial_url,omitempty"`
-	LocCity           string             `json:"browser_version,omitempty"`
-	LocCountry        string             `json:"browser_version,omitempty"`
+	LocCity           string             `json:"loc_city,omitempty"`
+	LocCountry        string             `json:"loc_country,omitempty"`
 	LocLat            float64            `json:"loc_lat,omitempty"`
 	LocLon            float64            `json:"loc_lon,omitempty"`
 	MarkedRead        bool               `json:"marked_read,omitempty"`

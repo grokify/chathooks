@@ -21,7 +21,7 @@ type Attachment struct {
 	Title    string   `json:"title,omitempty"`
 	Pretext  string   `json:"pretext,omitempty"`
 	Text     string   `json:"text,omitempty"`
-	MrkdwnIn []string `json"mrkdwn_in,omitempty"`
+	MrkdwnIn []string `json:"mrkdwn_in,omitempty"`
 	Fields   []Field  `json:"fields,omitempty"`
 }
 
