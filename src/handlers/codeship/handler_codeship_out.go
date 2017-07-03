@@ -17,7 +17,6 @@ const (
 	DisplayName      = "Codeship"
 	HandlerKey       = "codeship"
 	MessageDirection = "out"
-	IconURL          = "http://chaindock.com/wp-content/uploads/2016/10/codeship.png"
 	DocumentationURL = "https://documentation.codeship.com/basic/getting-started/webhooks/"
 )
 
@@ -42,7 +41,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -56,13 +55,16 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := CodeshipOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	build := src.Build
@@ -72,8 +74,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		status = "failed due to infrastructure error"
 	}
 
-	message.Activity = fmt.Sprintf("Build %v", status)
-	message.Title = fmt.Sprintf("[Build #%v](%s) for **%s** %s ([%s](%s))",
+	ccMsg.Activity = fmt.Sprintf("Build %v", status)
+	ccMsg.Title = fmt.Sprintf("[Build #%v](%s) for **%s** %s ([%s](%s))",
 		build.BuildId,
 		build.BuildURL,
 		build.ProjectName,
@@ -107,8 +109,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type CodeshipOutMessage struct {

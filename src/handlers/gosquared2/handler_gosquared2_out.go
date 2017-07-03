@@ -16,7 +16,6 @@ import (
 const (
 	DisplayName      = "GoSquared"
 	HandlerKey       = "gosquared"
-	IconURL          = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/gosquared.png"
 	DocumentationURL = "https://www.gosquared.com/customer/en/portal/articles/1996494-webhooks"
 )
 
@@ -33,7 +32,7 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -47,28 +46,31 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	src, err := GosquaredOutBaseMessageFromBytes(bytes)
 	if err != nil {
 		return cc.NewMessage(), err
 	}
 
 	if len(src.Person.Id) > 0 {
-		return NormalizeSmartGroup(bytes)
+		return NormalizeSmartGroup(cfg, bytes)
 	}
-	return NormalizeSiteTraffic(bytes)
+	return NormalizeSiteTraffic(cfg, bytes)
 }
 
-func NormalizeSiteTraffic(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSiteTraffic(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := GosquaredOutMessageSiteTrafficFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = "Site traffic change"
+	ccMsg.Activity = "Site traffic change"
 
 	attachment := cc.NewAttachment()
 
@@ -82,20 +84,23 @@ func NormalizeSiteTraffic(bytes []byte) (cc.Message, error) {
 		Title: "Trigger Boundary",
 		Value: fmt.Sprintf("%v", src.TriggeredAlert.Boundary)})
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
-func NormalizeSmartGroup(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSmartGroup(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := GosquaredOutMessageSmartGroupFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = "Smart Group update"
+	ccMsg.Activity = "Smart Group update"
 
 	attachment := cc.NewAttachment()
 
@@ -109,8 +114,8 @@ func NormalizeSmartGroup(bytes []byte) (cc.Message, error) {
 		Title: "Action",
 		Value: src.Boundary})
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type GosquaredOutBaseMessage struct {

@@ -44,7 +44,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -60,66 +60,72 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 // {$component.name} status changed from {$component_update.old_status} to {$component_update.new_status}. [(Manage your Components)]({http://manage.statuspage.io/pages/{$page.id}/components})
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	src, err := StatuspageOutMessageFromBytes(bytes)
 	if err != nil {
 		return cc.NewMessage(), err
 	}
 	if len(src.ComponentUpdate.CreatedAt) > 0 {
-		return NormalizeComponentUpdate(src)
+		return NormalizeComponentUpdate(cfg, src)
 	}
-	return NormalizeIncidentUpdate(src)
+	return NormalizeIncidentUpdate(cfg, src)
 }
 
-func NormalizeComponentUpdate(src StatuspageOutMessage) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeComponentUpdate(cfg config.Configuration, src StatuspageOutMessage) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = "Component status changed"
+	ccMsg.Activity = "Component status changed"
 
 	componentURL, err := src.PageURL()
 	if err == nil {
-		message.Title = fmt.Sprintf("[%s](%s) component status updated from **%s** to **%s**",
+		ccMsg.Title = fmt.Sprintf("[%s](%s) component status updated from **%s** to **%s**",
 			src.Component.Name,
 			componentURL,
 			src.ComponentUpdate.OldStatus,
 			src.ComponentUpdate.NewStatus)
 	} else {
-		message.Title = fmt.Sprintf("%s component status updated from **%s** to **%s**",
+		ccMsg.Title = fmt.Sprintf("%s component status updated from **%s** to **%s**",
 			src.Component.Name,
 			src.ComponentUpdate.OldStatus,
 			src.ComponentUpdate.NewStatus)
 	}
 
-	return message, nil
+	return ccMsg, nil
 }
 
 func ToUpperFirstWorlds(input string, sep1 string, sep2 string) string {
 	return ""
 }
 
-func NormalizeIncidentUpdate(src StatuspageOutMessage) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeIncidentUpdate(cfg config.Configuration, src StatuspageOutMessage) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	if len(src.Incident.IncidentUpdates) == 0 {
-		return message, errors.New("No incident update found")
+		return ccMsg, errors.New("No incident update found")
 	} else if len(src.Incident.IncidentUpdates) == 1 {
-		message.Activity = "New incident created"
+		ccMsg.Activity = "New incident created"
 	} else {
-		message.Activity = "Incident updated"
+		ccMsg.Activity = "Incident updated"
 	}
 
 	thisUpdate := src.Incident.IncidentUpdates[0]
 
 	if len(src.Incident.IncidentUpdates) == 1 {
-		message.Title = fmt.Sprintf("[%s](%s) incident created with status **%s**",
+		ccMsg.Title = fmt.Sprintf("[%s](%s) incident created with status **%s**",
 			src.Page.StatusDescription,
 			src.Incident.Shortlink,
 			stringsutil.ToUpperFirst(thisUpdate.Status))
 	} else if len(src.Incident.IncidentUpdates) > 1 {
 		prevUpdate := src.Incident.IncidentUpdates[1]
-		message.Title = fmt.Sprintf("[%s](%s) incident updated from **%s** to **%s**",
+		ccMsg.Title = fmt.Sprintf("[%s](%s) incident updated from **%s** to **%s**",
 			src.Page.StatusDescription,
 			src.Incident.Shortlink,
 			stringsutil.ToUpperFirst(prevUpdate.Status),
@@ -134,9 +140,9 @@ func NormalizeIncidentUpdate(src StatuspageOutMessage) (cc.Message, error) {
 	}
 
 	if len(attachment.Fields) > 0 {
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
-	return message, nil
+	return ccMsg, nil
 }
 
 type StatuspageOutMessage struct {

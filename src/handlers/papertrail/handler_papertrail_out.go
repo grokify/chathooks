@@ -18,7 +18,6 @@ const (
 	DisplayName      = "Papertrail"
 	HandlerKey       = "papertrail"
 	MessageDirection = "out"
-	IconURL          = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/papertrail.png"
 	DocumentationURL = "http://help.papertrailapp.com/kb/how-it-works/web-hooks/"
 )
 
@@ -43,7 +42,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -57,19 +56,22 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := PapertrailOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if len(src.Events) > 1 {
-		message.Activity = "Events triggered"
+		ccMsg.Activity = "Events triggered"
 	} else {
-		message.Activity = "Event triggered"
+		ccMsg.Activity = "Event triggered"
 	}
 
 	eventCount := len(src.Events)
@@ -79,9 +81,9 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	}
 
 	if eventCount == 1 {
-		message.Title = fmt.Sprintf("%s event triggered!", searchName)
+		ccMsg.Title = fmt.Sprintf("%s event triggered!", searchName)
 	} else {
-		message.Title = fmt.Sprintf("%v %s events triggered!", eventCount, searchName)
+		ccMsg.Title = fmt.Sprintf("%v %s events triggered!", eventCount, searchName)
 	}
 
 	for i, event := range src.Events {
@@ -116,7 +118,7 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			}
 		}
 
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 		continue
 		if len(event.SourceName) > 0 {
 			source := event.SourceName
@@ -143,10 +145,10 @@ func Normalize(bytes []byte) (cc.Message, error) {
 				Value: event.ReceivedAt})
 		}
 
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
 
-	return message, nil
+	return ccMsg, nil
 }
 
 type PapertrailOutMessage struct {

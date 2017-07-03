@@ -19,7 +19,6 @@ const (
 	DisplayName      = "Userlike"
 	HandlerKey       = "userlike"
 	MessageDirection = "out"
-	IconURL          = "https://a.slack-edge.com/ae7f/img/services/userlike_512.png"
 )
 
 var (
@@ -48,7 +47,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -62,7 +61,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bodyBytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bodyBytes []byte) (cc.Message, error) {
 	srcMsgBase, err := UserlikeBaseOutMessageFromBytes(bodyBytes)
 	if err != nil {
 		return cc.Message{}, err
@@ -72,25 +71,25 @@ func Normalize(bodyBytes []byte) (cc.Message, error) {
 		if err != nil {
 			return cc.Message{}, err
 		}
-		return NormalizeOfflineMessage(srcMsg), nil
+		return NormalizeOfflineMessage(cfg, srcMsg), nil
 	} else if srcMsgBase.Type == "chat_meta" {
 		srcMsg, err := UserlikeChatMetaStartOutMessageFromBytes(bodyBytes)
 		if err != nil {
 			return cc.Message{}, err
 		}
-		return NormalizeChatMeta(srcMsg), nil
+		return NormalizeChatMeta(cfg, srcMsg), nil
 	} else if srcMsgBase.Type == "operator" {
 		srcMsg, err := UserlikeOperatorOutMessageFromBytes(bodyBytes)
 		if err != nil {
 			return cc.Message{}, err
 		}
-		return NormalizeOperator(srcMsg), nil
+		return NormalizeOperator(cfg, srcMsg), nil
 	} else if srcMsgBase.Type == "chat_widget" {
 		srcMsg, err := UserlikeChatWidgetOutMessageFromBytes(bodyBytes)
 		if err != nil {
 			return cc.Message{}, err
 		}
-		return NormalizeChatWidget(srcMsg), nil
+		return NormalizeChatWidget(cfg, srcMsg), nil
 	}
 
 	return cc.Message{}, errors.New("Type Not Supported")
@@ -116,14 +115,16 @@ func GlipActivityForChat(event string, feedback string) string {
 	return fmt.Sprintf("Chat %s", eventDisplay)
 }
 
-func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeOfflineMessage(cfg config.Configuration, src UserlikeOfflineMessageOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = fmt.Sprintf("Offline message received%v", adapters.IntegrationActivitySuffix(DisplayName))
+	ccMsg.Activity = fmt.Sprintf("Offline message received%v", adapters.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
-	attachment.ThumbnailURL = IconURL
 
 	if len(src.URL) > 0 {
 		attachment.AddField(cc.Field{
@@ -137,19 +138,22 @@ func NormalizeOfflineMessage(src UserlikeOfflineMessageOutMessage) cc.Message {
 	}
 
 	if len(attachment.Fields) > 0 {
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
-	return message
+	return ccMsg
 }
 
-func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
-	message.Activity = fmt.Sprintf("%s%s",
+func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
+
+	ccMsg.Activity = fmt.Sprintf("%s%s",
 		GlipActivityForChat(src.Event, src.FeedbackMessage), adapters.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
-	attachment.ThumbnailURL = IconURL
 
 	displayedUrl := false
 
@@ -187,9 +191,9 @@ func NormalizeChatMeta(src UserlikeChatMetaStartOutMessage) cc.Message {
 	}
 
 	if len(attachment.Fields) > 0 {
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
-	return message
+	return ccMsg
 }
 
 func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
@@ -208,10 +212,14 @@ func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
 	return fmt.Sprintf("[%s](%s)", url, url), true
 }
 
-func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
-	message.Activity = fmt.Sprintf("Chat widget configuration updated%s", adapters.IntegrationActivitySuffix(DisplayName))
+func NormalizeChatWidget(cfg config.Configuration, src UserlikeChatWidgetOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
+
+	ccMsg.Activity = fmt.Sprintf("Chat widget configuration updated%s", adapters.IntegrationActivitySuffix(DisplayName))
 
 	titleParts := []string{}
 	if len(src.StatusUrl) > 0 {
@@ -221,11 +229,10 @@ func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
 		titleParts = append(titleParts, fmt.Sprintf("[test widget](%s)", src.TestUrl))
 	}
 	if len(titleParts) > 0 {
-		message.Title = strings.Join(titleParts, " and ")
+		ccMsg.Title = strings.Join(titleParts, " and ")
 	}
 
 	attachment := cc.NewAttachment()
-	attachment.ThumbnailURL = IconURL
 
 	if len(src.Name) > 0 {
 		attachment.AddField(cc.Field{
@@ -244,14 +251,18 @@ func NormalizeChatWidget(src UserlikeChatWidgetOutMessage) cc.Message {
 			Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message
+	ccMsg.AddAttachment(attachment)
+	return ccMsg
 }
 
-func NormalizeOperator(src UserlikeOperatorOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
-	message.Activity = fmt.Sprintf("Operator is %s%s",
+func NormalizeOperator(cfg config.Configuration, src UserlikeOperatorOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
+
+	ccMsg.Activity = fmt.Sprintf("Operator is %s%s",
 		src.Event, adapters.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
@@ -262,8 +273,8 @@ func NormalizeOperator(src UserlikeOperatorOutMessage) cc.Message {
 			Value: fmt.Sprintf("[%s](%s)", src.Name, src.DashboardUrl)})
 	}
 
-	message.AddAttachment(attachment)
-	return message
+	ccMsg.AddAttachment(attachment)
+	return ccMsg
 }
 
 type UserlikeBaseOutMessage struct {

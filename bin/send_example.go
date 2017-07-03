@@ -9,8 +9,10 @@ import (
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
+	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/webhookproxy/src/adapters"
+	"github.com/grokify/webhookproxy/src/config"
 	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
 
@@ -79,6 +81,10 @@ func main() {
 		panic("Usage: send_example.go -hook=<GUID> -adapter=glip -example=raygun")
 	}
 
+	cfg := config.Configuration{
+		IconBaseURL: "http://grokify.github.io/webhookproxy/icons/",
+		LogLevel:    log.DebugLevel}
+
 	sender := Sender{}
 	if *adapterType == "glip" {
 		if len(guid) < 1 {
@@ -114,7 +120,7 @@ func main() {
 	case "appsignal":
 		source := exampleData.Data[appsignal.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(appsignal.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(appsignal.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "apteligent":
 		source := exampleData.Data[apteligent.HandlerKey]
@@ -122,9 +128,9 @@ func main() {
 			sender.SendCcMessage(apteligent.ExampleMessage(exampleData, eventSlug))
 		}
 	case "circleci":
-		sender.SendCcMessage(circleci.ExampleMessage(exampleData))
+		sender.SendCcMessage(circleci.ExampleMessage(cfg, exampleData))
 	case "codeship":
-		sender.SendCcMessage(codeship.ExampleMessage(exampleData))
+		sender.SendCcMessage(codeship.ExampleMessage(cfg, exampleData))
 	case "confluence":
 		source := exampleData.Data[confluence.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
@@ -135,29 +141,29 @@ func main() {
 	case "deskdotcom":
 		source := exampleData.Data[deskdotcom.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(deskdotcom.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(deskdotcom.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "enchant":
-		sender.SendCcMessage(enchant.ExampleMessage(exampleData))
+		sender.SendCcMessage(enchant.ExampleMessage(cfg, exampleData))
 	case "gosquared":
 		source := exampleData.Data[gosquared.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(gosquared.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(gosquared.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "gosquared2":
 		source := exampleData.Data[gosquared.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(gosquared2.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(gosquared2.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "heroku":
-		sender.SendCcMessage(heroku.ExampleMessage(exampleData))
+		sender.SendCcMessage(heroku.ExampleMessage(cfg, exampleData))
 	case "librato":
 		source := exampleData.Data[librato.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(librato.ExampleMessage(exampleData, eventSlug))
 		}
 	case "magnumci":
-		sender.SendCcMessage(magnumci.ExampleMessage(exampleData))
+		sender.SendCcMessage(magnumci.ExampleMessage(cfg, exampleData))
 	case "marketo":
 		source := exampleData.Data[marketo.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
@@ -166,7 +172,7 @@ func main() {
 	case "opsgenie":
 		source := exampleData.Data[opsgenie.HandlerKey]
 		for i, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(opsgenie.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(opsgenie.ExampleMessage(cfg, exampleData, eventSlug))
 			if i == 8 {
 				time.Sleep(2000 * time.Millisecond)
 			}
@@ -174,12 +180,12 @@ func main() {
 	case "papertrail":
 		source := exampleData.Data[papertrail.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(papertrail.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(papertrail.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "pingdom":
 		source := exampleData.Data[pingdom.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(pingdom.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(pingdom.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "raygun":
 		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
@@ -193,17 +199,17 @@ func main() {
 	case "statuspage":
 		source := exampleData.Data[statuspage.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(statuspage.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(statuspage.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "travisci":
 		sender.SendCcMessage(travisci.ExampleMessage(exampleData))
 	case "userlike":
 		source := exampleData.Data[userlike.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(userlike.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(userlike.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "victorops":
-		sender.SendCcMessage(victorops.ExampleMessage(exampleData))
+		sender.SendCcMessage(victorops.ExampleMessage(cfg, exampleData))
 	default:
 		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
 	}

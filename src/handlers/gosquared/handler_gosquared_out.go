@@ -20,7 +20,6 @@ import (
 const (
 	DisplayName      = "GoSquared"
 	HandlerKey       = "gosquared"
-	IconURL          = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/gosquared.png"
 	DocumentationURL = "https://www.gosquared.com/customer/en/portal/articles/1996494-webhooks"
 )
 
@@ -37,7 +36,7 @@ func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -51,32 +50,35 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	src, err := GosquaredOutBaseMessageFromBytes(bytes)
 	if err != nil {
 		return cc.NewMessage(), err
 	}
 	if len(src.Message.Id) > 0 {
-		return NormalizeLiveMessage(bytes)
+		return NormalizeLiveMessage(cfg, bytes)
 	} else if len(src.Person.Id) > 0 {
-		return NormalizeSmartGroup(bytes)
+		return NormalizeSmartGroup(cfg, bytes)
 	}
-	return NormalizeSiteTraffic(bytes)
+	return NormalizeSiteTraffic(cfg, bytes)
 }
 
-func NormalizeSiteTraffic(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSiteTraffic(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := GosquaredOutMessageSiteTrafficFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if src.TriggeredAlert.Boundary == "upper" {
-		message.Activity = "Site traffic spike"
+		ccMsg.Activity = "Site traffic spike"
 	} else { // if src.TriggeredAlert.Boundary == "lower" {
-		message.Activity = "Site traffic dip"
+		ccMsg.Activity = "Site traffic dip"
 	}
 
 	pluralSuffix := "s"
@@ -84,23 +86,26 @@ func NormalizeSiteTraffic(bytes []byte) (cc.Message, error) {
 		pluralSuffix = ""
 	}
 
-	message.Title = fmt.Sprintf("[%s](%s) has [%v visitor%s online](%s)",
+	ccMsg.Title = fmt.Sprintf("[%s](%s) has [%v visitor%s online](%s)",
 		src.SiteDetails.SiteName,
 		src.SiteDetails.URL,
 		src.Concurrents,
 		pluralSuffix,
 		src.SiteDetails.DashboardURL())
 
-	return message, nil
+	return ccMsg, nil
 }
 
-func NormalizeSmartGroup(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSmartGroup(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := GosquaredOutMessageSmartGroupFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	verb := "exited"
@@ -108,25 +113,28 @@ func NormalizeSmartGroup(bytes []byte) (cc.Message, error) {
 		verb = "entered"
 	}
 
-	message.Activity = fmt.Sprintf("User has %s Smart Group", verb)
-	message.Title = fmt.Sprintf("%s has %s [%s](%s)",
+	ccMsg.Activity = fmt.Sprintf("User has %s Smart Group", verb)
+	ccMsg.Title = fmt.Sprintf("%s has %s [%s](%s)",
 		src.Person.Name,
 		verb,
 		src.Group.Name,
 		src.GroupURL())
-	return message, nil
+	return ccMsg, nil
 }
 
-func NormalizeLiveMessage(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeLiveMessage(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := GosquaredOutLiveMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = "Live chat message"
+	ccMsg.Activity = "Live chat message"
 
 	personInboxURL, errURL := src.PersonInboxURL()
 	person := src.Person.DisplayName(false, true)
@@ -134,7 +142,7 @@ func NormalizeLiveMessage(bytes []byte) (cc.Message, error) {
 		person = fmt.Sprintf("[%v](%v)", person, personInboxURL)
 	}
 
-	message.Title = fmt.Sprintf("%v sent a message", person)
+	ccMsg.Title = fmt.Sprintf("%v sent a message", person)
 
 	attachment := cc.NewAttachment()
 
@@ -154,10 +162,10 @@ func NormalizeLiveMessage(bytes []byte) (cc.Message, error) {
 	}
 
 	if len(attachment.Fields) > 0 {
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
 
-	return message, nil
+	return ccMsg, nil
 }
 
 type GosquaredOutBaseMessage struct {

@@ -88,7 +88,7 @@ func main() {
 	cfg := config.Configuration{
 		Port:           8080,
 		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
-		IconBaseURL:    "http://grokify.github.io/webhookproxy/images/icons/",
+		IconBaseURL:    "http://grokify.github.io/webhookproxy/icons/",
 		LogLevel:       log.DebugLevel}
 
 	StartServer(cfg)

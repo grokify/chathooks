@@ -29,12 +29,11 @@ func joinURL(baseURL string, pathPart string) (*url.URL, error) {
 	if err != nil {
 		return &url.URL{}, nil
 	}
-	base, err := url.Parse("http://grokify.github.io/webhookproxy/images/icons/")
+	base, err := url.Parse(baseURL)
 	if err != nil {
 		return &url.URL{}, nil
 	}
 	return base.ResolveReference(u), nil
-	//fmt.Println(base.ResolveReference(u).String())
 }
 
 func getAppIconFile(appSlug string) (string, error) {

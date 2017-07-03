@@ -50,11 +50,11 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/grokify/glip-webhook-proxy"
+	"github.com/grokify/webhookproxy"
 )
 
 func main() {
-	config := glipwebhookproxy.Configuration{
+	config := webhookproxy.Configuration{
 		Port:           8080,
 		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
 		LogLevel:       log.DebugLevel}
@@ -158,21 +158,21 @@ poster.send_message 'BOO!'
 
 ## Notes
 
-Chatmore is built using:
+WebhookProxy is built using:
 
 * [fasthttp](https://github.com/valyala/fasthttp)
 * [fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [logrus](https://github.com/sirupsen/logrus)
 
- [build-status-svg]: https://api.travis-ci.org/grokify/chatmore.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/chatmore
- [coverage-status-svg]: https://coveralls.io/repos/grokify/chatmore/badge.svg?branch=master
- [coverage-status-link]: https://coveralls.io/r/grokify/chatmore?branch=master
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chatmore
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/chatmore
- [codeclimate-status-svg]: https://codeclimate.com/github/grokify/chatmore/badges/gpa.svg
- [codeclimate-status-link]: https://codeclimate.com/github/grokify/chatmore
+ [build-status-svg]: https://api.travis-ci.org/grokify/webhookproxy.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/webhookproxy
+ [coverage-status-svg]: https://coveralls.io/repos/grokify/webhookproxy/badge.svg?branch=master
+ [coverage-status-link]: https://coveralls.io/r/grokify/webhookproxy?branch=master
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/webhookproxy
+ [goreport-link]: https://goreportcard.com/report/github.com/grokify/webhookproxy
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/webhookproxy/badges/gpa.svg
+ [codeclimate-status-link]: https://codeclimate.com/github/grokify/webhookproxy
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/chatmore
+ [docs-godoc-link]: https://godoc.org/github.com/grokify/webhookproxy
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/chatmore/blob/master/LICENSE.md
+ [license-link]: https://github.com/grokify/webhookproxy/blob/master/LICENSE.md

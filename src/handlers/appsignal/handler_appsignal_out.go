@@ -12,8 +12,6 @@ import (
 	"github.com/grokify/webhookproxy/src/config"
 	"github.com/grokify/webhookproxy/src/util"
 	"github.com/valyala/fasthttp"
-
-	"github.com/grokify/gotilla/fmt/fmtutil"
 )
 
 const (
@@ -51,7 +49,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info(string(ctx.PostBody()))
 
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -65,16 +63,18 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	message := cc.NewMessage()
-	message.IconURL = IconURL
-	fmt.Println("NORMALIZE")
+
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		message.IconURL = iconURL.String()
+	}
+
 	src, err := AppsignalOutMessageFromBytes(bytes)
 	if err != nil {
 		return message, err
 	}
-	fmt.Println("HERE")
-	fmtutil.PrintJSON(src)
 
 	if len(src.Marker.URL) > 0 {
 		message.Activity = "App deployed"

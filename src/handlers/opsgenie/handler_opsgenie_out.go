@@ -18,7 +18,6 @@ const (
 	DisplayName          = "OpsGenie"
 	HandlerKey           = "opsgenie"
 	MessageDirection     = "out"
-	IconURL              = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/opsgenie.png"
 	AlertURLFormat       = "https://app.opsgenie.com/alert/V2#/show/%s"
 	UserProfileURLFormat = "https://app.opsgenie.com/user/profile#/user/%s"
 )
@@ -44,7 +43,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -58,13 +57,16 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := OpsgenieOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	actions := map[string]string{
@@ -85,9 +87,9 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	verb := ""
 	ok := false
 	if verb, ok = actions[src.Action]; ok {
-		message.Activity = fmt.Sprintf("Alert %s", verb)
+		ccMsg.Activity = fmt.Sprintf("Alert %s", verb)
 	} else {
-		message.Activity = fmt.Sprintf("Alert %s", src.Action)
+		ccMsg.Activity = fmt.Sprintf("Alert %s", src.Action)
 	}
 
 	alertType := src.Source.Name
@@ -100,7 +102,7 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		alertType = "alert"
 	}
 
-	message.Title = fmt.Sprintf("%s %s ([%s](%s))",
+	ccMsg.Title = fmt.Sprintf("%s %s ([%s](%s))",
 		src.IntegrationName,
 		alertType,
 		src.Alert.AlertId[:8],
@@ -168,9 +170,9 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Value: fmt.Sprintf("[%s](%s)", src.Alert.Username, src.Alert.UserURL())})
 	}
 
-	message.AddAttachment(attachment)
+	ccMsg.AddAttachment(attachment)
 	fmt.Printf("MESSAGE_BUILT %v\n", src.Action)
-	return message, nil
+	return ccMsg, nil
 }
 
 func SplitTrimSpaceJoin(input string, sep1 string, sep2 string) string {

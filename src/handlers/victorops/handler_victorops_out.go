@@ -17,7 +17,6 @@ const (
 	DisplayName      = "VictorOps"
 	HandlerKey       = "victorops"
 	MessageDirection = "out"
-	IconURL          = "https://victorops.com/wp-content/uploads/2015/04/download.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -41,12 +40,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
-
-	iconURL, err := h.Config.GetAppIconURL(HandlerKey)
-	if err == nil {
-		ccMsg.IconURL = iconURL.String()
-	}
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -60,11 +54,17 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	ccMsg, err := CcMessageFromBytes(bytes)
 	if err != nil {
 		return ccMsg, err
 	}
+
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
+
 	return ccMsg, nil
 }
 

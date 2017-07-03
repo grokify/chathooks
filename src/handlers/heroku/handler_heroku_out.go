@@ -55,7 +55,7 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	ccMsg, err := NormalizeHerokuMessage(srcMsg)
+	ccMsg, err := NormalizeHerokuMessage(h.Config, srcMsg)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -81,22 +81,25 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 }
 
 //func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	src, err := HerokuOutMessageFromQueryString(string(bytes))
 	if err != nil {
 		return cc.Message{}, err
 	}
-	return NormalizeHerokuMessage(src)
+	return NormalizeHerokuMessage(cfg, src)
 }
 
-func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeHerokuMessage(cfg config.Configuration, src HerokuOutMessage) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	if len(strings.TrimSpace(src.App)) > 0 {
-		message.Activity = fmt.Sprintf("%v deployed on %v\n\n", src.App, DisplayName)
+		ccMsg.Activity = fmt.Sprintf("%v deployed on %v\n\n", src.App, DisplayName)
 	} else {
-		message.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
+		ccMsg.Activity = fmt.Sprintf("An app has been deployed on %v", DisplayName)
 	}
 
 	attachment := cc.NewAttachment()
@@ -120,8 +123,8 @@ func NormalizeHerokuMessage(src HerokuOutMessage) (cc.Message, error) {
 		attachment.AddField(cc.Field{Title: "User", Value: src.User, Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type HerokuOutMessage struct {

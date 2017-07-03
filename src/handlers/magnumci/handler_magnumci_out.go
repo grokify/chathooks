@@ -18,9 +18,6 @@ const (
 	DisplayName      = "Magnum CI"
 	HandlerKey       = "magnumci"
 	MessageDirection = "out"
-	IconURL          = "https://pbs.twimg.com/profile_images/433440931543388160/nZ3y7AB__400x400.png"
-	IconURLY         = "https://a.slack-edge.com/ae7f/plugins/statuspageio/assets/service_512.png"
-	IconURLZ         = "https://a.slack-edge.com/bda7/plugins/circleci/assets/service_512.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -44,7 +41,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -58,22 +55,24 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := MagnumciOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = fmt.Sprintf("Build %v", src.State)
+	ccMsg.Activity = fmt.Sprintf("Build %v", src.State)
 
 	if len(src.Title) > 0 {
-		message.Title = fmt.Sprintf("[Build #%v](%v) **%v**", src.Number, src.BuildURL, src.Title)
-		//message.Title = src.Title
+		ccMsg.Title = fmt.Sprintf("[Build #%v](%v) **%v**", src.Number, src.BuildURL, src.Title)
 	} else {
-		message.Title = fmt.Sprintf("Build #%v](%v)", src.Number, src.BuildURL)
+		ccMsg.Title = fmt.Sprintf("Build #%v](%v)", src.Number, src.BuildURL)
 	}
 
 	attachment := cc.NewAttachment()
@@ -114,11 +113,11 @@ func Normalize(bytes []byte) (cc.Message, error) {
 	}
 
 	if len(src.Title) < 1 && len(attachment.Fields) == 0 {
-		return message, errors.New("Content not found")
+		return ccMsg, errors.New("Content not found")
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type MagnumciOutMessage struct {

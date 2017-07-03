@@ -17,7 +17,6 @@ const (
 	DisplayName      = "Circlecl"
 	HandlerKey       = "circleci"
 	MessageDirection = "out"
-	IconURL          = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/circleci.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -41,7 +40,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -55,18 +54,21 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := CircleciOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = fmt.Sprintf("Build %v", src.Status)
+	ccMsg.Activity = fmt.Sprintf("Build %v", src.Status)
 
-	message.Title = fmt.Sprintf("[Build #%v](%s) for [**%s/%s**](%s) %s",
+	ccMsg.Title = fmt.Sprintf("[Build #%v](%s) for [**%s/%s**](%s) %s",
 		src.BuildNum, src.BuildURL, src.Reponame, src.Branch, src.VCSURL, src.Status)
 
 	attachment := cc.NewAttachment()
@@ -99,8 +101,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Value: src.CommitterName})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type CircleciOutPayload struct {

@@ -18,7 +18,6 @@ const (
 	DisplayName      = "Pingdom"
 	HandlerKey       = "pingdom"
 	MessageDirection = "out"
-	IconURL          = "https://a.slack-edge.com/95b9/plugins/pingdom/assets/service_512.png"
 	DocumentationURL = "https://www.pingdom.com/resources/webhooks"
 )
 
@@ -43,7 +42,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -57,13 +56,16 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := PingdomOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	descMap := map[string]string{
@@ -74,16 +76,16 @@ func Normalize(bytes []byte) (cc.Message, error) {
 
 	activity := src.CheckType
 	if display, ok := descMap[activity]; ok {
-		message.Activity = fmt.Sprintf("%v check", display)
+		ccMsg.Activity = fmt.Sprintf("%v check", display)
 	} else {
-		message.Activity = fmt.Sprintf("%v check", activity)
+		ccMsg.Activity = fmt.Sprintf("%v check", activity)
 	}
 
 	state := strings.ToLower(src.CurrentState)
 	if state == "success" {
 		state = "successful"
 	}
-	message.Title = fmt.Sprintf("[%v](%v) is %v", src.CheckName, src.CheckURL(), state)
+	ccMsg.Title = fmt.Sprintf("[%v](%v) is %v", src.CheckName, src.CheckURL(), state)
 
 	attachment := cc.NewAttachment()
 
@@ -104,8 +106,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		}
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type PingdomOutMessage struct {

@@ -44,7 +44,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.FormValue("payload"))
+	ccMsg, err := Normalize(h.Config, ctx.FormValue("payload"))
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -58,17 +58,20 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := EnchantOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if len(src.ActorName) > 0 {
-		message.Activity = src.ActorName
+		ccMsg.Activity = src.ActorName
 	}
 
 	attachment := cc.NewAttachment()
@@ -81,8 +84,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Title: "State",
 			Value: stringsutil.ToUpperFirst(src.Model.State)})
 	}
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type EnchantOutMessage struct {
