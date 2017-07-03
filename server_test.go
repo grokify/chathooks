@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/grokify/chatmore/src/config"
+	"github.com/grokify/webhookproxy/src/config"
 )
 
 var ConfigurationTests = []struct {
