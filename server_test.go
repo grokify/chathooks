@@ -1,4 +1,4 @@
-package webhookproxy
+package main
 
 import (
 	"testing"
