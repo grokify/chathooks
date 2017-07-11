@@ -17,6 +17,7 @@ const (
 	DisplayName      = "Datadog"
 	HandlerKey       = "datadog"
 	MessageDirection = "out"
+	DocumentationURL = "http://docs.datadoghq.com/integrations/webhooks/"
 )
 
 // FastHttp request handler for Travis CI outbound webhook

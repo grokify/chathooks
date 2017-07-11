@@ -17,6 +17,7 @@ const (
 	DisplayName      = "Circlecl"
 	HandlerKey       = "circleci"
 	MessageDirection = "out"
+	DocumentationURL = "https://circleci.com/docs/1.0/configuration/#notify"
 )
 
 // FastHttp request handler for outbound webhook

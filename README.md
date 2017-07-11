@@ -14,28 +14,28 @@ Conversion of the following webhook message formats to Glip inbound webhooks inc
 Outbound Webhook Formats supported:
 
 1. [AppSignal](http://docs.appsignal.com/application/integrations/webhooks.html)
-1. [Apteligent/Crittercism]
-1. [Circle CI]
-1. [Codeship]
+1. [Apteligent/Crittercism]()
+1. [Circle CI](https://circleci.com/docs/1.0/configuration/#notify)
+1. [Codeship](https://documentation.codeship.com/basic/getting-started/webhooks/)
 1. [Confluence](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
-1. [Datadog]
-1. [Desk.com]
+1. [Datadog](http://docs.datadoghq.com/integrations/webhooks/)
+1. [Desk.com](https://support.desk.com/customer/portal/articles/869334-configuring-webhooks-in-desk-com-apps)
 1. [Enchant](https://dev.enchant.com/webhooks)
-1. [GoSquared]
+1. GoSquared
 1. [Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
 1. [Librato]
 1. [Magnum CI](https://github.com/magnumci/documentation/blob/master/webhooks.md)
 1. [Marketo]()
-1. [OpsGenie]
-1. [Papertrail]
-1. [Pingdom]
+1. [OpsGenie]()
+1. [Papertrail]()
+1. [Pingdom]()
 1. [Raygun](https://raygun.com/docs/integrations/webhooks)
-1. [Runscope]
+1. [Runscope]()
 1. [Semaphore CI](https://semaphoreci.com/docs/post-build-webhooks.html), [Deploy](https://semaphoreci.com/docs/post-deploy-webhooks.html)
-1. [StatusPage]
+1. [StatusPage]()
 1. [Travis CI](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
 1. [Userlike](https://www.userlike.com/en/public/tutorial/addon/api)
-1. [VictorOps]
+1. [VictorOps]()
 
 Inbound Webhook Format supported:
 

@@ -17,6 +17,7 @@ const (
 	DisplayName      = "Desk.com"
 	HandlerKey       = "deskdotcom"
 	MessageDirection = "out"
+	DocumentationURL = "https://support.desk.com/customer/portal/articles/869334-configuring-webhooks-in-desk-com-apps"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
