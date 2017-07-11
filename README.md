@@ -7,7 +7,7 @@ WebhookProxy - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-WebhookProxy is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat). This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+WebhookProxy is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat) intermediate message format which can then be translated into different chat platform message formats. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
