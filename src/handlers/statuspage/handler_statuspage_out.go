@@ -19,7 +19,6 @@ const (
 	DisplayName        = "StatusPage"
 	HandlerKey         = "statuspage"
 	MessageDirection   = "out"
-	IconURL            = "https://pbs.twimg.com/profile_images/643541964051357696/TFppCn6j.png"
 	ComponentURLFormat = "http://manage.statuspage.io/pages/%s/components"
 )
 

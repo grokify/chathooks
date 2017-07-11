@@ -19,7 +19,6 @@ const (
 	DisplayName      = "Heroku"
 	HandlerKey       = "heroku"
 	MessageDirection = "out"
-	IconURL          = "https://a.slack-edge.com/ae7f/plugins/heroku/assets/service_512.png"
 )
 
 // FastHttp request handler for Heroku outbound webhook

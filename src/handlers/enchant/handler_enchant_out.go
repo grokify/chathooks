@@ -19,7 +19,6 @@ const (
 	DisplayName      = "Enchant"
 	HandlerKey       = "enchant"
 	MessageDirection = "out"
-	IconURL          = "https://pbs.twimg.com/profile_images/530790354966962176/2trsSpWz_400x400.png"
 )
 
 // FastHttp request handler for outbound webhook
