@@ -17,7 +17,6 @@ const (
 	DisplayName      = "Datadog"
 	HandlerKey       = "datadog"
 	MessageDirection = "out"
-	IconURL          = "https://dka575ofm4ao0.cloudfront.net/pages-favicon_logos/original/428/open-uri20140327-21944-1w47zpx"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -41,7 +40,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -55,13 +54,16 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message, err := CcMessageFromBytes(bytes)
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg, err := CcMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
-	message.IconURL = IconURL
-	return message, nil
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
+	return ccMsg, nil
 }
 
 /*

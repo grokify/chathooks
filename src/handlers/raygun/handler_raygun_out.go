@@ -17,9 +17,6 @@ const (
 	DisplayName      = "Raygun"
 	HandlerKey       = "raygun"
 	MessageDirection = "out"
-	IconURL          = "https://raygun.com/upload/raygun-icon.svg"
-	ICON_URL2        = "https://raygun.com/images/logo/raygun-logo-og.jpg"
-	ICON_URL3        = "https://a.slack-edge.com/ae7f/img/services/raygun_512.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -43,7 +40,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -57,20 +54,23 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = ICON_URL3
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := RaygunOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if src.EventType == "NewErrorOccurred" {
 		if len(src.Application.Name) > 0 {
-			message.Activity = fmt.Sprintf("%v encountered a new error", src.Application.Name)
+			ccMsg.Activity = fmt.Sprintf("%v encountered a new error", src.Application.Name)
 		} else {
-			message.Activity = "A new error has occurred"
+			ccMsg.Activity = "A new error has occurred"
 		}
 	} else {
 		timeString := ""
@@ -78,9 +78,9 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			timeString = " again"
 		}
 		if len(src.Application.Name) > 0 {
-			message.Activity = fmt.Sprintf("%v encountered an error%v", src.Application.Name, timeString)
+			ccMsg.Activity = fmt.Sprintf("%v encountered an error%v", src.Application.Name, timeString)
 		} else {
-			message.Activity = fmt.Sprintf("An error occurred%v", timeString)
+			ccMsg.Activity = fmt.Sprintf("An error occurred%v", timeString)
 		}
 	}
 
@@ -132,8 +132,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		attachment.AddField(cc.Field{Title: "Total Occurrences", Value: fmt.Sprintf("%v", src.Error.TotalOccurrences), Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type RaygunOutMessage struct {

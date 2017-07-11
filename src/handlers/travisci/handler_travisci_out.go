@@ -19,7 +19,6 @@ const (
 	DisplayName      = "Travis CI"
 	HandlerKey       = "travisci"
 	MessageDirection = "out"
-	IconURL          = "https://blog.travis-ci.com/images/travis-mascot-200px.png"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -43,7 +42,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.FormValue("payload"))
+	ccMsg, err := Normalize(h.Config, ctx.FormValue("payload"))
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -71,18 +70,21 @@ func StatusMessageSuffix(statusMessage string) string {
 	return statusMessage
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := TravisciOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	statusMessageSuffix := StatusMessageSuffix(src.StatusMessage)
 
-	message.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
+	ccMsg.Activity = fmt.Sprintf("Build %s", statusMessageSuffix)
 
 	attachment := cc.NewAttachment()
 	attachment.Color = "#00ff00"
@@ -117,8 +119,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		attachment.AddField(cc.Field{Title: "Committer", Value: src.CommitterName, Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type TravisciOutMessage struct {

@@ -18,7 +18,6 @@ const (
 	DisplayName      = "AppSignal"
 	HandlerKey       = "appsignal"
 	MessageDirection = "out"
-	IconURL          = "https://pbs.twimg.com/profile_images/3558871752/5a8d304cb458baf99a7325a9c60b8a6b_400x400.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -64,21 +63,20 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 }
 
 func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-
+	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
-		message.IconURL = iconURL.String()
+		ccMsg.IconURL = iconURL.String()
 	}
 
 	src, err := AppsignalOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if len(src.Marker.URL) > 0 {
-		message.Activity = "App deployed"
-		message.Title = fmt.Sprintf("%v deployed ([%v](%v))", src.Marker.Site, src.Marker.Revision[:7], src.Marker.URL)
+		ccMsg.Activity = "App deployed"
+		ccMsg.Title = fmt.Sprintf("%v deployed ([%v](%v))", src.Marker.Site, src.Marker.Revision[:7], src.Marker.URL)
 
 		attachment := cc.NewAttachment()
 		if 1 == 0 {
@@ -107,9 +105,9 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 				Value: src.Marker.User,
 				Short: true})
 		}
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	} else if len(src.Exception.URL) > 0 {
-		message.Activity = fmt.Sprintf("Exception incident")
+		ccMsg.Activity = fmt.Sprintf("Exception incident")
 
 		exceptionString := ""
 		if len(src.Exception.URL) > 0 {
@@ -125,7 +123,7 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 			exceptionString = fmt.Sprintf(": %s", exceptionString)
 		}
 
-		message.Title = fmt.Sprintf("%v exception incident has occurred%s", src.Exception.Site, exceptionString)
+		ccMsg.Title = fmt.Sprintf("%v exception incident has occurred%s", src.Exception.Site, exceptionString)
 
 		attachment := cc.NewAttachment()
 
@@ -169,16 +167,16 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 				Short: true})
 		}
 
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	} else if len(src.Performance.URL) > 0 {
-		message.Activity = "Performance incident"
+		ccMsg.Activity = "Performance incident"
 
 		if src.Performance.Duration > 0.0 {
 			durationString, err := timeutil.DurationStringMinutesSeconds(int64(src.Performance.Duration))
 			if err == nil {
-				message.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, durationString)
+				ccMsg.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, durationString)
 			} else {
-				message.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, src.Performance.Duration)
+				ccMsg.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, src.Performance.Duration)
 			}
 		}
 
@@ -214,10 +212,10 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 				Short: true})
 		}
 
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
 
-	return message, nil
+	return ccMsg, nil
 }
 
 type AppsignalOutMessage struct {

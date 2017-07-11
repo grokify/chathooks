@@ -17,7 +17,6 @@ const (
 	DisplayName      = "Runscope"
 	HandlerKey       = "runscope"
 	MessageDirection = "out"
-	IconURL          = "https://pbs.twimg.com/profile_images/500425058955689986/zlcbgqTt.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )
 
@@ -44,7 +43,7 @@ func (h Handler) MessageDirection() string {
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Printf(string(ctx.PostBody()))
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -58,18 +57,21 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := RunscopeOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = fmt.Sprintf("Test run %s", src.Result)
+	ccMsg.Activity = fmt.Sprintf("Test run %s", src.Result)
 
-	message.Title = fmt.Sprintf("[%v](%v) test run %v ([%v](%v))",
+	ccMsg.Title = fmt.Sprintf("[%v](%v) test run %v ([%v](%v))",
 		src.TestName,
 		src.TestURL,
 		src.Result,
@@ -99,8 +101,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 			Value: fmt.Sprintf("%v (%v)", src.TeamName, src.TeamId[:8])})
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type RunscopeOutMessage struct {

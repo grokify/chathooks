@@ -20,9 +20,6 @@ const (
 	DisplayName      = "Semaphore"
 	HandlerKey       = "semaphore"
 	MessageDirection = "out"
-	IconURLX         = "https://d2rbro28ib85bu.cloudfront.net/images/integrations/128/semaphore.png"
-	IconURL          = "https://a.slack-edge.com/ae7f/plugins/semaphore/assets/service_512.png"
-	ICON_URL_2       = "https://s3.amazonaws.com/semaphore-media/logos/png/gear/semaphore-gear-large.png"
 )
 
 // FastHttp request handler for outbound webhook
@@ -46,7 +43,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -61,48 +58,45 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 }
 
 //func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	baseMsg, err := SemaphoreciBaseOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	switch baseMsg.Event {
 	case "build":
 		srcMsg, err := SemaphoreciBuildOutMessageFromBytes(bytes)
 		if err != nil {
-			return message, err
+			return ccMsg, err
 		}
-		return NormalizeSemaphoreciBuildOutMessage(srcMsg), nil
+		return NormalizeSemaphoreciBuildOutMessage(cfg, srcMsg), nil
 	case "deploy":
 		srcMsg, err := SemaphoreciDeployOutMessageFromBytes(bytes)
 		if err != nil {
-			return message, err
+			return ccMsg, err
 		}
-		return NormalizeSemaphoreciDeployOutMessage(srcMsg), nil
+		return NormalizeSemaphoreciDeployOutMessage(cfg, srcMsg), nil
 	}
-	return cc.Message{IconURL: IconURL}, errors.New("EventNotFound")
+	return cc.Message{IconURL: ""}, errors.New("EventNotFound")
 }
 
-func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSemaphoreciBuildOutMessage(cfg config.Configuration, src SemaphoreciBuildOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
+	ccMsg.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
 
-	/*
-		if strings.ToLower(strings.TrimSpace(src.Event)) == "build" {
-			// Joe Cool's build #15 passed
-			//message.Activity = fmt.Sprintf("%v %v #%v %v%v", src.ProjectName, src.Event, src.BuildNumber, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-			message.Activity = fmt.Sprintf("%v %v", stringsutil.ToUpperFirst(src.Event), src.Result)
-		} else {
-			message.Activity = fmt.Sprintf("%v %v %v%v", src.ProjectName, src.Event, src.Result, adapters.IntegrationActivitySuffix(DisplayName))
-		}
-	*/
-	message.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
+	ccMsg.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
 		stringsutil.ToUpperFirst(src.Event),
 		src.BuildNumber,
 		src.BuildURL,
@@ -147,17 +141,20 @@ func NormalizeSemaphoreciBuildOutMessage(src SemaphoreciBuildOutMessage) cc.Mess
 			Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message
+	ccMsg.AddAttachment(attachment)
+	return ccMsg
 }
 
-func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSemaphoreciDeployOutMessage(cfg config.Configuration, src SemaphoreciDeployOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
+	ccMsg.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
 
-	message.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
+	ccMsg.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
 		stringsutil.ToUpperFirst(src.Event),
 		src.Number, src.HtmlURL,
 		src.ProjectName,
@@ -200,8 +197,8 @@ func NormalizeSemaphoreciDeployOutMessage(src SemaphoreciDeployOutMessage) cc.Me
 			Short: true})
 	}
 
-	message.AddAttachment(attachment)
-	return message
+	ccMsg.AddAttachment(attachment)
+	return ccMsg
 }
 
 type SemaphoreciBaseOutMessage struct {

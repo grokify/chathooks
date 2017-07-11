@@ -18,7 +18,6 @@ const (
 	DisplayName      = "Apteligent"
 	HandlerKey       = "apteligent"
 	MessageDirection = "out"
-	IconURL          = "https://s.gravatar.com/avatar/7b7a043fbf2ab6c11421a0d2f71115b6?size=496&default=retro"
 )
 
 // FastHttp request handler for Travis CI outbound webhook
@@ -42,7 +41,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -56,25 +55,28 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := ApteligentOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
-	message.Activity = fmt.Sprintf("Alert %s", strings.ToLower(src.State))
+	ccMsg.Activity = fmt.Sprintf("Alert %s", strings.ToLower(src.State))
 
 	if len(src.Description) > 0 {
 		if len(src.AlertURL) > 0 {
-			message.Title = fmt.Sprintf("[%s](%s)", src.Description, src.AlertURL)
+			ccMsg.Title = fmt.Sprintf("[%s](%s)", src.Description, src.AlertURL)
 		} else {
-			message.Title = src.Description
+			ccMsg.Title = src.Description
 		}
 	} else if len(src.AlertURL) > 0 {
-		message.Title = fmt.Sprintf("[%s](%s)", src.AlertURL, src.AlertURL)
+		ccMsg.Title = fmt.Sprintf("[%s](%s)", src.AlertURL, src.AlertURL)
 	}
 
 	if 1 == 0 {
@@ -84,10 +86,10 @@ func Normalize(bytes []byte) (cc.Message, error) {
 				Title: "Application",
 				Value: src.ApplicationName})
 		}
-		message.AddAttachment(attachment)
+		ccMsg.AddAttachment(attachment)
 	}
 
-	return message, nil
+	return ccMsg, nil
 }
 
 type ApteligentOutMessage struct {

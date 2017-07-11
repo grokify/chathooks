@@ -82,7 +82,7 @@ func main() {
 	}
 
 	cfg := config.Configuration{
-		IconBaseURL: "http://grokify.github.io/webhookproxy/icons/",
+		IconBaseURL: "https://grokify.github.io/webhookproxy/icons/",
 		LogLevel:    log.DebugLevel}
 
 	sender := Sender{}
@@ -125,7 +125,7 @@ func main() {
 	case "apteligent":
 		source := exampleData.Data[apteligent.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(apteligent.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(apteligent.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "circleci":
 		sender.SendCcMessage(circleci.ExampleMessage(cfg, exampleData))
@@ -134,10 +134,10 @@ func main() {
 	case "confluence":
 		source := exampleData.Data[confluence.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(confluence.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(confluence.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "datadog":
-		sender.SendCcMessage(datadog.ExampleMessage(exampleData))
+		sender.SendCcMessage(datadog.ExampleMessage(cfg, exampleData))
 	case "deskdotcom":
 		source := exampleData.Data[deskdotcom.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
@@ -160,14 +160,14 @@ func main() {
 	case "librato":
 		source := exampleData.Data[librato.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(librato.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(librato.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "magnumci":
 		sender.SendCcMessage(magnumci.ExampleMessage(cfg, exampleData))
 	case "marketo":
 		source := exampleData.Data[marketo.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(marketo.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(marketo.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "opsgenie":
 		source := exampleData.Data[opsgenie.HandlerKey]
@@ -188,13 +188,13 @@ func main() {
 			sender.SendCcMessage(pingdom.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "raygun":
-		sender.SendCcMessage(raygun.ExampleMessage(exampleData))
+		sender.SendCcMessage(raygun.ExampleMessage(cfg, exampleData))
 	case "runscope":
-		sender.SendCcMessage(runscope.ExampleMessage(exampleData))
+		sender.SendCcMessage(runscope.ExampleMessage(cfg, exampleData))
 	case "semaphore":
 		source := exampleData.Data[semaphore.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
-			sender.SendCcMessage(semaphore.ExampleMessage(exampleData, eventSlug))
+			sender.SendCcMessage(semaphore.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "statuspage":
 		source := exampleData.Data[statuspage.HandlerKey]
@@ -202,7 +202,7 @@ func main() {
 			sender.SendCcMessage(statuspage.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "travisci":
-		sender.SendCcMessage(travisci.ExampleMessage(exampleData))
+		sender.SendCcMessage(travisci.ExampleMessage(cfg, exampleData))
 	case "userlike":
 		source := exampleData.Data[userlike.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {

@@ -90,17 +90,17 @@ To create the Glip webhook and receive a webhook URL do the following:
 
 At the top of any conversation page, click the Settings gear icon and then click `Add Integration`.
 
-![](images/glip_webhook_step-1_add-integration.png)
+![](docs/images/glip_webhook_step-1_add-integration.png)
 
 Select the `Glip Webhooks` integration.
 
-![](images/glip_webhook_step-2_add-webhook.png)
+![](docs/images/glip_webhook_step-2_add-webhook.png)
 
 #### Get the Webhook URL
 
 Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `/webhook/slack/glip` (e.g. `https://glip-proxy.example.com/webhook/slack/glip/1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
 
-![](images/glip_webhook_step-3_details.png)
+![](docs/images/glip_webhook_step-3_details.png)
 
 ## Example Requests
 

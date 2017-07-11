@@ -20,8 +20,6 @@ const (
 	DisplayName      = "Librato"
 	HandlerKey       = "librato"
 	MessageDirection = "out"
-	IconURL          = "https://raw.githubusercontent.com/grokify/webhookproxy/master/images/icons/librato_128x128.png"
-	IconURLX         = "https://a.slack-edge.com/ae7f/plugins/librato/assets/service_512.png"
 	DocumentationURL = "https://www.runscope.com/docs/api-testing/notifications#webhook"
 )
 
@@ -52,7 +50,7 @@ func (h Handler) MessageDirection() string {
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Printf(string(ctx.PostBody()))
-	ccMsg, err := Normalize(ctx.PostBody())
+	ccMsg, err := Normalize(h.Config, ctx.PostBody())
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -66,32 +64,35 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	src, err := LibratoOutMessageFromBytes(bytes)
 	if err != nil {
 		return cc.NewMessage(), err
 	}
 
 	if src.Clear == "normal" {
-		return NormalizeSourceCleared(src), nil
+		return NormalizeSourceCleared(cfg, src), nil
 	}
-	return NormalizeSourceTriggered(src), nil
+	return NormalizeSourceTriggered(cfg, src), nil
 }
 
-func NormalizeSourceTriggered(src LibratoOutMessage) cc.Message {
+func NormalizeSourceTriggered(cfg config.Configuration, src LibratoOutMessage) cc.Message {
 	src.Inflate()
 
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = "Alert triggered"
+	ccMsg.Activity = "Alert triggered"
 
 	if len(src.Alert.Name) > 0 {
 		if len(src.Alert.RunbookURL) > 0 {
-			message.Title = fmt.Sprintf("Alert [%v](%s) has triggered!",
+			ccMsg.Title = fmt.Sprintf("Alert [%v](%s) has triggered!",
 				src.Alert.Name, src.Alert.RunbookURL)
 		} else {
-			message.Title = fmt.Sprintf("Alert %v has triggered!",
+			ccMsg.Title = fmt.Sprintf("Alert %v has triggered!",
 				src.Alert.Name)
 		}
 	}
@@ -104,11 +105,11 @@ func NormalizeSourceTriggered(src LibratoOutMessage) cc.Message {
 			if n > 1 {
 				violationSuffix = fmt.Sprintf(" %v", i+1)
 			}
-			message.AddAttachment(BuildViolationAttachment(src, violation, violationSuffix))
+			ccMsg.AddAttachment(BuildViolationAttachment(src, violation, violationSuffix))
 		}
 	}
 
-	return message
+	return ccMsg
 }
 
 func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolation, violationSuffix string) cc.Attachment {
@@ -205,11 +206,14 @@ func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolati
 	return attachment
 }
 
-func NormalizeSourceCleared(src LibratoOutMessage) cc.Message {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func NormalizeSourceCleared(cfg config.Configuration, src LibratoOutMessage) cc.Message {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
-	message.Activity = "Alert cleared"
+	ccMsg.Activity = "Alert cleared"
 
 	alertName := src.Alert.Name
 	if len(alertName) < 1 {
@@ -223,13 +227,13 @@ func NormalizeSourceCleared(src LibratoOutMessage) cc.Message {
 	}
 
 	if len(src.Alert.RunbookURL) > 0 {
-		message.Title = fmt.Sprintf("[%s](%s) cleared%s",
+		ccMsg.Title = fmt.Sprintf("[%s](%s) cleared%s",
 			alertName, src.Alert.RunbookURL, triggerTime)
 	} else {
-		message.Title = fmt.Sprintf("%s cleared%s", alertName, triggerTime)
+		ccMsg.Title = fmt.Sprintf("%s cleared%s", alertName, triggerTime)
 	}
 
-	return message
+	return ccMsg
 }
 
 type LibratoOutMessage struct {

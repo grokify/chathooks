@@ -17,7 +17,6 @@ const (
 	DisplayName      = "Confluence"
 	HandlerKey       = "confluence"
 	MessageDirection = "out"
-	IconURL          = "https://wiki.ucop.edu/images/logo/default-space-logo-256.png"
 )
 
 // FastHttp request handler for Confluence outbound webhook
@@ -42,7 +41,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(ctx.FormValue("payload"))
+	ccMsg, err := Normalize(h.Config, ctx.FormValue("payload"))
 
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
@@ -56,26 +55,29 @@ func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
-	message := cc.NewMessage()
-	message.IconURL = IconURL
+func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+	ccMsg := cc.NewMessage()
+	iconURL, err := cfg.GetAppIconURL(HandlerKey)
+	if err == nil {
+		ccMsg.IconURL = iconURL.String()
+	}
 
 	src, err := ConfluenceOutMessageFromBytes(bytes)
 	if err != nil {
-		return message, err
+		return ccMsg, err
 	}
 
 	if !src.IsComment() {
 		if src.Page.IsCreated() {
-			message.Activity = fmt.Sprintf("%v created page", src.Page.CreatorName)
+			ccMsg.Activity = fmt.Sprintf("%v created page", src.Page.CreatorName)
 		} else {
-			message.Activity = fmt.Sprintf("%v updated page", src.Page.CreatorName)
+			ccMsg.Activity = fmt.Sprintf("%v updated page", src.Page.CreatorName)
 		}
 	} else {
 		if src.Comment.IsCreated() {
-			message.Activity = fmt.Sprintf("%v commented on page", src.Comment.CreatorName)
+			ccMsg.Activity = fmt.Sprintf("%v commented on page", src.Comment.CreatorName)
 		} else {
-			message.Activity = fmt.Sprintf("%v updated comment on page", src.Comment.CreatorName)
+			ccMsg.Activity = fmt.Sprintf("%v updated comment on page", src.Comment.CreatorName)
 		}
 	}
 
@@ -97,8 +99,8 @@ func Normalize(bytes []byte) (cc.Message, error) {
 		attachment.AddField(field)
 	}
 
-	message.AddAttachment(attachment)
-	return message, nil
+	ccMsg.AddAttachment(attachment)
+	return ccMsg, nil
 }
 
 type ConfluenceOutMessage struct {
