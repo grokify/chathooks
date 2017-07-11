@@ -21,13 +21,13 @@ Outbound Webhook Formats supported:
 1. [Datadog](http://docs.datadoghq.com/integrations/webhooks/)
 1. [Desk.com](https://support.desk.com/customer/portal/articles/869334-configuring-webhooks-in-desk-com-apps)
 1. [Enchant](https://dev.enchant.com/webhooks)
-1. GoSquared
+1. [GoSquared](https://www.gosquared.com/customer/portal/articles/1996494-webhooks)
 1. [Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
-1. [Librato]
+1. [Librato]()
 1. [Magnum CI](https://github.com/magnumci/documentation/blob/master/webhooks.md)
 1. [Marketo]()
 1. [OpsGenie]()
-1. [Papertrail]()
+1. [Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/)
 1. [Pingdom]()
 1. [Raygun](https://raygun.com/docs/integrations/webhooks)
 1. [Runscope]()
