@@ -65,16 +65,18 @@ func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 }
 
 func main() {
+	log.SetLevel(log.DebugLevel)
+
 	guidPointer := flag.String("guid", "", "Glip webhook GUID or URL")
 	examplePointer := flag.String("example", "", "Example message type")
 	adapterType := flag.String("adapter", "", "Adapter")
 
 	flag.Parse()
-	guid := strings.TrimSpace(*guidPointer)
+	webhookURLOrUID := strings.TrimSpace(*guidPointer)
 	example := strings.ToLower(strings.TrimSpace(*examplePointer))
 
-	fmt.Printf("LENGUID[%v]\n", len(guid))
-	fmt.Printf("GUID [%v]\n", guid)
+	fmt.Printf("LENGUID[%v]\n", len(webhookURLOrUID))
+	fmt.Printf("GUID [%v]\n", webhookURLOrUID)
 	fmt.Printf("EXAMPLE [%v]\n", example)
 
 	if len(example) < 1 {
@@ -87,21 +89,21 @@ func main() {
 
 	sender := Sender{}
 	if *adapterType == "glip" {
-		if len(guid) < 1 {
-			guid = os.Getenv(GLIP_WEBHOOK_ENV)
-			fmt.Printf("GLIP_GUID_ENV [%v]\n", guid)
+		if len(webhookURLOrUID) < 1 {
+			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
+			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := adapters.NewGlipAdapter(guid)
+		adapter, err := adapters.NewGlipAdapter(webhookURLOrUID)
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}
 		sender.Adapter = &adapter
 	} else if *adapterType == "slack" {
-		if len(guid) < 1 {
-			guid = os.Getenv(SLACK_WEBHOOK_ENV)
-			fmt.Printf("SLACK_GUID_ENV [%v]\n", guid)
+		if len(webhookURLOrUID) < 1 {
+			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
+			fmt.Printf("SLACK_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := adapters.NewSlackAdapter(guid)
+		adapter, err := adapters.NewSlackAdapter(webhookURLOrUID)
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}

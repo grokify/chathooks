@@ -6,15 +6,14 @@ import (
 	"regexp"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/commonchat/commonchat-go/slack"
 	"github.com/grokify/gotilla/net/httputil"
 	"github.com/valyala/fasthttp"
 )
 
 const (
-	ContentTypeHeader = "Content-Type"
-	ContentTypeValue  = "application/json"
-	HTTPMethod        = "POST"
+	HTTPMethod = "POST"
 )
 
 var (
@@ -29,7 +28,11 @@ type SlackWebhookClient struct {
 }
 
 func NewSlackWebhookClient(urlOrUid string, clientType string) (SlackWebhookClient, error) {
-	client := SlackWebhookClient{UrlPrefix: regexp.MustCompile(`^https?:`)}
+	log.WithFields(log.Fields{
+		"lib": "slack_client.go",
+		"request_url_client_init": urlOrUid}).Debug("")
+
+	client := SlackWebhookClient{UrlPrefix: regexp.MustCompile(`^https:`)}
 	client.WebhookUrl = client.BuildWebhookURL(urlOrUid)
 	if clientType == "fast" {
 		client.FastClient = fasthttp.Client{}
@@ -40,8 +43,12 @@ func NewSlackWebhookClient(urlOrUid string, clientType string) (SlackWebhookClie
 }
 
 func (client *SlackWebhookClient) BuildWebhookURL(urlOrUid string) string {
-	rs := client.UrlPrefix.FindString(urlOrUid)
+	rx := regexp.MustCompile(`^https:`)
+	rs := rx.FindString(urlOrUid)
 	if len(rs) > 0 {
+		log.WithFields(log.Fields{
+			"lib": "slack_client.go",
+			"request_url_http_match": urlOrUid}).Debug("")
 		return urlOrUid
 	}
 	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")
@@ -58,13 +65,14 @@ func (client *SlackWebhookClient) PostWebhookFast(url string, message slack.Mess
 	req.SetBody(bytes)
 
 	req.Header.SetMethod(HTTPMethod)
-	req.Header.SetRequestURI(client.BuildWebhookURL(url))
-	req.Header.Set(ContentTypeHeader, ContentTypeValue)
+	req.Header.SetRequestURI(url)
+
+	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err
 }
 
-func (client *SlackWebhookClient) PostWebhookGUIDFast(guid string, message slack.Message) (*fasthttp.Request, *fasthttp.Response, error) {
-	return client.PostWebhookFast(strings.Join([]string{WebhookBaseURL, guid}, ""), message)
+func (client *SlackWebhookClient) PostWebhookGUIDFast(urlOrUid string, message slack.Message) (*fasthttp.Request, *fasthttp.Response, error) {
+	return client.PostWebhookFast(client.BuildWebhookURL(urlOrUid), message)
 }
