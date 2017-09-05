@@ -1,6 +1,8 @@
 - 2017-09-04
   - Add support for Amazon AWS Lambda via Eawsy shim
   - Add `proxy_send.go` example script
+- 2017-08-01
+  - Add Glip attachment support
 - 2017-07-10
   - Update icon images
 - 2017-03-19
