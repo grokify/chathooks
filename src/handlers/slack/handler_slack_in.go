@@ -2,14 +2,12 @@ package slack
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhookproxy/src/adapters"
 	"github.com/grokify/webhookproxy/src/config"
-	"github.com/grokify/webhookproxy/src/util"
+	"github.com/grokify/webhookproxy/src/handlers"
+	"github.com/grokify/webhookproxy/src/models"
 	"github.com/valyala/fasthttp"
 )
 
@@ -17,8 +15,14 @@ const (
 	DisplayName      = "Slack"
 	HandlerKey       = "slack"
 	MessageDirection = "in"
+	MessageBodyType  = models.URLEncodedJSONPayloadOrJSON
 )
 
+func NewHandler() handlers.Handler {
+	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
+}
+
+/*
 // FastHttp request handler constructor for Slack inbound webhook
 type Handler struct {
 	Config  config.Configuration
@@ -40,7 +44,7 @@ func (h Handler) MessageDirection() string {
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(BuildInboundMessageBytes(ctx))
+	ccMsg, err := Normalize(h.Config, BuildInboundMessageBytes(ctx))
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
@@ -52,6 +56,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 	util.SendWebhook(ctx, h.Adapter, ccMsg)
 }
+*/
 
 func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 	ct := string(ctx.Request.Header.Peek("Content-Type"))
@@ -62,7 +67,7 @@ func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 	return ctx.FormValue("payload")
 }
 
-func Normalize(bytes []byte) (cc.Message, error) {
+func Normalize(config config.Configuration, bytes []byte) (cc.Message, error) {
 	slack, err := SlackWebhookMessageFromBytes(bytes)
 	if err != nil {
 		return cc.Message{}, err

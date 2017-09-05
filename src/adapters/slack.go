@@ -14,9 +14,9 @@ type SlackAdapter struct {
 	WebhookURLOrUID string
 }
 
-func NewSlackAdapter(webhookURLOrUID string) (SlackAdapter, error) {
+func NewSlackAdapter(webhookURLOrUID string) (*SlackAdapter, error) {
 	client, err := NewSlackWebhookClient(webhookURLOrUID, "fast")
-	return SlackAdapter{
+	return &SlackAdapter{
 		SlackClient:     client,
 		WebhookURLOrUID: webhookURLOrUID}, err
 }

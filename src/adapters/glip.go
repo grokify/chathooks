@@ -13,7 +13,7 @@ import (
 var (
 	AdaptersGlipActivityIncludeIntegrationName = false
 	AdaptersGlipMarkdownQuote                  = false
-	AdaptersGlipUseAttachments                 = false
+	AdaptersGlipUseAttachments                 = true
 	AdaptersGlipUseShortFields                 = false
 	AdatpersGlipUseFieldExtraSpacing           = true
 	EmojiURLFormat                             = ""
@@ -27,13 +27,13 @@ type GlipAdapter struct {
 	WebhookURLOrUID string
 }
 
-func NewGlipAdapter(webhookURLOrUID string) (GlipAdapter, error) {
+func NewGlipAdapter(webhookURLOrUID string) (*GlipAdapter, error) {
 	glip, err := glipwebhook.NewGlipWebhookClient(webhookURLOrUID)
 	converter := ccglip.NewGlipMessageConverter()
 	converter.UseAttachments = AdaptersGlipUseAttachments
 	converter.UseShortFields = AdaptersGlipUseShortFields
 	converter.UseFieldExtraSpacing = AdatpersGlipUseFieldExtraSpacing
-	return GlipAdapter{
+	return &GlipAdapter{
 		GlipClient:      glip,
 		WebhookURLOrUID: webhookURLOrUID,
 		CommonConverter: converter}, err

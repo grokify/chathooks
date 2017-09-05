@@ -1,0 +1,241 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Powered by: github.com/grokify/webhookproxy",
+    "version": "v1.0.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/hooks": {
+      "post": {
+        "tags": [
+          "webhook"
+        ],
+        "description": "Proxy a webhook",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "inputType",
+            "type": "string",
+            "in": "query",
+            "description": "Format of the input message",
+            "required": true
+          },
+          {
+            "name": "outputType",
+            "type": "string",
+            "in": "query",
+            "description": "Format of the output message",
+            "required": true
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "in": "query",
+            "description": "URL or UID of the output message",
+            "required": true
+          },
+          {
+            "name": "token",
+            "type": "string",
+            "in": "query",
+            "description": "Your unique token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProxyWebhookResponse"
+            },
+            "headers": {
+              "Access-Control-Allow-Headers": {
+                "type": "string",
+                "description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the request."
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "Method or methods allowed when accessing the resource"
+              },
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "URI that may access the resource"
+              },
+              "Content-Type": {
+                "type": "string",
+                "description": "MIME type of the response"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "'text/html'"
+              },
+              "responseTemplates": {
+                "text/html": "\u003chtml\u003e\n    \u003chead\u003e\n        \u003cstyle\u003e\n        body {\n            color: #333;\n            font-family: Sans-serif;\n            max-width: 800px;\n            margin: auto;\n        }\n        \u003c/style\u003e\n    \u003c/head\u003e\n    \u003cbody\u003e\n        \u003ch1\u003eWelcome to your Webhook Proxy\u003c/h1\u003e\n        \u003cp\u003e\n            You have succesfully deployed your webhookproxy.\u003c/p\u003e\n    \u003c/body\u003e\n\u003c/html\u003e"
+              }
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "type": "mock"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProxyWebhookResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "x-amazon-apigateway-documentation": {
+    "documentationParts": [
+      {
+        "location": {
+          "type": "API"
+        },
+        "properties": {
+          "info": {
+            "description": "WebProxy"
+          }
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "method": "POST",
+          "path": "/hooks"
+        },
+        "properties": {
+          "description": "Post a webhook"
+        }
+      },
+      {
+        "location": {
+          "type": "QUERY_PARAMETER",
+          "method": "POST",
+          "path": "/hooks",
+          "name": "input"
+        },
+        "properties": {
+          "description": "Input style"
+        }
+      },
+      {
+        "location": {
+          "type": "QUERY_PARAMETER",
+          "method": "POST",
+          "path": "/hooks",
+          "name": "output"
+        },
+        "properties": {
+          "description": "Output style"
+        }
+      },
+      {
+        "location": {
+          "type": "QUERY_PARAMETER",
+          "method": "POST",
+          "path": "/hooks",
+          "name": "urloruid"
+        },
+        "properties": {
+          "description": "Output style"
+        }
+      },
+      {
+        "location": {
+          "type": "QUERY_PARAMETER",
+          "method": "POST",
+          "path": "/hooks",
+          "name": "token"
+        },
+        "properties": {
+          "description": "Security token"
+        }
+      },
+      {
+        "location": {
+          "type": "REQUEST_BODY",
+          "method": "POST",
+          "path": "/hooks"
+        },
+        "properties": {
+          "description": "Webhook object that needs to be proxied"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "method": "*",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Successful operation"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE_HEADER",
+          "method": "OPTIONS",
+          "statusCode": "200",
+          "name": "Access-Control-Allow-Headers"
+        },
+        "properties": {
+          "description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the request."
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE_HEADER",
+          "method": "OPTIONS",
+          "statusCode": "200",
+          "name": "Access-Control-Allow-Methods"
+        },
+        "properties": {
+          "description": "Method or methods allowed when accessing the resource."
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE_HEADER",
+          "method": "OPTIONS",
+          "statusCode": "200",
+          "name": "Access-Control-Allow-Origin"
+        },
+        "properties": {
+          "description": "URI that may access the resource."
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE_HEADER",
+          "method": "POST",
+          "statusCode": "200",
+          "name": "Content-Type"
+        },
+        "properties": {
+          "description": "Media type of request."
+        }
+      }
+    ]
+  }
+}

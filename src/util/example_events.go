@@ -55,7 +55,7 @@ func ExampleDataRaw() []byte {
             "event_slugs":["2","alert-triggered","alert-cleared"]
         },
         "marketo":{
-            "event_slugs":["formatted1","formatted2"]
+            "event_slugs":["formatted1","formatted2","demo1"]
         },
         "opsgenie":{
             "event_slugs_":["create","close","delete",
@@ -90,7 +90,7 @@ func ExampleDataRaw() []byte {
 
 func (data *ExampleData) ExampleMessageBytes(handlerKey string, eventSlug string) ([]byte, error) {
 	filepath := path.Join(
-		config.DocHandlersDir,
+		config.DocsHandlersDir(),
 		handlerKey,
 		data.BuildFilename(handlerKey, eventSlug))
 	return ioutil.ReadFile(filepath)

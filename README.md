@@ -7,7 +7,12 @@ WebhookProxy - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-WebhookProxy is a proxy service to map different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat) intermediate message format which can then be translated into different chat platform message formats. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+WebhookProxy is a proxy service that maps different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat) intermediate message format which can then be translated into different chat platform message formats. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+
+WebhookProxy supports two HTTP server engines:
+
+* AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
+* Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
@@ -87,16 +92,14 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 2. use webhook URL's GUID to create the proxy URL as shown below
 3. use the proxy URL in your outbound webhook service
 
-| Service | URL |
+| Query Parameter | Required? | URL |
 |------|-------|
-| Glip | `https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888` |
-| Slack Inbound | `https://example.com/webhook/slack/in/glip/11112222-3333-4444-5555-666677778888` |
-| Travis CI Outbound | `https://example.com/webhook/travisci/out/glip/11112222-3333-4444-5555-666677778888` |
+| `inputType` | required | An handler service like `marketo` |
+| `outputType` | required | An adapter service like `glip` |
+| `url` | required | A webhook URL or UID, e.g. `11112222-3333-4444-5555-666677778888` |
+| `token` | optional | Must be included if service is configured to use auth tokens |
 
-The webhook proxy URLs support both inbound and outbound formats. For example:
-
-* when using Travis CI's webhook format use `travisci/out/glip` to indicate converting a Travis CI outbound webhook format message to Glip.
-* when using a service that supports Slack inbound webhook format use `slack/in/glip` to indicate converting a Slack inbound webhook format message to Glip.
+The webhook proxy URLs support both inbound and outbound formats. When available, these should be represented in the handler key.
 
 To create the Glip webhook and receive a webhook URL do the following:
 
@@ -112,7 +115,7 @@ Select the `Glip Webhooks` integration.
 
 #### Get the Webhook URL
 
-Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `/webhook/slack/glip` (e.g. `https://glip-proxy.example.com/webhook/slack/glip/1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
+Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `hooks?inputType=slack&outputType=glip` (e.g. `https://glip-proxy.example.com/hooks?inputType=slack&outputType=glip&url=1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
 
 ![](docs/images/glip_webhook_step-3_details.png)
 
@@ -131,7 +134,7 @@ The following examples are provided for reference and testing.
 $ curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"username":"ghost-bot", "icon_emoji": ":ghost:", "text":"BOO!"}' \
-  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080/hooks?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `application/x-www-form-urlencoded`
@@ -139,7 +142,7 @@ $ curl -X POST \
 ```bash
 $ curl -X POST \
   --data-urlencode 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080/hooks?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using `multipart/form-data`
@@ -147,7 +150,7 @@ $ curl -X POST \
 ```bash
 $ curl -X POST \
   -F 'payload={"username":"ghost-bot", "icon_emoji": ":ghost:", text":"BOO!"}' \
-  "http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888"
+  "http://localhost:8080?hooks?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
 ### Using Community Ruby SDK
@@ -159,7 +162,7 @@ This has been tested using:
 ```ruby
 require 'slack/poster'
 
-url = 'http://localhost:8080/webhook/slack/glip/11112222-3333-4444-5555-666677778888'
+url = 'http://localhost:8080?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888'
 
 opts = {
 	username: 'Ghost Bot [Bot]',
@@ -174,9 +177,10 @@ poster.send_message 'BOO!'
 
 WebhookProxy is built using:
 
-* [fasthttp](https://github.com/valyala/fasthttp)
-* [fasthttprouter](https://github.com/buaazp/fasthttprouter)
-* [logrus](https://github.com/sirupsen/logrus)
+* [valyala/fasthttp](https://github.com/valyala/fasthttp)
+* [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
+* [sirupsen/logrus](https://github.com/sirupsen/logrus)
+* [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 
  [build-status-svg]: https://api.travis-ci.org/grokify/webhookproxy.svg?branch=master
  [build-status-link]: https://travis-ci.org/grokify/webhookproxy

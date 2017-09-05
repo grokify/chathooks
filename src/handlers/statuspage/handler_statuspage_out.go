@@ -5,14 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
-
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/gotilla/strings/stringsutil"
-	"github.com/grokify/webhookproxy/src/adapters"
 	"github.com/grokify/webhookproxy/src/config"
-	"github.com/grokify/webhookproxy/src/util"
-	"github.com/valyala/fasthttp"
+	"github.com/grokify/webhookproxy/src/handlers"
+	"github.com/grokify/webhookproxy/src/models"
 )
 
 const (
@@ -20,41 +17,11 @@ const (
 	HandlerKey         = "statuspage"
 	MessageDirection   = "out"
 	ComponentURLFormat = "http://manage.statuspage.io/pages/%s/components"
+	MessageBodyType    = models.JSON
 )
 
-// FastHttp request handler for Semaphore CI outbound webhook
-type Handler struct {
-	Config  config.Configuration
-	Adapter adapters.Adapter
-}
-
-// FastHttp request handler constructor for Semaphore CI outbound webhook
-func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
-	return Handler{Config: cfg, Adapter: adapter}
-}
-
-func (h Handler) HandlerKey() string {
-	return HandlerKey
-}
-
-func (h Handler) MessageDirection() string {
-	return MessageDirection
-}
-
-// HandleFastHTTP is the method to respond to a fasthttp request.
-func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	ccMsg, err := Normalize(h.Config, ctx.PostBody())
-
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		log.WithFields(log.Fields{
-			"type":   "http.response",
-			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
-		return
-	}
-
-	util.SendWebhook(ctx, h.Adapter, ccMsg)
+func NewHandler() handlers.Handler {
+	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
 // {$component.name} status changed from {$component_update.old_status} to {$component_update.new_status}. [(Manage your Components)]({http://manage.statuspage.io/pages/{$page.id}/components})

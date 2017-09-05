@@ -84,8 +84,8 @@ func main() {
 	}
 
 	cfg := config.Configuration{
-		IconBaseURL: "https://grokify.github.io/webhookproxy/icons/",
-		LogLevel:    log.DebugLevel}
+		IconBaseURL:    "https://grokify.github.io/webhookproxy/icons/",
+		LogrusLogLevel: log.DebugLevel}
 
 	sender := Sender{}
 	if *adapterType == "glip" {
@@ -97,7 +97,7 @@ func main() {
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}
-		sender.Adapter = &adapter
+		sender.Adapter = adapter
 	} else if *adapterType == "slack" {
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
@@ -107,7 +107,7 @@ func main() {
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}
-		sender.Adapter = &adapter
+		sender.Adapter = adapter
 	} else {
 		panic("Invalid Adapter")
 	}

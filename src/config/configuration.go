@@ -1,23 +1,40 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/url"
+	"os"
+	"path"
 
 	log "github.com/Sirupsen/logrus"
 )
 
-var (
-	//GLIP_ACTIVITY_INCLUDE_INTEGRATION_NAME = true
-	DocHandlersDir = "../docs/handlers"
+const (
+	DocsHandlersSrcDir = "github.com/grokify/webhookproxy/docs/handlers"
 )
+
+func DocsHandlersDir() string {
+	return path.Join(os.Getenv("GOPATH"), "src", DocsHandlersSrcDir)
+}
 
 // Configuration is the webhook proxy configuration struct.
 type Configuration struct {
 	Port           int
 	EmojiURLFormat string
-	LogLevel       log.Level
+	LogrusLogLevel log.Level
 	IconBaseURL    string
+}
+
+func ReadConfigurationFile(filepath string) (Configuration, error) {
+	var configuration Configuration
+	bytes, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return configuration, err
+	}
+	err = json.Unmarshal(bytes, &configuration)
+	return configuration, err
 }
 
 // Address returns the port address as a string with a `:` prefix

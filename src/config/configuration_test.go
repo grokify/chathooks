@@ -1,9 +1,7 @@
-package main
+package config
 
 import (
 	"testing"
-
-	"github.com/grokify/webhookproxy/src/config"
 )
 
 var ConfigurationTests = []struct {
@@ -14,7 +12,7 @@ var ConfigurationTests = []struct {
 
 func TestConfigurationAddress(t *testing.T) {
 	for _, tt := range ConfigurationTests {
-		cfg := config.Configuration{
+		cfg := Configuration{
 			Port: tt.v}
 
 		addr := cfg.Address()

@@ -1,0 +1,51 @@
+{
+    "operation":"create",
+    "type":"content",
+    "payload":{
+        "full_post":{
+            "id":"523381424aaaaecc80000001",
+            "idea_title":null,
+            "content_title":null,
+            "creator_id":"51e477b9e1f419ecf4000004",
+            "assignee_id":"51e477b9e1f419ecf4000004",
+            "campaign_ids":[
+
+            ],
+            "is_draft":false,
+            "submission_deadline":null,
+            "publish_deadline":null,
+            "next_task":"Discuss post with creator",
+            "updated_at":"2013-09-13T21:18:58Z",
+            "privacy":"members",
+            "idea":null,
+            "content":null,
+            "tags":[
+
+            ],
+            "custom_fields":{
+
+            },
+            "excerpt":null,
+            "categories":[
+
+            ],
+            "persona_ids":[
+
+            ],
+            "stage_ids":[
+
+            ],
+            "attachments":[
+
+            ],
+            "content_type":{
+                "id":"515b373751c35c02000001c3",
+                "display_name":"Blog Post"
+            }
+        }
+    },
+    "instance":{
+        "id":"515b373751c35c02000001c2",
+        "subdomain":"mongohq"
+    }
+}

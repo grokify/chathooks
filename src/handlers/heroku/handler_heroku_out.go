@@ -5,13 +5,10 @@ import (
 	"net/url"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
-
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/glip-go-webhook"
-	"github.com/grokify/webhookproxy/src/adapters"
 	"github.com/grokify/webhookproxy/src/config"
-	"github.com/grokify/webhookproxy/src/util"
+	"github.com/grokify/webhookproxy/src/handlers"
+	"github.com/grokify/webhookproxy/src/models"
 	"github.com/valyala/fasthttp"
 )
 
@@ -19,52 +16,11 @@ const (
 	DisplayName      = "Heroku"
 	HandlerKey       = "heroku"
 	MessageDirection = "out"
+	MessageBodyType  = models.URLEncoded
 )
 
-// FastHttp request handler for Heroku outbound webhook
-// https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
-type Handler struct {
-	Config     config.Configuration
-	GlipClient glipwebhook.GlipWebhookClient
-	Adapter    adapters.Adapter
-}
-
-// FastHttp request handler constructor for Confluence outbound webhook
-func NewHandler(cfg config.Configuration, adapter adapters.Adapter) Handler {
-	return Handler{Config: cfg, Adapter: adapter}
-}
-
-func (h Handler) HandlerKey() string {
-	return HandlerKey
-}
-
-func (h Handler) MessageDirection() string {
-	return MessageDirection
-}
-
-// HandleFastHTTP is the method to respond to a fasthttp request.
-func (h *Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	srcMsg, err := BuildInboundMessage(ctx)
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		log.WithFields(log.Fields{
-			"type":   "http.response",
-			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
-		return
-	}
-
-	ccMsg, err := NormalizeHerokuMessage(h.Config, srcMsg)
-	if err != nil {
-		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		log.WithFields(log.Fields{
-			"type":   "http.response",
-			"status": fasthttp.StatusNotAcceptable,
-		}).Info(fmt.Sprintf("%v request is not acceptable.", DisplayName))
-		return
-	}
-
-	util.SendWebhook(ctx, h.Adapter, ccMsg)
+func NewHandler() handlers.Handler {
+	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
 func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
@@ -81,7 +37,7 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 
 //func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
 func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
-	src, err := HerokuOutMessageFromQueryString(string(bytes))
+	src, err := HerokuOutMessageFromQuery(bytes)
 	if err != nil {
 		return cc.Message{}, err
 	}
@@ -137,9 +93,9 @@ type HerokuOutMessage struct {
 	Release  string `json:"release,omitempty"`
 }
 
-func HerokuOutMessageFromQueryString(queryString string) (HerokuOutMessage, error) {
+func HerokuOutMessageFromQuery(queryString []byte) (HerokuOutMessage, error) {
 	msg := HerokuOutMessage{}
-	values, err := url.ParseQuery(queryString)
+	values, err := url.ParseQuery(string(queryString))
 	if err != nil {
 		return msg, err
 	}
