@@ -93,7 +93,7 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 3. use the proxy URL in your outbound webhook service
 
 | Query Parameter | Required? | URL |
-|------|-------|
+|-----------------|-----------|-----|
 | `inputType` | required | An handler service like `marketo` |
 | `outputType` | required | An adapter service like `glip` |
 | `url` | required | A webhook URL or UID, e.g. `11112222-3333-4444-5555-666677778888` |

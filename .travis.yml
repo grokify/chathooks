@@ -1,6 +1,7 @@
 language: go
 go_import_path: github.com/grokify/webhookproxy
 go:
+  - 1.9
   - 1.8.3
   - 1.7.6
   - 1.6.4
