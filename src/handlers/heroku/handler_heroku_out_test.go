@@ -16,7 +16,7 @@ var ConfigurationTests = []struct {
 
 func TestConfluence(t *testing.T) {
 	for _, tt := range ConfigurationTests {
-		msg, err := HerokuOutMessageFromQueryString(tt.v)
+		msg, err := HerokuOutMessageFromQuery([]byte(tt.v))
 		if err != nil {
 			t.Errorf("Error %v\n", err)
 			continue
