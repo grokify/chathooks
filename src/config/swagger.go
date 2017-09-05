@@ -34,35 +34,35 @@ func GetSwaggerSpec() swagger2.Specification {
 		},
 		Schemes: []string{"https"},
 		Paths: map[string]swagger2.Path{
-			"/hooks": swagger2.Path{
+			"/hooks": {
 				Post: &swagger2.Endpoint{
 					Tags:        []string{"webhook"},
 					Description: "Proxy a webhook",
 					Consumes:    []string{"application/json"},
 					Produces:    []string{"application/json"},
 					Parameters: []swagger2.Parameter{
-						swagger2.Parameter{
+						{
 							Description: "Format of the input message",
 							In:          "query",
 							Name:        "input",
 							Required:    true,
 							Type:        "string",
 						},
-						swagger2.Parameter{
+						{
 							Description: "Format of the output message",
 							In:          "query",
 							Name:        "output",
 							Required:    true,
 							Type:        "string",
 						},
-						swagger2.Parameter{
+						{
 							Description: "URL or UID of the output message",
 							In:          "query",
 							Name:        "urloruid",
 							Required:    true,
 							Type:        "string",
 						},
-						swagger2.Parameter{
+						{
 							Description: "Your unique token",
 							In:          "query",
 							Name:        "token",
@@ -70,47 +70,23 @@ func GetSwaggerSpec() swagger2.Specification {
 							Type:        "string",
 						},
 					},
-					/*
-					            "responses": {
-					     "200": {
-					       "description": "Successful operation",
-					       "schema": {
-					         "$ref": "#/definitions/Empty"
-					       },
-					       "headers": {
-					         "Access-Control-Allow-Origin": {
-					           "type": "string",
-					           "description": "URI that may access the resource"
-					         },
-					         "Access-Control-Allow-Methods": {
-					           "type": "string",
-					           "description": "Method or methods allowed when accessing the resource"
-					         },
-					         "Access-Control-Allow-Headers": {
-					           "type": "string",
-					           "description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the request."
-					         }
-					       }
-					     }
-					   },
-					*/
 					Responses: map[string]swagger2.Response{
-						"200": swagger2.Response{
+						"200": {
 							Description: "Successful operation",
 							Schema: swagger2.Schema{
 								Ref: "#/definitions/ProxyWebhookResponse",
 							},
 							Headers: map[string]swagger2.Header{
-								"Access-Control-Allow-Origin": swagger2.Header{
+								"Access-Control-Allow-Origin": {
 									Type:        "string",
 									Description: "URI that may access the resource"},
-								"Access-Control-Allow-Methods": swagger2.Header{
+								"Access-Control-Allow-Methods": {
 									Type:        "string",
 									Description: "Method or methods allowed when accessing the resource"},
-								"Access-Control-Allow-Headers": swagger2.Header{
+								"Access-Control-Allow-Headers": {
 									Type:        "string",
 									Description: "Used in response to a preflight request to indicate which HTTP headers can be used when making the request."},
-								"Content-Type": swagger2.Header{
+								"Content-Type": {
 									Type:        "string",
 									Description: "MIME type of the response"},
 							},
@@ -118,7 +94,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					},
 					XAmazonApigatewayIntegration: swagger2.XAmazonApigatewayIntegration{
 						Responses: map[string]swagger2.XAmazonApigatewayIntegrationResponse{
-							"default": swagger2.XAmazonApigatewayIntegrationResponse{
+							"default": {
 								StatusCode:         "200",
 								ResponseParameters: map[string]string{"method.response.header.Content-Type": "'text/html'"},
 								ResponseTemplates:  map[string]string{"text/html": "<html>\n    <head>\n        <style>\n        body {\n            color: #333;\n            font-family: Sans-serif;\n            max-width: 800px;\n            margin: auto;\n        }\n        </style>\n    </head>\n    <body>\n        <h1>Welcome to your Webhook Proxy</h1>\n        <p>\n            You have succesfully deployed your webhookproxy.</p>\n    </body>\n</html>"},
@@ -133,10 +109,10 @@ func GetSwaggerSpec() swagger2.Specification {
 			},
 		},
 		Definitions: map[string]swagger2.Definition{
-			"ProxyWebhookResponse": swagger2.Definition{
+			"ProxyWebhookResponse": {
 				Type: "object",
 				Properties: map[string]swagger2.Property{
-					"message": swagger2.Property{
+					"message": {
 						Type: "string",
 					},
 				},
@@ -144,14 +120,14 @@ func GetSwaggerSpec() swagger2.Specification {
 		},
 		XAmazonApigatewayDocumentation: swagger2.XAmazonApigatewayDocumentation{
 			DocumentationParts: []swagger2.DocumentationPart{
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type: "API"},
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Info: &swagger2.XAmazonApigatewayDocumentationPartInfo{
 							Description: "WebProxy"}},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "METHOD",
 						Path:   "/hooks",
@@ -159,7 +135,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Post a webhook"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "QUERY_PARAMETER",
 						Path:   "/hooks",
@@ -168,7 +144,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Input style"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "QUERY_PARAMETER",
 						Path:   "/hooks",
@@ -177,7 +153,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Output style"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "QUERY_PARAMETER",
 						Path:   "/hooks",
@@ -186,7 +162,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Output style"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "QUERY_PARAMETER",
 						Path:   "/hooks",
@@ -195,7 +171,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Security token"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:   "REQUEST_BODY",
 						Path:   "/hooks",
@@ -203,7 +179,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Webhook object that needs to be proxied"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:       "RESPONSE",
 						Method:     "*",
@@ -211,7 +187,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Successful operation"},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:       "RESPONSE_HEADER",
 						Method:     "OPTIONS",
@@ -220,7 +196,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Used in response to a preflight request to indicate which HTTP headers can be used when making the request."},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:       "RESPONSE_HEADER",
 						Method:     "OPTIONS",
@@ -229,7 +205,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "Method or methods allowed when accessing the resource."},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:       "RESPONSE_HEADER",
 						Method:     "OPTIONS",
@@ -238,7 +214,7 @@ func GetSwaggerSpec() swagger2.Specification {
 					Properties: swagger2.XAmazonApigatewayDocumentationPartProperties{
 						Description: "URI that may access the resource."},
 				},
-				swagger2.DocumentationPart{
+				{
 					Location: swagger2.XAmazonApigatewayDocumentationPartLocation{
 						Type:       "RESPONSE_HEADER",
 						Method:     "POST",

@@ -79,7 +79,7 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 			"status":       fasthttp.StatusNotAcceptable,
 			"errorMessage": err.Error(),
 		}).Info(fmt.Sprintf("%v request conversion failed.", DisplayName))
-		return []models.ErrorInfo{models.ErrorInfo{StatusCode: 500, Body: []byte(err.Error())}}
+		return []models.ErrorInfo{{StatusCode: 500, Body: []byte(err.Error())}}
 	}
 	hookData.OutputMessage = ccMsg
 	return h.AdapterSet.SendWebhooks(hookData)
