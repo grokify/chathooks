@@ -190,7 +190,7 @@ func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (m
 	if !ok {
 		return models.AwsAPIGatewayProxyOutput{
 			StatusCode: 400,
-			Body:       fmt.Sprintf("Input Handler Not found for: %v\n")}, nil
+			Body:       fmt.Sprintf("Input Handler Not found for: %v\n", inputType)}, nil
 	}
 
 	return handler.HandleEawsyLambda(event, ctx)
