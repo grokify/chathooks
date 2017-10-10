@@ -8,7 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/commonchat/commonchat-go/slack"
-	"github.com/grokify/gotilla/net/httputil"
+	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/valyala/fasthttp"
 )
 
@@ -20,6 +20,13 @@ var (
 	WebhookBaseURL = "https://hooks.slack.com/services/"
 )
 
+type ClientType int
+
+const (
+	HTTP ClientType = iota
+	FastHTTP
+)
+
 type SlackWebhookClient struct {
 	HttpClient *http.Client
 	FastClient fasthttp.Client
@@ -27,17 +34,17 @@ type SlackWebhookClient struct {
 	UrlPrefix  *regexp.Regexp
 }
 
-func NewSlackWebhookClient(urlOrUid string, clientType string) (SlackWebhookClient, error) {
+func NewSlackWebhookClient(urlOrUid string, clientType ClientType) (SlackWebhookClient, error) {
 	log.WithFields(log.Fields{
 		"lib": "slack_client.go",
 		"request_url_client_init": urlOrUid}).Debug("")
 
 	client := SlackWebhookClient{UrlPrefix: regexp.MustCompile(`^https:`)}
 	client.WebhookUrl = client.BuildWebhookURL(urlOrUid)
-	if clientType == "fast" {
+	if clientType == FastHTTP {
 		client.FastClient = fasthttp.Client{}
 	} else {
-		client.HttpClient = httputil.NewHttpClient()
+		client.HttpClient = httputilmore.NewHttpClient()
 	}
 	return client, nil
 }
@@ -67,7 +74,7 @@ func (client *SlackWebhookClient) PostWebhookFast(url string, message slack.Mess
 	req.Header.SetMethod(HTTPMethod)
 	req.Header.SetRequestURI(url)
 
-	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err

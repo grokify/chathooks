@@ -1,11 +1,7 @@
 package adapters
 
 import (
-	//"encoding/json"
-	//"errors"
-
 	cc "github.com/commonchat/commonchat-go"
-	//"github.com/grokify/webhookproxy/"
 	"github.com/grokify/webhookproxy/src/models"
 	"github.com/valyala/fasthttp"
 )

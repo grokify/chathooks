@@ -7,9 +7,11 @@ WebhookProxy - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-WebhookProxy is a proxy service that maps different webhook posts to message platforms such as Glip's inbound webhook service. It formats messages using [CommonChat](https://github.com/commonchat) intermediate message format which can then be translated into different chat platform message formats. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by a webhook consuming app such as a chat service. This proxy service does the conversion so you don't have to. Applications already integrated with Slack's inbound webhooks can create messages on Glip simply by using the proxy URL.
+WebhookProxy is a service that maps webhook posts from different services to message platforms such as Glip and Slack's inbound webhook service. It uses handlers to convert inbound messages to the [CommonChat](https://github.com/commonchat) canonical message format which are then sent via message platform adapters. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. Another use case is conversion of inbound messages so a message formatted for Slack inbound webhooks can be delivered to a Glip inbound webhook.
 
-WebhookProxy supports two HTTP server engines:
+It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `adapters.Adapter` and `handlers.Handler` interfaces.
+
+WebhookProxy currently supports two HTTP server engines.
 
 * AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 * Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
@@ -55,34 +57,18 @@ Example Webhook Message from Travis CI:
 ## Installation
 
 ```
-$ go get github.com/grokify/glip-webhook-proxy
+$ go get github.com/grokify/webhookproxy
 ```
 
 ## Usage
 
-### Starting the Service
+### Starting the Service using FastHTTP
+
+Start the service in `server.go`.
+
+* To adjust supported handlers, edit server.go to add and remove handlers.
 
 Start the service with the following.
-
-```go
-package main
-
-import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/grokify/webhookproxy"
-)
-
-func main() {
-	config := webhookproxy.Configuration{
-		Port:           8080,
-		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
-		LogLevel:       log.DebugLevel}
-
-	glipwebhookproxy.StartServer(config)
-}
-```
-
-You can run the above by saving it to a file `start.go` and then running `$ go run start.go`.
 
 Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. `EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
 

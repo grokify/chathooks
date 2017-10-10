@@ -60,7 +60,7 @@ type Handler interface {
 	HandleCanonical(hookData models.HookData) []models.ErrorInfo
 }
 
-type Base struct {
+type ServiceInfo struct {
 	Config       config.Configuration
 	AdapterSet   adapters.AdapterSet
 	HandlerSet   HandlerSet
@@ -95,7 +95,7 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 	return handler
 }
 
-func getConfig() Base {
+func getConfig() ServiceInfo {
 	/*
 		cfgData, err := config.ReadConfigurationFile(configFilepath)
 		if err != nil {
@@ -162,17 +162,17 @@ func getConfig() Base {
 	}
 }
 
-var base = getConfig()
+var serviceInfo = getConfig()
 
 func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (models.AwsAPIGatewayProxyOutput, error) {
-	if len(base.Tokens) > 0 {
+	if len(serviceInfo.Tokens) > 0 {
 		token, ok := event.QueryStringParameters[ParamNameToken]
 		if !ok {
 			return models.AwsAPIGatewayProxyOutput{
 				StatusCode: 401,
 				Body:       "Required Token not found"}, nil
 		}
-		if _, ok := base.Tokens[token]; !ok {
+		if _, ok := serviceInfo.Tokens[token]; !ok {
 			return models.AwsAPIGatewayProxyOutput{
 				StatusCode: 401,
 				Body:       "Required Token not valid"}, nil
@@ -186,7 +186,7 @@ func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (m
 			Body:       "InputType not found"}, nil
 	}
 
-	handler, ok := base.HandlerSet.Handlers[inputType]
+	handler, ok := serviceInfo.HandlerSet.Handlers[inputType]
 	if !ok {
 		return models.AwsAPIGatewayProxyOutput{
 			StatusCode: 400,
@@ -204,21 +204,19 @@ type FastHTTPHandler struct {
 
 func (h *FastHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Println("HANDLE_FastHTTP")
-	if len(base.Tokens) > 0 {
+	if len(serviceInfo.Tokens) > 0 {
 		token := strings.TrimSpace(string(ctx.QueryArgs().Peek(ParamNameToken)))
 		if len(token) == 0 {
 			ctx.SetStatusCode(401)
 			return
 		}
-		if _, ok := base.Tokens[token]; !ok {
+		if _, ok := serviceInfo.Tokens[token]; !ok {
 			ctx.SetStatusCode(401)
 			return
 		}
 	}
 
 	inputType := strings.TrimSpace(string(ctx.QueryArgs().Peek(ParamNameInput)))
-
-	fmt.Printf("INPUT_Type [%v]\n", inputType)
 
 	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
@@ -230,9 +228,9 @@ func (h *FastHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 func main() {
 	fh := FastHTTPHandler{
-		Config:     base.Config,
-		AdapterSet: base.AdapterSet,
-		HandlerSet: base.HandlerSet,
+		Config:     serviceInfo.Config,
+		AdapterSet: serviceInfo.AdapterSet,
+		HandlerSet: serviceInfo.HandlerSet,
 	}
 
 	router := fasthttprouter.New()

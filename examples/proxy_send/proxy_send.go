@@ -88,20 +88,25 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 }
 
 func main() {
-	examplePointer := flag.String("example", "", "Example message type")
+	inputTypeP := flag.String("inputType", "travisci", "Example message type")
+	urlP := flag.String("url", "https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888", "Your Webhook URL")
+	outputTypeP := flag.String("outputType", "glip", "Adapter name")
 
 	flag.Parse()
-	exampleString := strings.ToLower(strings.TrimSpace(*examplePointer))
+	inputTypes := strings.ToLower(strings.TrimSpace(*inputTypeP))
 
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
 		BaseUrl:        "http://localhost:8080/hooks",
-		OutputType:     "glip",
+		OutputType:     strings.ToLower(strings.TrimSpace(*outputTypeP)),
 		Token:          "hello-world",
-		Url:            os.Getenv(WebhookUrlEnvGlip),
+		Url:            strings.TrimSpace(*urlP),
+	}
+	if len(sender.Url) == 0 {
+		sender.Url = os.Getenv(WebhookUrlEnvGlip)
 	}
 
-	examples := stringsutil.SliceTrimSpace(strings.Split(exampleString, ","))
+	examples := stringsutil.SliceTrimSpace(strings.Split(inputTypes, ","))
 
 	for _, ex := range examples {
 		err := sender.SendExamplesForInputType(ex)
