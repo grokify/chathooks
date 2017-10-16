@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/grokify/gotilla/io/ioutilmore"
-	"github.com/grokify/gotilla/net/httputil"
+	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/gotilla/net/urlutil"
 	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/grokify/webhookproxy/src/config"
@@ -73,7 +73,7 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 	req.SetBody(bytes)
 	req.Header.SetRequestURI(fullUrl)
 	req.Header.SetMethod("POST")
-	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
 
 	fastClient := fasthttp.Client{}
 

@@ -153,7 +153,7 @@ func getConfig() ServiceInfo {
 		"victorops":  hf.InflateHandler(victorops.NewHandler()),
 	}}
 
-	return Base{
+	return ServiceInfo{
 		Config:       cfgData,
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
