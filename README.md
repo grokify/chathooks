@@ -1,5 +1,5 @@
-WebhookProxy - A webhook proxy
-==============================
+Chathooks - A chat webhook proxy
+================================
 
 [![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
@@ -7,11 +7,11 @@ WebhookProxy - A webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-WebhookProxy is a service that maps webhook posts from different services to message platforms such as Glip and Slack's inbound webhook service. It uses handlers to convert inbound messages to the [CommonChat](https://github.com/commonchat) canonical message format which are then sent via message platform adapters. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. Another use case is conversion of inbound messages so a message formatted for Slack inbound webhooks can be delivered to a Glip inbound webhook.
+Chathooks is a service that maps webhook posts from different services to message platforms such as Glip and Slack's inbound webhook service. It uses handlers to convert inbound messages to the [CommonChat](https://github.com/commonchat) canonical message format which are then sent via message platform adapters. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. Another use case is conversion of inbound messages so a message formatted for Slack inbound webhooks can be delivered to a Glip inbound webhook.
 
 It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `adapters.Adapter` and `handlers.Handler` interfaces.
 
-WebhookProxy currently supports two HTTP server engines.
+Chathooks currently supports two HTTP server engines.
 
 * AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 * Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
@@ -161,22 +161,22 @@ poster.send_message 'BOO!'
 
 ## Notes
 
-WebhookProxy is built using:
+Chathooks is built using:
 
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [sirupsen/logrus](https://github.com/sirupsen/logrus)
 * [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 
- [build-status-svg]: https://api.travis-ci.org/grokify/webhookproxy.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/webhookproxy
- [coverage-status-svg]: https://coveralls.io/repos/grokify/webhookproxy/badge.svg?branch=master
- [coverage-status-link]: https://coveralls.io/r/grokify/webhookproxy?branch=master
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/webhookproxy
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/webhookproxy
- [codeclimate-status-svg]: https://codeclimate.com/github/grokify/webhookproxy/badges/gpa.svg
- [codeclimate-status-link]: https://codeclimate.com/github/grokify/webhookproxy
+ [build-status-svg]: https://api.travis-ci.org/grokify/chathooks.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/chathooks
+ [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
+ [coverage-status-link]: https://coveralls.io/r/grokify/chathooks?branch=master
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
+ [goreport-link]: https://goreportcard.com/report/github.com/grokify/chathooks
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/chathooks/badges/gpa.svg
+ [codeclimate-status-link]: https://codeclimate.com/github/grokify/chathooks
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/webhookproxy
+ [docs-godoc-link]: https://godoc.org/github.com/grokify/chathooks
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/webhookproxy/blob/master/LICENSE.md
+ [license-link]: https://github.com/grokify/chathooks/blob/master/LICENSE.md

@@ -2,8 +2,8 @@ package statuspage
 
 import (
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/grokify/webhookproxy/src/config"
-	"github.com/grokify/webhookproxy/src/util"
+	"github.com/grokify/chathooks/src/config"
+	"github.com/grokify/chathooks/src/util"
 )
 
 func ExampleMessage(cfg config.Configuration, data util.ExampleData, eventSlug string) (cc.Message, error) {

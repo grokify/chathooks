@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	"github.com/grokify/chathooks/src/adapters"
+	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/gotilla/strings/stringsutil"
-	"github.com/grokify/webhookproxy/src/adapters"
-	"github.com/grokify/webhookproxy/src/config"
 	"github.com/valyala/fasthttp"
 )
 

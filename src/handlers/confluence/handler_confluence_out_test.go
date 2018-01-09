@@ -3,7 +3,7 @@ package confluence
 import (
 	"testing"
 
-	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/chathooks/src/config"
 )
 
 var ConfigurationTests = []struct {

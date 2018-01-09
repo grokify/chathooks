@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/grokify/webhookproxy/src/config"
+	"github.com/grokify/chathooks/src/config"
 )
 
 const (
