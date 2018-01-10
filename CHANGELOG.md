@@ -1,4 +1,6 @@
-- 2017-09-04
+- 2018-01-09
+  - Rename to `chathooks`
+- 2017-09-05
   - Add support for Amazon AWS Lambda via Eawsy shim
   - Add `proxy_send.go` example script
 - 2017-08-01
