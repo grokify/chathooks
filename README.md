@@ -160,6 +160,35 @@ poster = Slack::Poster.new url, opts
 poster.send_message 'BOO!'
 ```
 
+## Installation via AWS Lambda
+
+See the AWS docs for deployment:
+
+https://docs.aws.amazon.com/lambda/latest/dg/lambda-go-how-to-create-deployment-package.html
+
+| Item | Description |
+|------|-------------|
+| `region` | |
+| `lambda-handler` | |
+| `account-id` | |
+| `execution_role` | |
+| `path-to-your-zip-file` | |
+| `lambda-handler` | |
+
+```
+GOOS=linux go build lambda_handler.go
+zip handler.zip ./lambda_handler
+# --handler is the path to the executable inside the .zip
+aws lambda create-function \
+  --region region \
+  --function-name lambda-handler \
+  --memory 128 \
+  --role arn:aws:iam::account-id:role/execution_role \
+  --runtime go1.x \
+  --zip-file fileb://path-to-your-zip-file/handler.zip \
+  --handler lambda-handler
+```
+
 ## Notes
 
 Chathooks is built using:

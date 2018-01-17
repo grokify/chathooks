@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
@@ -242,6 +243,12 @@ type AnyHTTPHandler struct {
 	HandlerSet HandlerSet
 }
 
+var anyHTTPHandler = AnyHTTPHandler{
+	Config:     serviceInfo.Config,
+	AdapterSet: serviceInfo.AdapterSet,
+	HandlerSet: serviceInfo.HandlerSet,
+}
+
 func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("HANDLE_NetHTTP")
 	if len(serviceInfo.Tokens) > 0 {
@@ -290,33 +297,26 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 }
 
 func serveNetHttp() {
-	fh := AnyHTTPHandler{
-		Config:     serviceInfo.Config,
-		AdapterSet: serviceInfo.AdapterSet,
-		HandlerSet: serviceInfo.HandlerSet,
-	}
-
-	http.Handle("/hook", http.HandlerFunc(fh.HandleNetHTTP))
-	http.Handle("/hook/", http.HandlerFunc(fh.HandleNetHTTP))
+	http.Handle("/hook", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
+	http.Handle("/hook/", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", nil))
 }
 
 func serveFastHttp() {
-	fh := AnyHTTPHandler{
-		Config:     serviceInfo.Config,
-		AdapterSet: serviceInfo.AdapterSet,
-		HandlerSet: serviceInfo.HandlerSet,
-	}
-
 	router := fasthttprouter.New()
 	router.GET("/", handlers.HomeHandler)
-	router.GET("/hook", fh.HandleFastHTTP)
-	router.POST("/hook", fh.HandleFastHTTP)
+	router.GET("/hook", anyHTTPHandler.HandleFastHTTP)
+	router.POST("/hook", anyHTTPHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", router.Handler))
 }
 
+func serveAwsLambda() {
+	lambda.Start(HandleAwsLambda)
+}
+
 func main() {
+	//serveAwsLambda()
 	serveNetHttp()
 }
