@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	"github.com/grokify/gotilla/fmt/fmtutil"
+	fhu "github.com/grokify/gotilla/net/fasthttputil"
+	nhu "github.com/grokify/gotilla/net/nethttputil"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/adapters"
@@ -55,9 +60,11 @@ type HandlerSet struct {
 }
 
 type Handler interface {
-	HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (models.AwsAPIGatewayProxyOutput, error)
-	HandleFastHTTP(ctx *fasthttp.RequestCtx)
+	HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 	HandleCanonical(hookData models.HookData) []models.ErrorInfo
+	HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error)
+	HandleFastHTTP(ctx *fasthttp.RequestCtx)
+	HandleNetHTTP(res http.ResponseWriter, req *http.Request)
 }
 
 type ServiceInfo struct {
@@ -126,8 +133,10 @@ func getConfig() ServiceInfo {
 	hf := HandlerFactory{Config: cfgData, AdapterSet: adapterSet}
 
 	handlerSet := HandlerSet{Handlers: map[string]Handler{
-		"appsignal":  appsignal.NewHandler(cfgData, adapterSet),
-		"apteligent": apteligent.NewHandler(cfgData, adapterSet),
+		//"appsignal":  appsignal.NewHandler(cfgData, adapterSet),
+		//"apteligent": apteligent.NewHandler(cfgData, adapterSet),
+		"appsignal":  hf.InflateHandler(appsignal.NewHandler()),
+		"apteligent": hf.InflateHandler(apteligent.NewHandler()),
 		"circleci":   hf.InflateHandler(circleci.NewHandler()),
 		"codeship":   hf.InflateHandler(codeship.NewHandler()),
 		"confluence": hf.InflateHandler(confluence.NewHandler()),
@@ -164,31 +173,62 @@ func getConfig() ServiceInfo {
 
 var serviceInfo = getConfig()
 
-func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (models.AwsAPIGatewayProxyOutput, error) {
+func HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	if len(serviceInfo.Tokens) > 0 {
-		token, ok := event.QueryStringParameters[ParamNameToken]
+		token, ok := req.QueryStringParameters[ParamNameToken]
 		if !ok {
-			return models.AwsAPIGatewayProxyOutput{
-				StatusCode: 401,
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
 				Body:       "Required Token not found"}, nil
 		}
 		if _, ok := serviceInfo.Tokens[token]; !ok {
-			return models.AwsAPIGatewayProxyOutput{
-				StatusCode: 401,
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
 				Body:       "Required Token not valid"}, nil
 		}
 	}
-
-	inputType, ok := event.QueryStringParameters[models.QueryParamInputType]
+	inputType, ok := req.QueryStringParameters[models.QueryParamInputType]
 	if !ok || len(strings.TrimSpace(inputType)) == 0 {
-		return models.AwsAPIGatewayProxyOutput{
+		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "InputType not found"}, nil
 	}
 
 	handler, ok := serviceInfo.HandlerSet.Handlers[inputType]
 	if !ok {
-		return models.AwsAPIGatewayProxyOutput{
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       fmt.Sprintf("Input Handler Not found for: %v\n", inputType)}, nil
+	}
+
+	return handler.HandleAwsLambda(ctx, req)
+}
+
+func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error) {
+	if len(serviceInfo.Tokens) > 0 {
+		token, ok := event.QueryStringParameters[ParamNameToken]
+		if !ok {
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
+				Body:       "Required Token not found"}, nil
+		}
+		if _, ok := serviceInfo.Tokens[token]; !ok {
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
+				Body:       "Required Token not valid"}, nil
+		}
+	}
+
+	inputType, ok := event.QueryStringParameters[models.QueryParamInputType]
+	if !ok || len(strings.TrimSpace(inputType)) == 0 {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "InputType not found"}, nil
+	}
+
+	handler, ok := serviceInfo.HandlerSet.Handlers[inputType]
+	if !ok {
+		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       fmt.Sprintf("Input Handler Not found for: %v\n", inputType)}, nil
 	}
@@ -196,27 +236,50 @@ func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (m
 	return handler.HandleEawsyLambda(event, ctx)
 }
 
-type FastHTTPHandler struct {
+type AnyHTTPHandler struct {
 	Config     config.Configuration
 	AdapterSet adapters.AdapterSet
 	HandlerSet HandlerSet
 }
 
-func (h *FastHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	fmt.Println("HANDLE_FastHTTP")
+func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
+	fmt.Println("HANDLE_NetHTTP")
 	if len(serviceInfo.Tokens) > 0 {
-		token := strings.TrimSpace(string(ctx.QueryArgs().Peek(ParamNameToken)))
+		token := nhu.GetReqHeader(req, ParamNameToken)
 		if len(token) == 0 {
-			ctx.SetStatusCode(401)
+			res.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		if _, ok := serviceInfo.Tokens[token]; !ok {
-			ctx.SetStatusCode(401)
+			res.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+	}
+	inputType := nhu.GetReqHeader(req, ParamNameInput)
+
+	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
+		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
+		handler.HandleNetHTTP(res, req)
+	} else {
+		fmt.Printf("Input_Handler_Not_Found [%v]\n", inputType)
+	}
+}
+
+func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+	fmt.Println("HANDLE_FastHTTP")
+	if len(serviceInfo.Tokens) > 0 {
+		token := fhu.GetReqHeader(ctx, ParamNameToken)
+		if len(token) == 0 {
+			ctx.SetStatusCode(http.StatusUnauthorized)
+			return
+		}
+		if _, ok := serviceInfo.Tokens[token]; !ok {
+			ctx.SetStatusCode(http.StatusUnauthorized)
 			return
 		}
 	}
 
-	inputType := strings.TrimSpace(string(ctx.QueryArgs().Peek(ParamNameInput)))
+	inputType := fhu.GetReqHeader(ctx, ParamNameInput)
 
 	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
@@ -226,8 +289,21 @@ func (h *FastHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-func main() {
-	fh := FastHTTPHandler{
+func serveNetHttp() {
+	fh := AnyHTTPHandler{
+		Config:     serviceInfo.Config,
+		AdapterSet: serviceInfo.AdapterSet,
+		HandlerSet: serviceInfo.HandlerSet,
+	}
+
+	http.Handle("/hook", http.HandlerFunc(fh.HandleNetHTTP))
+	http.Handle("/hook/", http.HandlerFunc(fh.HandleNetHTTP))
+
+	log.Fatal(fasthttp.ListenAndServe(":8080", nil))
+}
+
+func serveFastHttp() {
+	fh := AnyHTTPHandler{
 		Config:     serviceInfo.Config,
 		AdapterSet: serviceInfo.AdapterSet,
 		HandlerSet: serviceInfo.HandlerSet,
@@ -236,9 +312,11 @@ func main() {
 	router := fasthttprouter.New()
 	router.GET("/", handlers.HomeHandler)
 	router.GET("/hook", fh.HandleFastHTTP)
-	router.GET("/hooks", fh.HandleFastHTTP)
 	router.POST("/hook", fh.HandleFastHTTP)
-	router.POST("/hooks", fh.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", router.Handler))
+}
+
+func main() {
+	serveNetHttp()
 }

@@ -12,7 +12,9 @@ It is easy to add additional inbound webhook handlers and outbound webhook adapt
 
 Chathooks currently supports two HTTP server engines.
 
+* AWS API Gateway + AWS Lambda - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
 * AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
+* Locally - [net/http](https://golang.org/pkg/net/http/)
 * Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
@@ -56,7 +58,7 @@ Example Webhook Message from Travis CI:
 ## Installation
 
 ```
-$ go get github.com/grokify/webhookproxy
+$ go get github.com/grokify/chathooks
 ```
 
 ## Usage
@@ -162,10 +164,14 @@ poster.send_message 'BOO!'
 
 Chathooks is built using:
 
+* [net/http](https://golang.org/pkg/net/http/)
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
+* [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
+* [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
+
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [sirupsen/logrus](https://github.com/sirupsen/logrus)
-* [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
+
 
  [build-status-svg]: https://api.travis-ci.org/grokify/chathooks.svg?branch=master
  [build-status-link]: https://travis-ci.org/grokify/chathooks

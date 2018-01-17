@@ -1,12 +1,18 @@
 package models
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"strings"
 
+	"github.com/aws/aws-lambda-go/events"
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	fhu "github.com/grokify/gotilla/net/fasthttputil"
+	nhu "github.com/grokify/gotilla/net/nethttputil"
 	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/valyala/fasthttp"
 )
@@ -46,62 +52,145 @@ type HookData struct {
 	OutputMessage cc.Message
 }
 
-func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, event *apigatewayproxyevt.Event) HookData {
-	data := HookData{
-		InputBody: BodyToMessageBytesEawsyLambda(bodyType, event)}
+type hookDataRequest struct {
+	BodyType              MessageBodyType
+	Headers               map[string]string
+	QueryStringParameters map[string]string
+	Body                  string
+	IsBase64Encoded       bool
+}
 
-	if input, ok := event.QueryStringParameters[QueryParamInputType]; ok {
+func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatewayProxyRequest) HookData {
+	return newHookDataGeneric(hookDataRequest{
+		BodyType:              bodyType,
+		Headers:               awsReq.Headers,
+		Body:                  awsReq.Body,
+		IsBase64Encoded:       awsReq.IsBase64Encoded,
+		QueryStringParameters: awsReq.QueryStringParameters,
+	})
+}
+
+func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, eawsyReq *apigatewayproxyevt.Event) HookData {
+	return newHookDataGeneric(hookDataRequest{
+		BodyType:              bodyType,
+		Headers:               eawsyReq.Headers,
+		Body:                  eawsyReq.Body,
+		IsBase64Encoded:       eawsyReq.IsBase64Encoded,
+		QueryStringParameters: eawsyReq.QueryStringParameters,
+	})
+}
+
+func newHookDataGeneric(req hookDataRequest) HookData {
+	data := newHookDataForQueryString(req.QueryStringParameters)
+	data.InputBody = bodyToMessageBytesGeneric(
+		req.BodyType,
+		req.Headers,
+		req.Body,
+		req.IsBase64Encoded)
+	return data
+}
+
+func GetMapString2Simple(mapSS map[string]string, key string) string {
+	if value, ok := mapSS[key]; ok {
+		return value
+	}
+	return ""
+}
+
+func newHookDataForQueryString(queryStringParameters map[string]string) HookData {
+	data := HookData{}
+	if input, ok := queryStringParameters[QueryParamInputType]; ok {
 		data.InputType = strings.TrimSpace(input)
 	}
-	if output, ok := event.QueryStringParameters[QueryParamOutputType]; ok {
+	if output, ok := queryStringParameters[QueryParamOutputType]; ok {
 		data.OutputType = strings.TrimSpace(output)
 	}
-	if url, ok := event.QueryStringParameters[QueryParamOutputURL]; ok {
+	if url, ok := queryStringParameters[QueryParamOutputURL]; ok {
 		data.OutputURL = strings.TrimSpace(url)
 	}
-	if token, ok := event.QueryStringParameters[QueryParamToken]; ok {
+	if token, ok := queryStringParameters[QueryParamToken]; ok {
 		data.Token = strings.TrimSpace(token)
 	}
-	if namedOutputs, ok := event.QueryStringParameters[QueryParamOutputAdapters]; ok {
+	if namedOutputs, ok := queryStringParameters[QueryParamOutputAdapters]; ok {
 		data.OutputNames = stringsutil.SliceTrimSpace(strings.Split(namedOutputs, ","))
 	}
 	return data
 }
 
-func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestCtx) HookData {
+func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
 	return HookData{
-		InputType:  strings.TrimSpace(string(ctx.QueryArgs().Peek(QueryParamInputType))),
-		InputBody:  BodyToMessageBytesFastHTTP(bodyType, ctx),
-		OutputType: strings.TrimSpace(string(ctx.QueryArgs().Peek(QueryParamOutputType))),
-		OutputURL:  strings.TrimSpace(string(ctx.QueryArgs().Peek(QueryParamOutputURL))),
-		Token:      strings.TrimSpace(string(ctx.QueryArgs().Peek(QueryParamToken))),
-		OutputNames: stringsutil.SliceTrimSpace(strings.Split(
-			string(ctx.QueryArgs().Peek(QueryParamOutputAdapters)), ",")),
+		InputType:   nhu.GetReqHeader(req, QueryParamInputType),
+		InputBody:   BodyToMessageBytesNetHTTP(bodyType, req),
+		OutputType:  nhu.GetReqHeader(req, QueryParamOutputType),
+		OutputURL:   nhu.GetReqHeader(req, QueryParamOutputURL),
+		Token:       nhu.GetReqHeader(req, QueryParamToken),
+		OutputNames: nhu.GetSplitReqHeader(req, QueryParamOutputAdapters, ","),
 	}
 }
 
-func BodyToMessageBytesEawsyLambda(bodyType MessageBodyType, event *apigatewayproxyevt.Event) []byte {
+func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestCtx) HookData {
+	return HookData{
+		InputType:   fhu.GetReqHeader(ctx, QueryParamInputType),
+		InputBody:   BodyToMessageBytesFastHTTP(bodyType, ctx),
+		OutputType:  fhu.GetReqHeader(ctx, QueryParamOutputType),
+		OutputURL:   fhu.GetReqHeader(ctx, QueryParamOutputURL),
+		Token:       fhu.GetReqHeader(ctx, QueryParamToken),
+		OutputNames: fhu.GetSplitReqHeader(ctx, QueryParamOutputAdapters, ",'"),
+	}
+}
+
+func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]string, body string, isBase64Encoded bool) []byte {
+	if isBase64Encoded {
+		decoded, err := base64.StdEncoding.DecodeString(body)
+		if err != nil {
+			return []byte("")
+		}
+		body = string(decoded)
+	}
 	switch bodyType {
 	case URLEncodedJSONPayload:
-		v, err := url.ParseQuery(event.Body)
+		v, err := url.ParseQuery(body)
 		if err != nil {
 			return []byte("")
 		}
 		return []byte(v.Get("payload"))
 	case URLEncodedJSONPayloadOrJSON:
-		if ct, ok := event.Headers["content-type"]; ok {
+		if ct, ok := headers["content-type"]; ok {
 			ct = strings.TrimSpace(strings.ToLower(ct))
 			if strings.Index(ct, `application/json`) > -1 {
-				return []byte(event.Body)
+				return []byte(body)
 			}
 		}
-		v, err := url.ParseQuery(event.Body)
+		v, err := url.ParseQuery(body)
 		if err != nil {
 			return []byte("")
 		}
 		return []byte(v.Get("payload"))
 	default:
-		return []byte(event.Body)
+		return []byte(body)
+	}
+}
+
+func BodyToMessageBytesNetHTTP(bodyType MessageBodyType, req *http.Request) []byte {
+	switch bodyType {
+	case URLEncodedJSONPayload:
+		return []byte(req.Form.Get("payload"))
+	case URLEncodedJSONPayloadOrJSON:
+		ct := strings.TrimSpace(strings.ToLower(req.Header.Get("Content-Type")))
+		if strings.Index(ct, `application/json`) > -1 {
+			bytes, err := ioutil.ReadAll(req.Body)
+			if err != nil {
+				return []byte("")
+			}
+			return bytes
+		}
+		return []byte(req.Form.Get("payload"))
+	default:
+		bytes, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			return []byte("")
+		}
+		return bytes
 	}
 }
 
@@ -134,28 +223,47 @@ type ErrorInfo struct {
 	Body       []byte
 }
 
-func ErrorInfosToAlexaResponse(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
-	proxyOutput := AwsAPIGatewayProxyOutput{}
+func ErrorsInfoToResponseInfo(errs ...ErrorInfo) ErrorInfo {
+	resInfo := ErrorInfo{}
 	if len(errs) == 0 {
-		proxyOutput.StatusCode = 200
-	} else {
-		bodyBytes, err := json.Marshal(errs)
-		if err != nil {
-			proxyOutput.Body = err.Error()
-		} else {
-			proxyOutput.Body = string(bodyBytes)
-		}
-		if len(errs) == 1 {
-			proxyOutput.StatusCode = errs[0].StatusCode
-		} else {
-			maxStatus := 0
-			for _, errInfo := range errs {
-				if errInfo.StatusCode > maxStatus {
-					maxStatus = errInfo.StatusCode
-				}
-			}
-			proxyOutput.StatusCode = maxStatus
-		}
+		resInfo.StatusCode = http.StatusOK
+		return resInfo
 	}
-	return proxyOutput
+	bodyBytes, err := json.Marshal(errs)
+	if err != nil {
+		resInfo.Body = []byte(err.Error())
+	} else {
+		resInfo.Body = bodyBytes
+	}
+	if len(errs) == 1 {
+		resInfo.StatusCode = errs[0].StatusCode
+	} else {
+		maxStatus := 0
+		for _, errInfo := range errs {
+			if errInfo.StatusCode > maxStatus {
+				maxStatus = errInfo.StatusCode
+			}
+		}
+		resInfo.StatusCode = maxStatus
+	}
+	return resInfo
+}
+
+//func ErrorInfosToAlexaResponse(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
+func ErrorInfosToAwsAPIGatewayProxyOutput(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
+	resInfo := ErrorsInfoToResponseInfo()
+
+	return AwsAPIGatewayProxyOutput{
+		StatusCode: resInfo.StatusCode,
+		Body:       string(resInfo.Body),
+	}
+}
+
+func ErrorInfosToAwsAPIGatewayProxyResponse(errs ...ErrorInfo) events.APIGatewayProxyResponse {
+	resInfo := ErrorsInfoToResponseInfo()
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: resInfo.StatusCode,
+		Body:       string(resInfo.Body),
+	}
 }

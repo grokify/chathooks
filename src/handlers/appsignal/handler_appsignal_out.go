@@ -4,24 +4,27 @@ import (
 	"encoding/json"
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	//log "github.com/Sirupsen/logrus"
 
 	cc "github.com/commonchat/commonchat-go"
-	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	"github.com/grokify/chathooks/src/adapters"
+	//"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
+	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	//"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
+	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	"github.com/grokify/gotilla/time/timeutil"
-	"github.com/valyala/fasthttp"
+	//"github.com/valyala/fasthttp"
 )
 
 const (
 	DisplayName      = "AppSignal"
 	HandlerKey       = "appsignal"
 	MessageDirection = "out"
+	MessageBodyType  = models.JSON
 )
 
+/*
 // FastHttp request handler for outbound webhook
 type Handler struct {
 	Config          config.Configuration
@@ -33,6 +36,12 @@ type Handler struct {
 func NewHandler(cfg config.Configuration, adapterSet adapters.AdapterSet) Handler {
 	return Handler{Config: cfg, AdapterSet: adapterSet}
 }
+*/
+func NewHandler() handlers.Handler {
+	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
+}
+
+/*
 
 func (h Handler) HandlerKey() string {
 	return HandlerKey
@@ -46,7 +55,7 @@ func (h Handler) MessageDirection() string {
 func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (models.AwsAPIGatewayProxyOutput, error) {
 	hookData := models.HookDataFromEawsyLambdaEvent(models.JSON, event)
 	errs := h.HandleCanonical(hookData)
-	return models.ErrorInfosToAlexaResponse(errs...), nil
+	return models.ErrorInfosToAwsAPIGatewayProxyOutput(errs...), nil
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
@@ -54,7 +63,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	hookData := models.HookDataFromFastHTTPReqCtx(models.JSON, ctx)
 	errs := h.HandleCanonical(hookData)
 
-	proxyOutput := models.ErrorInfosToAlexaResponse(errs...)
+	proxyOutput := models.ErrorInfosToAwsAPIGatewayProxyOutput(errs...)
 	ctx.SetStatusCode(proxyOutput.StatusCode)
 	if proxyOutput.StatusCode > 399 {
 		fmt.Fprintf(ctx, "%s", proxyOutput.Body)
@@ -84,6 +93,7 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 	hookData.OutputMessage = ccMsg
 	return h.AdapterSet.SendWebhooks(hookData)
 }
+*/
 
 func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
