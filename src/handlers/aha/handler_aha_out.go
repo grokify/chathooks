@@ -3,6 +3,7 @@ package aha
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"strings"
 	"time"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
+	"github.com/microcosm-cc/bluemonday"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -36,8 +39,9 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		return ccMsg, err
 	}
 
-	ccMsg.Activity = src.Activity()
 	ccMsg.Title = src.Title()
+
+	p := bluemonday.StrictPolicy()
 
 	if src.Audit != nil {
 		for _, change := range src.Audit.Changes {
@@ -45,6 +49,8 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 			field := cc.Field{}
 			key := strings.TrimSpace(change.FieldName)
 			val := strings.TrimSpace(change.Value)
+			val = html.UnescapeString(val)
+			val = p.Sanitize(val)
 			addField := false
 			if len(key) > 0 {
 				field.Title = key
@@ -65,6 +71,10 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 }
 
 func AhaOutMessageFromBytes(bytes []byte) (AhaOutMessage, error) {
+	log.WithFields(log.Fields{
+		"type":    "message.raw",
+		"message": string(bytes),
+	}).Debug(fmt.Sprintf("%v", string(bytes)))
 	resp := AhaOutMessage{}
 	err := json.Unmarshal(bytes, &resp)
 	return resp, err
@@ -107,7 +117,25 @@ func (aoa *AhaOutAudit) Activity() string {
 }
 
 func (aoa *AhaOutAudit) Title() string {
-	return fmt.Sprintf("**%v** [%v](%v)", aoa.User.Name, aoa.Description, aoa.AuditableURL)
+	username := strings.TrimSpace(aoa.User.Name)
+	description := strings.TrimSpace(aoa.Description)
+	itemUrl := strings.TrimSpace(aoa.AuditableURL)
+	title := ""
+	if len(description) > 0 && len(itemUrl) > 0 {
+		title = fmt.Sprintf("[%v](%v)", description, itemUrl)
+	} else if len(itemUrl) > 0 {
+		title = fmt.Sprintf("[%v](%v)", itemUrl, itemUrl)
+	} else if len(description) > 0 {
+		title = description
+	}
+	if len(username) > 0 {
+		if len(title) > 0 {
+			title = fmt.Sprintf("**%v** %v", username, title)
+		} else {
+			title = fmt.Sprintf("**%v**", username)
+		}
+	}
+	return title
 }
 
 type AhaOutUser struct {

@@ -55,6 +55,7 @@ const (
 	ParamNameOutput = "outputType"
 	ParamNameURL    = "url"
 	ParamNameToken  = "token"
+	SecretToken     = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
 )
 
 type HandlerSet struct {
@@ -161,7 +162,7 @@ func getConfig() ServiceInfo {
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
 		RequireToken: false,
-		Tokens:       map[string]int{"SecretToken": 1},
+		Tokens:       map[string]int{SecretToken: 1},
 	}
 }
 
@@ -313,5 +314,6 @@ func serveAwsLambda() {
 
 func main() {
 	//serveAwsLambda()
-	serveNetHttp()
+	//serveNetHttp()
+	serveFastHttp()
 }
