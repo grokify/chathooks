@@ -21,6 +21,7 @@ Conversion of the following webhook message formats to Glip inbound webhooks inc
 
 Outbound Webhook Formats supported:
 
+1. [Aha!](https://support.aha.io/hc/en-us/articles/202000997-Integrate-with-Webhooks)
 1. [AppSignal](http://docs.appsignal.com/application/integrations/webhooks.html)
 1. [Apteligent/Crittercism]()
 1. [Circle CI](https://circleci.com/docs/1.0/configuration/#notify)
