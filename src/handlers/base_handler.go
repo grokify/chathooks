@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-lambda-go/events"
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
@@ -13,6 +12,7 @@ import (
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 

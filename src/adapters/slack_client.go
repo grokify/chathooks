@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/commonchat/commonchat-go/slack"
 	"github.com/grokify/gotilla/net/httputilmore"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 

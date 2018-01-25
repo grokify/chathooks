@@ -4,17 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	//log "github.com/Sirupsen/logrus"
-
 	cc "github.com/commonchat/commonchat-go"
-	//"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	//"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	"github.com/grokify/gotilla/time/timeutil"
-	//"github.com/valyala/fasthttp"
 )
 
 const (

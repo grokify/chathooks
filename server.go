@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/buaazp/fasthttprouter"
@@ -15,6 +14,7 @@ import (
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/adapters"

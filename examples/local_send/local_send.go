@@ -9,11 +9,11 @@ import (
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
-	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/util"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/handlers/aha"

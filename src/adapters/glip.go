@@ -3,10 +3,10 @@ package adapters
 import (
 	"encoding/json"
 
-	log "github.com/Sirupsen/logrus"
 	cc "github.com/commonchat/commonchat-go"
 	ccglip "github.com/commonchat/commonchat-go/glip"
 	"github.com/grokify/go-glip"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
