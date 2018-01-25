@@ -10,6 +10,7 @@ const (
 )
 
 var Icons = map[string]string{
+	"aha":        "icon_aha_256x256.png",
 	"appsignal":  "icon_appsignal_400x400.png",
 	"apteligent": "icon_apteligent_496x496.png",
 	"circleci":   "icon_circleci_128x128.png",

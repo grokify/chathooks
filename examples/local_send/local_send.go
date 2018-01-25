@@ -16,6 +16,7 @@ import (
 	"github.com/grokify/chathooks/src/util"
 	"github.com/valyala/fasthttp"
 
+	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
 	"github.com/grokify/chathooks/src/handlers/apteligent"
 	"github.com/grokify/chathooks/src/handlers/circleci"
@@ -119,6 +120,11 @@ func main() {
 	fmtutil.PrintJSON(exampleData)
 
 	switch example {
+	case "aha":
+		source := exampleData.Data[aha.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(aha.ExampleMessage(cfg, exampleData, eventSlug))
+		}
 	case "appsignal":
 		source := exampleData.Data[appsignal.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {

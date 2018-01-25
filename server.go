@@ -22,6 +22,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 
+	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
 	"github.com/grokify/chathooks/src/handlers/apteligent"
 	"github.com/grokify/chathooks/src/handlers/circleci"
@@ -104,13 +105,6 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 }
 
 func getConfig() ServiceInfo {
-	/*
-		cfgData, err := config.ReadConfigurationFile(configFilepath)
-		if err != nil {
-			log.Fatal("Configuration File [%v] not found failed with error [%v].", configFilepath, err)
-		}
-
-	*/
 	cfgData := config.Configuration{
 		Port:           8080,
 		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
@@ -134,8 +128,7 @@ func getConfig() ServiceInfo {
 	hf := HandlerFactory{Config: cfgData, AdapterSet: adapterSet}
 
 	handlerSet := HandlerSet{Handlers: map[string]Handler{
-		//"appsignal":  appsignal.NewHandler(cfgData, adapterSet),
-		//"apteligent": apteligent.NewHandler(cfgData, adapterSet),
+		"aha":        hf.InflateHandler(aha.NewHandler()),
 		"appsignal":  hf.InflateHandler(appsignal.NewHandler()),
 		"apteligent": hf.InflateHandler(apteligent.NewHandler()),
 		"circleci":   hf.InflateHandler(circleci.NewHandler()),
@@ -168,7 +161,7 @@ func getConfig() ServiceInfo {
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
 		RequireToken: false,
-		Tokens:       map[string]int{},
+		Tokens:       map[string]int{"SecretToken": 1},
 	}
 }
 
@@ -307,7 +300,9 @@ func serveFastHttp() {
 	router := fasthttprouter.New()
 	router.GET("/", handlers.HomeHandler)
 	router.GET("/hook", anyHTTPHandler.HandleFastHTTP)
+	router.GET("/hook/", anyHTTPHandler.HandleFastHTTP)
 	router.POST("/hook", anyHTTPHandler.HandleFastHTTP)
+	router.POST("/hook/", anyHTTPHandler.HandleFastHTTP)
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", router.Handler))
 }
