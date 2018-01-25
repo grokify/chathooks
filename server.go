@@ -19,9 +19,9 @@ import (
 
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
-	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 
+	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
 	"github.com/grokify/chathooks/src/handlers/apteligent"

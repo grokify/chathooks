@@ -27,6 +27,5 @@ func main() {
 	//p := bluemonday.UGCPolicy()
 	p := bluemonday.StrictPolicy()
 	val3 := p.Sanitize(val2)
-	fmt.Println(val4)
-
+	fmt.Println(val3)
 }
