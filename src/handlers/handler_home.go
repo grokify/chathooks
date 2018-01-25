@@ -21,7 +21,7 @@ const (
 
 // HomeHandler is a fasthttp handler for handling the webhoo proxy homepage.
 func HomeHandler(ctx *fasthttp.RequestCtx) {
-	fmt.Fprintf(ctx, "%s", []byte("Webhook Proxy\nSource: https://github.com/grokify/webhookproxy"))
+	fmt.Fprintf(ctx, "%s", []byte("Chathooks\nSource: https://github.com/grokify/chathooks"))
 }
 
 type Configuration struct {

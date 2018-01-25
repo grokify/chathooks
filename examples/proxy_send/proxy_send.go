@@ -11,11 +11,11 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/gotilla/io/ioutilmore"
 	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/gotilla/net/urlutil"
 	"github.com/grokify/gotilla/strings/stringsutil"
-	"github.com/grokify/webhookproxy/src/config"
 	"github.com/valyala/fasthttp"
 )
 

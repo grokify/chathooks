@@ -81,7 +81,7 @@ type ServiceInfo struct {
 {
 	"Port": 8080,
 	"EmojiURLFormat": "https://grokify.github.io/emoji/assets/images/%s.png",
-	"IconBaseURL":    "http://grokify.github.io/webhookproxy/icons/",
+	"IconBaseURL":    "http://grokify.github.io/chathooks/icons/",
 	"LogrusLogLevel": 5,
 }
 */
@@ -109,7 +109,7 @@ func getConfig() ServiceInfo {
 		Port:           8080,
 		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
 		LogrusLogLevel: 5,
-		IconBaseURL:    "http://grokify.github.io/webhookproxy/icons/",
+		IconBaseURL:    "http://grokify.github.io/chathooks/icons/",
 	}
 
 	fmtutil.PrintJSON(cfgData)

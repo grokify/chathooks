@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	DocsHandlersSrcDir = "github.com/grokify/webhookproxy/docs/handlers"
+	DocsHandlersSrcDir = "github.com/grokify/chathooks/docs/handlers"
 )
 
 func DocsHandlersDir() string {

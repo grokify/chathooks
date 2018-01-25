@@ -85,7 +85,7 @@ func main() {
 	}
 
 	cfg := config.Configuration{
-		IconBaseURL:    "https://grokify.github.io/webhookproxy/icons/",
+		IconBaseURL:    "https://grokify.github.io/chathooks/icons/",
 		LogrusLogLevel: log.DebugLevel}
 
 	sender := Sender{}
