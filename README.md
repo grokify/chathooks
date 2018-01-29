@@ -1,5 +1,5 @@
-Chathooks - A chat-focused formatting webhook proxy
-===================================================
+Chathooks - A webhook formatter for chat
+========================================
 
 [![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
@@ -10,22 +10,22 @@ Chathooks - A chat-focused formatting webhook proxy
 
 * [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
 
-Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to the chat / team messaging platform of your choice.
+Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to any chat / team messaging platform supportedy by CommonChat such as Glip or Slack.
 
 This is useful because:
 
-* many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to.
+* many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. The code is all open source so customizations can be done easily.
 * the conversion can be done one time for all chat / team messaging solutions supported by CommonChat.
 * one service can proxy an arbitrary number of webhook sources and event types so you don't have to configure multiple inbound webhooks going to the same group / channel.
 
-It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `adapters.Adapter` and `handlers.Handler` interfaces.
+It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `commonchat.Adapter` and `handlers.Handler` interfaces.
 
 Chathooks currently supports four HTTP server engines.
 
-* Locally - [net/http](https://golang.org/pkg/net/http/)
-* Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
-* AWS Lambda + AWS API Gateway - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
-* AWS Lambda + AWS API Gateway - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
+* [net/http](https://golang.org/pkg/net/http/)
+* [valyala/fasthttp](https://github.com/valyala/fasthttp)
+* [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
+* [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
@@ -83,22 +83,11 @@ Chathooks uses two environment variables:
 | `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
 
-### Engines
-
-Chathooks supports 4 server engines:
-
-* `net/http`
-* `valyala/fasthttp`
-* `aws/aws-lambda-go`
-* `eawsy/aws-lambda-go` (deprecated)
-
-For `aws/aws-lambda-go`, `net/http`, `valyala/fasthttp`, you can select the engine by setting the `CHATHOOKS_ENGINE` environment variable to one of: `["aws", "nethttp", "fasthttp"]`.
-
-#### Using the AWS Engine
+### Using the AWS Engine
 
 To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
 
-##### Installation via AWS Lambda
+#### Installation via AWS Lambda
 
 See the AWS docs for deployment:
 
@@ -122,7 +111,7 @@ aws lambda create-function \
 
 You can use the `aws-package.sh` shell script to package your handler.
 
-##### Update Lambda Code:
+#### Update Lambda Code:
 
 You can update the Lambda function code using the following:
 
