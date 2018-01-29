@@ -325,8 +325,6 @@ func serveNetHttp() {
 
 func serveFastHttp() {
 	router := fasthttprouter.New()
-	router.GET("/hook", anyHTTPHandler.HandleFastHTTP)
-	router.GET("/hook/", anyHTTPHandler.HandleFastHTTP)
 	router.POST("/hook", anyHTTPHandler.HandleFastHTTP)
 	router.POST("/hook/", anyHTTPHandler.HandleFastHTTP)
 
