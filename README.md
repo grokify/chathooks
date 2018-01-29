@@ -107,26 +107,30 @@ https://docs.aws.amazon.com/lambda/latest/dg/lambda-go-how-to-create-deployment-
 Using the `aws-cli` you can use the following approach:
 
 ```
-GOOS=linux go build lambda_handler.go
-zip handler.zip ./lambda_handler
+GOOS=linux go build main.go
+zip main.zip ./main
 # --handler is the path to the executable inside the .zip
 aws lambda create-function \
   --region region \
-  --function-name lambda-handler \
+  --function-name Chathook \
   --memory 128 \
   --role arn:aws:iam::account-id:role/execution_role \
   --runtime go1.x \
-  --zip-file fileb://path-to-your-zip-file/handler.zip \
-  --handler lambda-handler
+  --zip-file fileb://main.zip \
+  --handler main
 ```
+
+You can use the `aws-package.sh` shell script to package your handler.
 
 ##### Update Lambda Code:
 
-You can update the Lambda funciton code using the following:
+You can update the Lambda function code using the following:
 
 https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html
 
 `$ aws lambda update-function-code --function-name='MyFunction' --zip-file='fileb://main.zip' --publish --region='us-east-1'`
+
+The `aws-update.sh` file has this command with default settings.
 
 Make sure to set your AWS credentials file.
 
