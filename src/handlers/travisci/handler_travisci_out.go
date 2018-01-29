@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
+	cc "github.com/grokify/commonchat"
 	log "github.com/sirupsen/logrus"
 )
 

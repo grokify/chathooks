@@ -1,9 +1,9 @@
 package deskdotcom
 
 import (
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/util"
+	cc "github.com/grokify/commonchat"
 )
 
 func ExampleMessage(cfg config.Configuration, data util.ExampleData, eventSlug string) (cc.Message, error) {

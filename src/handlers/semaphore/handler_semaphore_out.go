@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
+	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/strings/stringsutil"
 )
 

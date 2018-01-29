@@ -9,10 +9,10 @@ import (
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/util"
+	cc "github.com/grokify/commonchat"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
