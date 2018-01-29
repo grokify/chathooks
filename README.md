@@ -235,7 +235,7 @@ This has been tested using:
 ```ruby
 require 'slack/poster'
 
-url = 'http://localhost:8080?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888'
+url = 'http://localhost:8080/hook?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888'
 
 opts = {
 	username: 'Ghost Bot [Bot]',
