@@ -92,6 +92,8 @@ For `aws/aws-lambda-go`, `net/http`, `valyala/fasthttp`, you can select the engi
 
 #### Using the AWS Engine
 
+To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
+
 ##### Update Lambda Code:
 
 You can update the Lambda funciton code using the following:
