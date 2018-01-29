@@ -42,7 +42,7 @@ Outbound Webhook Formats supported:
 1. [Enchant](https://dev.enchant.com/webhooks)
 1. [GoSquared](https://www.gosquared.com/customer/portal/articles/1996494-webhooks)
 1. [Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
-1. [Librato]()
+1. [Librato](https://www.librato.com/docs/kb/alert/service_integrations/webhook/)
 1. [Magnum CI](https://github.com/magnumci/documentation/blob/master/webhooks.md)
 1. [Marketo]()
 1. [OpsGenie]()
