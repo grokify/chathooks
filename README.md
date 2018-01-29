@@ -1,5 +1,5 @@
-Chathooks - A chat webhook formatting proxy
-===========================================
+Chathooks - A chat-focused formatting webhook proxy
+===================================================
 
 [![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
