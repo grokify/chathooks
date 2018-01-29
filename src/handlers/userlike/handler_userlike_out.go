@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
@@ -90,7 +89,7 @@ func NormalizeOfflineMessage(cfg config.Configuration, src UserlikeOfflineMessag
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	ccMsg.Activity = fmt.Sprintf("Offline message received%v", adapters.IntegrationActivitySuffix(DisplayName))
+	ccMsg.Activity = fmt.Sprintf("Offline message received%v", handlers.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
 
@@ -119,7 +118,7 @@ func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMes
 	}
 
 	ccMsg.Activity = fmt.Sprintf("%s%s",
-		GlipActivityForChat(src.Event, src.FeedbackMessage), adapters.IntegrationActivitySuffix(DisplayName))
+		GlipActivityForChat(src.Event, src.FeedbackMessage), handlers.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
 
@@ -187,7 +186,7 @@ func NormalizeChatWidget(cfg config.Configuration, src UserlikeChatWidgetOutMess
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	ccMsg.Activity = fmt.Sprintf("Chat widget configuration updated%s", adapters.IntegrationActivitySuffix(DisplayName))
+	ccMsg.Activity = fmt.Sprintf("Chat widget configuration updated%s", handlers.IntegrationActivitySuffix(DisplayName))
 
 	titleParts := []string{}
 	if len(src.StatusUrl) > 0 {
@@ -231,7 +230,7 @@ func NormalizeOperator(cfg config.Configuration, src UserlikeOperatorOutMessage)
 	}
 
 	ccMsg.Activity = fmt.Sprintf("Operator is %s%s",
-		src.Event, adapters.IntegrationActivitySuffix(DisplayName))
+		src.Event, handlers.IntegrationActivitySuffix(DisplayName))
 
 	attachment := cc.NewAttachment()
 

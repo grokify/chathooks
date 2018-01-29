@@ -20,11 +20,17 @@ import (
 	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/valyala/fasthttp"
+
+	"github.com/joho/godotenv"
 )
 
 const (
-	WebhookUrlEnvGlip  = "GLIP_WEBHOOK"
-	WebhookUrlEnvSlack = "SLACK_WEBHOOK"
+	EnvWebhookUrlGlip         = "GLIP_WEBHOOK"
+	EnvWebhookUrlSlack        = "SLACK_WEBHOOK"
+	EnvChathooksReqInputType  = "CHATHOOKS_REQ_INPUT_TYPE"
+	EnvChathooksReqOutputType = "CHATHOOKS_REQ_OUTPUT_TYPE"
+	EnvChathooksReqToken      = "CHATHOOKS_REQ_TOKEN"
+	EnvChathooksReqURL        = "CHATHOOKS_REQ_URL"
 )
 
 type ExampleWebhookSender struct {
@@ -74,6 +80,7 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 		Token:      s.RequestParams.Token,
 		URL:        s.RequestParams.URL,
 	}
+
 	fullUrl := BuildURLQueryString(s.BaseUrl, qry)
 	fmt.Printf("FULL_URL: %v\n", fullUrl)
 
@@ -104,7 +111,6 @@ func main() {
 	tokenP := flag.String("token", "token", "You token")
 
 	flag.Parse()
-	inputTypes := strings.ToLower(strings.TrimSpace(*inputTypeP))
 
 	qry := models.RequestParams{
 		InputType:  *inputTypeP,
@@ -114,19 +120,41 @@ func main() {
 	}
 	fmtutil.PrintJSON(qry)
 
+	if len(os.Getenv("ENV_PATH")) > 0 {
+		err := godotenv.Load(os.Getenv("ENV_PATH"))
+		if err != nil {
+			panic(err)
+		}
+
+		if len(os.Getenv(EnvChathooksReqInputType)) > 0 {
+			qry.InputType = os.Getenv(EnvChathooksReqInputType)
+		}
+		if len(os.Getenv(EnvChathooksReqOutputType)) > 0 {
+			qry.OutputType = os.Getenv(EnvChathooksReqOutputType)
+		}
+		if len(os.Getenv(EnvChathooksReqToken)) > 0 {
+			qry.Token = os.Getenv(EnvChathooksReqToken)
+		}
+		if len(os.Getenv(EnvChathooksReqURL)) > 0 {
+			qry.URL = os.Getenv(EnvChathooksReqURL)
+		}
+	}
+
+	fmtutil.PrintJSON(qry)
+
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
 		BaseUrl:        "http://localhost:8080/hook",
 		RequestParams:  qry,
 	}
 	if len(sender.RequestParams.URL) == 0 {
-		sender.RequestParams.URL = os.Getenv(WebhookUrlEnvGlip)
+		sender.RequestParams.URL = os.Getenv(EnvWebhookUrlGlip)
 	}
 
-	examples := stringsutil.SliceTrimSpace(strings.Split(inputTypes, ","))
+	examples := stringsutil.SplitCondenseSpace(qry.InputType, ",")
 
 	for _, ex := range examples {
-		err := sender.SendExamplesForInputType(ex)
+		err := sender.SendExamplesForInputType(strings.ToLower(ex))
 		if err != nil {
 			panic(err)
 		}

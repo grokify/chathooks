@@ -1,5 +1,6 @@
 package adapters
 
+/*
 import (
 	"encoding/json"
 	"net/http"
@@ -83,3 +84,4 @@ func (client *SlackWebhookClient) PostWebhookFast(url string, message slack.Mess
 func (client *SlackWebhookClient) PostWebhookGUIDFast(urlOrUid string, message slack.Message) (*fasthttp.Request, *fasthttp.Response, error) {
 	return client.PostWebhookFast(client.BuildWebhookURL(urlOrUid), message)
 }
+*/

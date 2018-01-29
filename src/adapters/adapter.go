@@ -11,11 +11,11 @@ var (
 )
 
 type AdapterSet struct {
-	Adapters map[string]Adapter
+	Adapters map[string]cc.Adapter
 }
 
 func NewAdapterSet() AdapterSet {
-	return AdapterSet{Adapters: map[string]Adapter{}}
+	return AdapterSet{Adapters: map[string]cc.Adapter{}}
 }
 
 func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo {
@@ -51,6 +51,7 @@ func (set *AdapterSet) procResponse(errs []models.ErrorInfo, req *fasthttp.Reque
 	return errs
 }
 
+/*
 type Adapter interface {
 	SendWebhook(url string, message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
 	SendMessage(message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
@@ -63,3 +64,4 @@ func IntegrationActivitySuffix(displayName string) string {
 	}
 	return ""
 }
+*/

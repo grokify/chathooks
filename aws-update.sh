@@ -1,0 +1,1 @@
+aws lambda update-function-code --function-name='Chathooks' --zip-file='fileb://main.zip' --publish --region='us-east-1'

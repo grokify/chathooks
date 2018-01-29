@@ -12,6 +12,9 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	//"github.com/grokify/commonchat"
+	ccglip "github.com/grokify/commonchat/glip"
+	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
@@ -127,12 +130,12 @@ func getConfig() ServiceInfo {
 
 	fmtutil.PrintJSON(cfgData)
 	adapterSet := adapters.NewAdapterSet()
-	glipAdapter, err := adapters.NewGlipAdapter("")
+	glipAdapter, err := ccglip.NewGlipAdapter("")
 	if err != nil {
 		log.Fatal(err)
 	}
 	adapterSet.Adapters["glip"] = glipAdapter
-	slackAdapter, err := adapters.NewSlackAdapter("")
+	slackAdapter, err := ccslack.NewSlackAdapter("")
 	if err != nil {
 		log.Fatal(err)
 	}

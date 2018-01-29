@@ -1,5 +1,6 @@
 package adapters
 
+/*
 import (
 	"encoding/json"
 
@@ -60,3 +61,4 @@ func (adapter *GlipAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error)
 	webhookUID := adapter.WebhookURLOrUID
 	return webhookUID, nil
 }
+*/

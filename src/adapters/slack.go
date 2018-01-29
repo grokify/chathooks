@@ -1,5 +1,6 @@
 package adapters
 
+/*
 import (
 	"fmt"
 
@@ -35,3 +36,4 @@ func (adapter *SlackAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error
 	webhookUID := fmt.Sprintf("%s", ctx.UserValue("webhookuid"))
 	return webhookUID, nil
 }
+*/

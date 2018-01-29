@@ -5,8 +5,10 @@ import (
 	//"strings"
 
 	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	//"github.com/grokify/commonchat"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
+	//cc "github.com/grokify/commonchat"
 	//"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/valyala/fasthttp"
 )
@@ -19,6 +21,10 @@ const (
 	QueryParamOutputURL    = "url"
 )
 
+var (
+	ShowDisplayName = false
+)
+
 // HomeHandler is a fasthttp handler for handling the webhoo proxy homepage.
 func HomeHandler(ctx *fasthttp.RequestCtx) {
 	fmt.Fprintf(ctx, "%s", []byte("Chathooks\nSource: https://github.com/grokify/chathooks"))
@@ -27,6 +33,13 @@ func HomeHandler(ctx *fasthttp.RequestCtx) {
 type Configuration struct {
 	ConfigData config.Configuration
 	AdapterSet adapters.AdapterSet
+}
+
+func IntegrationActivitySuffix(displayName string) string {
+	if !ShowDisplayName || len(displayName) < 1 {
+		return ""
+	}
+	return ""
 }
 
 /*
