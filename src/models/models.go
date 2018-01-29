@@ -128,23 +128,23 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 
 func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
 	return HookData{
-		InputType:   nhu.GetReqHeader(req, QueryParamInputType),
+		InputType:   nhu.GetReqQueryParam(req, QueryParamInputType),
 		InputBody:   BodyToMessageBytesNetHTTP(bodyType, req),
-		OutputType:  nhu.GetReqHeader(req, QueryParamOutputType),
-		OutputURL:   nhu.GetReqHeader(req, QueryParamOutputURL),
-		Token:       nhu.GetReqHeader(req, QueryParamToken),
-		OutputNames: nhu.GetSplitReqHeader(req, QueryParamOutputAdapters, ","),
+		OutputType:  nhu.GetReqQueryParam(req, QueryParamOutputType),
+		OutputURL:   nhu.GetReqQueryParam(req, QueryParamOutputURL),
+		Token:       nhu.GetReqQueryParam(req, QueryParamToken),
+		OutputNames: nhu.GetSplitReqQueryParam(req, QueryParamOutputAdapters, ","),
 	}
 }
 
 func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestCtx) HookData {
 	return HookData{
-		InputType:   fhu.GetReqHeader(ctx, QueryParamInputType),
+		InputType:   fhu.GetReqQueryParam(ctx, QueryParamInputType),
 		InputBody:   BodyToMessageBytesFastHTTP(bodyType, ctx),
-		OutputType:  fhu.GetReqHeader(ctx, QueryParamOutputType),
-		OutputURL:   fhu.GetReqHeader(ctx, QueryParamOutputURL),
-		Token:       fhu.GetReqHeader(ctx, QueryParamToken),
-		OutputNames: fhu.GetSplitReqHeader(ctx, QueryParamOutputAdapters, ",'"),
+		OutputType:  fhu.GetReqQueryParam(ctx, QueryParamOutputType),
+		OutputURL:   fhu.GetReqQueryParam(ctx, QueryParamOutputURL),
+		Token:       fhu.GetReqQueryParam(ctx, QueryParamToken),
+		OutputNames: fhu.GetSplitReqQueryParam(ctx, QueryParamOutputAdapters, ",'"),
 	}
 }
 

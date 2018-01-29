@@ -267,17 +267,20 @@ var anyHTTPHandler = AnyHTTPHandler{
 func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("HANDLE_NetHTTP")
 	if len(serviceInfo.Tokens) > 0 {
-		token := nhu.GetReqHeader(req, ParamNameToken)
+		token := nhu.GetReqQueryParam(req, ParamNameToken)
 		if len(token) == 0 {
 			res.WriteHeader(http.StatusUnauthorized)
+			log.Warn("E_NO_TOKEN")
 			return
 		}
+		fmt.Println("HANDLE_NetHTTP_S2b")
 		if _, ok := serviceInfo.Tokens[token]; !ok {
 			res.WriteHeader(http.StatusUnauthorized)
+			log.Warn("E_INCORRECT_TOKEN")
 			return
 		}
 	}
-	inputType := nhu.GetReqHeader(req, ParamNameInput)
+	inputType := nhu.GetReqQueryParam(req, ParamNameInput)
 
 	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
@@ -290,7 +293,7 @@ func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Reques
 func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Println("HANDLE_FastHTTP")
 	if len(serviceInfo.Tokens) > 0 {
-		token := fhu.GetReqHeader(ctx, ParamNameToken)
+		token := fhu.GetReqQueryParam(ctx, ParamNameToken)
 		if len(token) == 0 {
 			ctx.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_NO_TOKEN")
@@ -303,7 +306,7 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		}
 	}
 
-	inputType := fhu.GetReqHeader(ctx, ParamNameInput)
+	inputType := fhu.GetReqQueryParam(ctx, ParamNameInput)
 
 	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
@@ -314,10 +317,10 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 }
 
 func serveNetHttp() {
-	http.Handle("/hook", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
-	http.Handle("/hook/", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
-
-	log.Fatal(fasthttp.ListenAndServe(":8080", nil))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/hook", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
+	mux.HandleFunc("/hook/", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
+	http.ListenAndServe(":8080", mux)
 }
 
 func serveFastHttp() {

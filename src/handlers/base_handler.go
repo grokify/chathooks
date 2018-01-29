@@ -8,11 +8,9 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	//"github.com/grokify/commonchat"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
-	//"github.com/grokify/commonchat"
 	cc "github.com/grokify/commonchat"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
@@ -37,7 +35,6 @@ func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayPr
 	errs := h.HandleCanonical(hookData)
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
 	return awsRes, err
-	//return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
 }
 
 // HandleEawsyLambda is the method to respond to a fasthttp request.
@@ -46,7 +43,6 @@ func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime
 	errs := h.HandleCanonical(hookData)
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
 	return awsRes, err
-	//return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
 }
 
 // HandleNetHTTP is the method to respond to a fasthttp request.
@@ -55,13 +51,15 @@ func (h Handler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 	errs := h.HandleCanonical(hookData)
 
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
-	//return awsRes, err
-	//resInfo := models.ErrorsInfoToResponseInfo(errs...)
+
 	if err != nil {
-		res.WriteHeader(awsRes.StatusCode)
-		res.Write([]byte(awsRes.Body))
-	} else {
 		res.WriteHeader(http.StatusInternalServerError)
+		log.WithFields(log.Fields{
+			"event":   "outgoing.webhook.error",
+			"handler": err.Error()}).Info("ERROR")
+	} else {
+		res.WriteHeader(awsRes.StatusCode)
+		fmt.Fprint(res, awsRes.Body)
 	}
 }
 
@@ -75,7 +73,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		ctx.SetStatusCode(http.StatusInternalServerError)
 		log.WithFields(log.Fields{
-			"event":   "incoming.webhook.error",
+			"event":   "outgoing.webhook.error",
 			"handler": err.Error()}).Info("ERROR")
 	} else {
 		ctx.SetStatusCode(awsRes.StatusCode)
@@ -87,7 +85,7 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 	log.WithFields(log.Fields{
 		"event":   "incoming.webhook",
-		"handler": DisplayName}).Info("HANDLE_FASTHTTP")
+		"handler": DisplayName}).Info("HANDLE_CANONICAL")
 	log.WithFields(log.Fields{
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info(string(hookData.InputBody))
