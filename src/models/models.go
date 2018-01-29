@@ -51,14 +51,14 @@ var intervals = [...]string{
 }
 
 type HookData struct {
-	InputType        string     `json:inputType,omitempty"`
-	InputBody        []byte     `json:inputBody,omitempty"`
-	OutputType       string     `json:outputType,omitempty"`
-	OutputURL        string     `json:outputUrl,omitempty"`
-	OutputNames      []string   `json:outputNames,omitempty"`
-	Token            string     `json:token,omitempty"`
-	InputMessage     []byte     `json:inputMessage,omitempty"`
-	CanonicalMessage cc.Message `json:canonicalMessage,omitempty"`
+	InputType        string     `json:"inputType,omitempty"`
+	InputBody        []byte     `json:"inputBody,omitempty"`
+	OutputType       string     `json:"outputType,omitempty"`
+	OutputURL        string     `json:"outputUrl,omitempty"`
+	OutputNames      []string   `json:"outputNames,omitempty"`
+	Token            string     `json:"token,omitempty"`
+	InputMessage     []byte     `json:"inputMessage,omitempty"`
+	CanonicalMessage cc.Message `json:"canonicalMessage,omitempty"`
 }
 
 type hookDataRequest struct {
@@ -233,7 +233,7 @@ type ErrorInfo struct {
 }
 
 type ResponseInfo struct {
-	HookData   HookData    `json:hookData,omitempty"`
+	HookData   HookData    `json:"hookData,omitempty"`
 	Responses  []ErrorInfo `json:"responses,omitempty"`
 	StatusCode int         `json:"statusCode,omitempty"`
 	//URL        string      `json:"url,omitempty"`
