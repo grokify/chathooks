@@ -9,10 +9,12 @@ import (
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
-	"github.com/grokify/chathooks/src/adapters"
+	//"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/util"
 	cc "github.com/grokify/commonchat"
+	ccglip "github.com/grokify/commonchat/glip"
+	ccslack "github.com/grokify/commonchat/slack"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
@@ -49,7 +51,7 @@ const (
 )
 
 type Sender struct {
-	Adapter adapters.Adapter
+	Adapter cc.Adapter
 }
 
 func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
@@ -95,7 +97,7 @@ func main() {
 			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
 			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := adapters.NewGlipAdapter(webhookURLOrUID)
+		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID)
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}
@@ -105,7 +107,7 @@ func main() {
 			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
 			fmt.Printf("SLACK_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := adapters.NewSlackAdapter(webhookURLOrUID)
+		adapter, err := ccslack.NewSlackAdapter(webhookURLOrUID)
 		if err != nil {
 			panic("Incorrect Webhook GUID or URL")
 		}
