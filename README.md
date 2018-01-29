@@ -12,10 +12,10 @@ It is easy to add additional inbound webhook handlers and outbound webhook adapt
 
 Chathooks currently supports two HTTP server engines.
 
-* AWS API Gateway + AWS Lambda - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
-* AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 * Locally - [net/http](https://golang.org/pkg/net/http/)
 * Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
+* AWS API Gateway + AWS Lambda - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
+* AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
@@ -77,10 +77,10 @@ Chathooks uses two environment variables:
 
 Chathooks supports 4 server engines:
 
-* `aws/aws-lambda-go`
-* `eawsy/aws-lambda-go` (deprecated)
 * `net/http`
 * `valyala/fasthttp`
+* `aws/aws-lambda-go`
+* `eawsy/aws-lambda-go` (deprecated)
 
 For `aws/aws-lambda-go`, `net/http`, `valyala/fasthttp`, you can select the engine by setting the `CHATHOOKS_ENGINE` environment variable to one of: `["aws", "nethttp", "fasthttp"]`.
 
@@ -100,7 +100,20 @@ Make sure to set your AWS credentials file.
 
 ### Starting the Service using FastHTTP
 
-Start the service in `server.go`.
+Start the service in `main.go`.
+
+For testing purposes, use:
+
+```bash
+$ go run main.go
+```
+
+For production services, compile the code:
+
+```bash
+$ go build main.go
+$ ./main
+```
 
 * To adjust supported handlers, edit server.go to add and remove handlers.
 
