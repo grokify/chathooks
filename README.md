@@ -80,7 +80,7 @@ Chathooks uses two environment variables:
 
 | Variable Name | Value |
 |---------------|-------|
-| `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp` |
+| `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
 
 ### Engines
