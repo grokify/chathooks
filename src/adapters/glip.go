@@ -3,8 +3,8 @@ package adapters
 import (
 	"encoding/json"
 
-	cc "github.com/commonchat/commonchat-go"
-	ccglip "github.com/commonchat/commonchat-go/glip"
+	cc "github.com/grokify/commonchat"
+	ccglip "github.com/grokify/commonchat/glip"
 	"github.com/grokify/go-glip"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"

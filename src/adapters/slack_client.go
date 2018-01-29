@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/commonchat/commonchat-go/slack"
+	"github.com/grokify/commonchat/slack"
 	"github.com/grokify/gotilla/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"

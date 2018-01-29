@@ -11,8 +11,8 @@ import (
 	"github.com/grokify/gotilla/fmt/fmtutil"
 
 	"github.com/aws/aws-lambda-go/events"
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	cc "github.com/grokify/commonchat"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
 	"github.com/grokify/gotilla/strings/stringsutil"

@@ -1,8 +1,8 @@
 package adapters
 
 import (
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/grokify/chathooks/src/models"
+	cc "github.com/grokify/commonchat"
 	"github.com/valyala/fasthttp"
 )
 

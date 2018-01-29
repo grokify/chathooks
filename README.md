@@ -6,16 +6,22 @@ Chathooks - A chat webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
-Chathooks is a service that maps webhook posts from different services to message platforms such as Glip and Slack's inbound webhook service. It uses handlers to convert inbound messages to the [CommonChat](https://github.com/commonchat) canonical message format which are then sent via message platform adapters. This is useful because many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. Another use case is conversion of inbound messages so a message formatted for Slack inbound webhooks can be delivered to a Glip inbound webhook.
+Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to the chat / team messaging platform of your choice.
+
+This is useful because:
+
+* many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to.
+* the conversion can be done one time for all chat / team messaging solutions supported by CommonChat.
+* one service can proxy an arbitrary number of webhook sources and event types so you don't have to configure multiple inbound webhooks going to the same group / channel.
 
 It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `adapters.Adapter` and `handlers.Handler` interfaces.
 
-Chathooks currently supports two HTTP server engines.
+Chathooks currently supports four HTTP server engines.
 
 * Locally - [net/http](https://golang.org/pkg/net/http/)
 * Locally - [valyala/fasthttp](https://github.com/valyala/fasthttp)
-* AWS API Gateway + AWS Lambda - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
-* AWS API Gateway + AWS Lambda - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
+* AWS Lambda + AWS API Gateway - [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
+* AWS Lambda + AWS API Gateway - [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
 
 Conversion of the following webhook message formats to Glip inbound webhooks include:
 
@@ -37,14 +43,14 @@ Outbound Webhook Formats supported:
 1. [Marketo]()
 1. [OpsGenie]()
 1. [Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/)
-1. [Pingdom]()
+1. [Pingdom](https://www.pingdom.com/resources/webhooks)
 1. [Raygun](https://raygun.com/docs/integrations/webhooks)
-1. [Runscope]()
+1. [Runscope](https://www.runscope.com/docs/api-testing/notifications#webhook)
 1. [Semaphore CI](https://semaphoreci.com/docs/post-build-webhooks.html), [Deploy](https://semaphoreci.com/docs/post-deploy-webhooks.html)
-1. [StatusPage]()
+1. [StatusPage](https://help.statuspage.io/knowledge_base/topics/webhook-notifications)
 1. [Travis CI](https://docs.travis-ci.com/user/notifications#Configuring-webhook-notifications)
 1. [Userlike](https://www.userlike.com/en/public/tutorial/addon/api)
-1. [VictorOps]()
+1. [VictorOps](https://help.victorops.com/knowledge-base/custom-outbound-webhooks/)
 
 Inbound Webhook Format supported:
 

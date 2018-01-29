@@ -3,8 +3,8 @@ package adapters
 import (
 	"fmt"
 
-	"github.com/commonchat/commonchat-go"
-	"github.com/commonchat/commonchat-go/slack"
+	"github.com/grokify/commonchat"
+	"github.com/grokify/commonchat/slack"
 	"github.com/valyala/fasthttp"
 )
 

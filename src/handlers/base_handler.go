@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	cc "github.com/commonchat/commonchat-go"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
+	cc "github.com/grokify/commonchat"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
