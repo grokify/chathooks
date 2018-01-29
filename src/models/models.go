@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/grokify/gotilla/fmt/fmtutil"
+
 	"github.com/aws/aws-lambda-go/events"
 	cc "github.com/commonchat/commonchat-go"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
@@ -24,6 +26,13 @@ const (
 	QueryParamToken          = "token"
 	QueryParamOutputURL      = "url"
 )
+
+type RequestParams struct {
+	InputType  string `url:"inputType"`
+	OutputType string `url:"outputType"`
+	Token      string `url:"token"`
+	URL        string `url:"url"`
+}
 
 type MessageBodyType int
 
@@ -42,14 +51,14 @@ var intervals = [...]string{
 }
 
 type HookData struct {
-	InputType     string
-	InputBody     []byte
-	OutputType    string
-	OutputURL     string
-	OutputNames   []string
-	Token         string
-	InputMessage  []byte
-	OutputMessage cc.Message
+	InputType        string     `json:inputType,omitempty"`
+	InputBody        []byte     `json:inputBody,omitempty"`
+	OutputType       string     `json:outputType,omitempty"`
+	OutputURL        string     `json:outputUrl,omitempty"`
+	OutputNames      []string   `json:outputNames,omitempty"`
+	Token            string     `json:token,omitempty"`
+	InputMessage     []byte     `json:inputMessage,omitempty"`
+	CanonicalMessage cc.Message `json:canonicalMessage,omitempty"`
 }
 
 type hookDataRequest struct {
@@ -223,7 +232,55 @@ type ErrorInfo struct {
 	Body       []byte
 }
 
+type ResponseInfo struct {
+	HookData   HookData    `json:hookData,omitempty"`
+	Responses  []ErrorInfo `json:"responses,omitempty"`
+	StatusCode int         `json:"statusCode,omitempty"`
+	//URL        string      `json:"url,omitempty"`
+	//Body       interface{} `json:"body,omitempty"`
+	//InputType  string      `json:"inputType,omitempty"`
+	//OutputType string      `json:"outputType,omitempty"`
+}
+
+func (ri *ResponseInfo) ToAPIGatewayProxyResponse() (events.APIGatewayProxyResponse, error) {
+	res := events.APIGatewayProxyResponse{
+		StatusCode: ri.StatusCode,
+	}
+
+	bodyBytes, err := json.Marshal(ri)
+	if err != nil {
+		return res, nil
+	}
+	res.Body = string(bodyBytes)
+
+	return res, nil
+}
+
+/*
 func ErrorsInfoToResponseInfo(errs ...ErrorInfo) ErrorInfo {
+	resInfo := ResponseInfo{
+		Responses: errs,
+	}
+	return resInfo
+}
+*/
+
+func GetMaxStatusCode(errs ...ErrorInfo) int {
+	if len(errs) == 0 {
+		return http.StatusOK
+	} else if len(errs) == 1 {
+		return errs[0].StatusCode
+	}
+	maxStatus := 200
+	for _, errInfo := range errs {
+		if errInfo.StatusCode > maxStatus {
+			maxStatus = errInfo.StatusCode
+		}
+	}
+	return maxStatus
+}
+
+func ErrorsInfoToResponseInfoOld(errs ...ErrorInfo) ErrorInfo {
 	resInfo := ErrorInfo{}
 	if len(errs) == 0 {
 		resInfo.StatusCode = http.StatusOK
@@ -249,6 +306,7 @@ func ErrorsInfoToResponseInfo(errs ...ErrorInfo) ErrorInfo {
 	return resInfo
 }
 
+/*
 //func ErrorInfosToAlexaResponse(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
 func ErrorInfosToAwsAPIGatewayProxyOutput(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
 	resInfo := ErrorsInfoToResponseInfo()
@@ -258,7 +316,26 @@ func ErrorInfosToAwsAPIGatewayProxyOutput(errs ...ErrorInfo) AwsAPIGatewayProxyO
 		Body:       string(resInfo.Body),
 	}
 }
+*/
 
+func BuildAwsAPIGatewayProxyResponse(hookData HookData, errs ...ErrorInfo) (events.APIGatewayProxyResponse, error) {
+	resInfo := ResponseInfo{
+		HookData:   hookData,
+		Responses:  errs,
+		StatusCode: GetMaxStatusCode(errs...),
+	}
+	fmtutil.PrintJSON(resInfo)
+	return resInfo.ToAPIGatewayProxyResponse()
+	//resInfo := ErrorsInfoToResponseInfo()
+	/*
+		return events.APIGatewayProxyResponse{
+			StatusCode: resInfo.StatusCode,
+			Body:       string(resInfo.Body),
+		}
+	*/
+}
+
+/*
 func ErrorInfosToAwsAPIGatewayProxyResponse(errs ...ErrorInfo) events.APIGatewayProxyResponse {
 	resInfo := ErrorsInfoToResponseInfo()
 
@@ -267,3 +344,4 @@ func ErrorInfosToAwsAPIGatewayProxyResponse(errs ...ErrorInfo) events.APIGateway
 		Body:       string(resInfo.Body),
 	}
 }
+*/

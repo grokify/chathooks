@@ -5,16 +5,19 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"path"
 	"regexp"
 	"strings"
 
+	"github.com/google/go-querystring/query"
+	"github.com/grokify/gotilla/fmt/fmtutil"
+
 	"github.com/grokify/chathooks/src/config"
+	"github.com/grokify/chathooks/src/models"
+
 	"github.com/grokify/gotilla/io/ioutilmore"
 	"github.com/grokify/gotilla/net/httputilmore"
-	"github.com/grokify/gotilla/net/urlutil"
 	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/valyala/fasthttp"
 )
@@ -27,9 +30,7 @@ const (
 type ExampleWebhookSender struct {
 	DocHandlersDir string
 	BaseUrl        string
-	OutputType     string
-	Token          string
-	Url            string
+	RequestParams  models.RequestParams
 }
 
 func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error {
@@ -52,20 +53,29 @@ func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error 
 	return nil
 }
 
+func BuildURLQueryString(baseUrl string, qry interface{}) string {
+	v, _ := query.Values(qry)
+	qryString := v.Encode()
+	if len(qryString) > 0 {
+		return baseUrl + "?" + qryString
+	}
+	return baseUrl
+}
+
 func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType string) error {
 	bytes, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return err
 	}
 
-	qry := url.Values{}
-	qry.Add("inputType", inputType)
-	qry.Add("outputType", s.OutputType)
-	qry.Add("token", s.Token)
-	qry.Add("url", s.Url)
-
-	fullUrl := urlutil.BuildURL(s.BaseUrl, qry)
-	fmt.Println(fullUrl)
+	qry := models.RequestParams{
+		InputType:  inputType,
+		OutputType: s.RequestParams.OutputType,
+		Token:      s.RequestParams.Token,
+		URL:        s.RequestParams.URL,
+	}
+	fullUrl := BuildURLQueryString(s.BaseUrl, qry)
+	fmt.Printf("FULL_URL: %v\n", fullUrl)
 
 	req := fasthttp.AcquireRequest()
 	resp := fasthttp.AcquireResponse()
@@ -79,7 +89,7 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 
 	err = fastClient.Do(req, resp)
 	fmt.Printf("RES_STATUS: %v\n", resp.StatusCode())
-	if resp.StatusCode() > 299 {
+	if resp.StatusCode() >= 300 || 1 == 1 {
 		fmt.Printf("RES_BODY: %v\n", string(resp.Body()))
 	}
 	fasthttp.ReleaseRequest(req)
@@ -91,19 +101,26 @@ func main() {
 	inputTypeP := flag.String("inputType", "travisci", "Example message type")
 	urlP := flag.String("url", "https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888", "Your Webhook URL")
 	outputTypeP := flag.String("outputType", "glip", "Adapter name")
+	tokenP := flag.String("token", "token", "You token")
 
 	flag.Parse()
 	inputTypes := strings.ToLower(strings.TrimSpace(*inputTypeP))
 
+	qry := models.RequestParams{
+		InputType:  *inputTypeP,
+		OutputType: *outputTypeP,
+		Token:      *tokenP,
+		URL:        *urlP,
+	}
+	fmtutil.PrintJSON(qry)
+
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
-		BaseUrl:        "http://localhost:8080/hooks",
-		OutputType:     strings.ToLower(strings.TrimSpace(*outputTypeP)),
-		Token:          "hello-world",
-		Url:            strings.TrimSpace(*urlP),
+		BaseUrl:        "http://localhost:8080/hook",
+		RequestParams:  qry,
 	}
-	if len(sender.Url) == 0 {
-		sender.Url = os.Getenv(WebhookUrlEnvGlip)
+	if len(sender.RequestParams.URL) == 0 {
+		sender.RequestParams.URL = os.Getenv(WebhookUrlEnvGlip)
 	}
 
 	examples := stringsutil.SliceTrimSpace(strings.Split(inputTypes, ","))

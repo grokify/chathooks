@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"fmt"
-	"strings"
+	//"strings"
 
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
-	"github.com/grokify/gotilla/strings/stringsutil"
+	//"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/valyala/fasthttp"
 )
 
@@ -29,6 +29,7 @@ type Configuration struct {
 	AdapterSet adapters.AdapterSet
 }
 
+/*
 type HookRequestData struct {
 	InputType    string
 	InputBody    []byte
@@ -70,3 +71,4 @@ func HookRequestDataFromFastHTTPReqCtx(ctx *fasthttp.RequestCtx) HookRequestData
 			string(ctx.QueryArgs().Peek(QueryParamNamedOutputs)), ",")),
 	}
 }
+*/

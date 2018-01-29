@@ -33,14 +33,18 @@ type Normalize func(config.Configuration, []byte) (cc.Message, error)
 func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	hookData := models.HookDataFromAwsLambdaEvent(h.MessageBodyType, awsReq)
 	errs := h.HandleCanonical(hookData)
-	return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
+	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
+	return awsRes, err
+	//return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
 }
 
 // HandleEawsyLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error) {
 	hookData := models.HookDataFromEawsyLambdaEvent(h.MessageBodyType, event)
 	errs := h.HandleCanonical(hookData)
-	return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
+	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
+	return awsRes, err
+	//return models.ErrorInfosToAwsAPIGatewayProxyResponse(errs...), nil
 }
 
 // HandleNetHTTP is the method to respond to a fasthttp request.
@@ -48,9 +52,15 @@ func (h Handler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 	hookData := models.HookDataFromNetHTTPReq(h.MessageBodyType, req)
 	errs := h.HandleCanonical(hookData)
 
-	resInfo := models.ErrorsInfoToResponseInfo(errs...)
-	res.WriteHeader(resInfo.StatusCode)
-	res.Write(resInfo.Body)
+	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
+	//return awsRes, err
+	//resInfo := models.ErrorsInfoToResponseInfo(errs...)
+	if err != nil {
+		res.WriteHeader(awsRes.StatusCode)
+		res.Write([]byte(awsRes.Body))
+	} else {
+		res.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 // HandleFastHTTP is the method to respond to a fasthttp request.
@@ -58,10 +68,16 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	hookData := models.HookDataFromFastHTTPReqCtx(h.MessageBodyType, ctx)
 	errs := h.HandleCanonical(hookData)
 
-	proxyOutput := models.ErrorInfosToAwsAPIGatewayProxyOutput(errs...)
-	ctx.SetStatusCode(proxyOutput.StatusCode)
-	if proxyOutput.StatusCode > 399 {
-		fmt.Fprintf(ctx, "%s", proxyOutput.Body)
+	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
+
+	if err != nil {
+		ctx.SetStatusCode(http.StatusInternalServerError)
+		log.WithFields(log.Fields{
+			"event":   "incoming.webhook.error",
+			"handler": err.Error()}).Info("ERROR")
+	} else {
+		ctx.SetStatusCode(awsRes.StatusCode)
+		fmt.Fprint(ctx, awsRes.Body)
 	}
 }
 
@@ -77,7 +93,6 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 	ccMsg, err := h.Normalize(h.Config, hookData.InputBody)
 
 	if err != nil {
-		//ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
 		log.WithFields(log.Fields{
 			"type":         "http.response",
 			"status":       fasthttp.StatusNotAcceptable,
@@ -85,6 +100,6 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 		}).Info(fmt.Sprintf("%v request conversion failed.", DisplayName))
 		return []models.ErrorInfo{{StatusCode: 500, Body: []byte(err.Error())}}
 	}
-	hookData.OutputMessage = ccMsg
+	hookData.CanonicalMessage = ccMsg
 	return h.AdapterSet.SendWebhooks(hookData)
 }

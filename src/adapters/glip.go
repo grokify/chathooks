@@ -39,8 +39,9 @@ func NewGlipAdapter(webhookURLOrUID string) (*GlipAdapter, error) {
 		CommonConverter: converter}, err
 }
 
-func (adapter *GlipAdapter) SendWebhook(urlOrUid string, message cc.Message) (*fasthttp.Request, *fasthttp.Response, error) {
+func (adapter *GlipAdapter) SendWebhook(urlOrUid string, message cc.Message, glipmsg interface{}) (*fasthttp.Request, *fasthttp.Response, error) {
 	glipMessage := adapter.CommonConverter.ConvertCommonMessage(message)
+	glipmsg = &glipMessage
 
 	glipMessageString, err := json.Marshal(glipMessage)
 	if err == nil {
@@ -51,8 +52,8 @@ func (adapter *GlipAdapter) SendWebhook(urlOrUid string, message cc.Message) (*f
 	return adapter.GlipClient.PostWebhookGUIDFast(urlOrUid, glipMessage)
 }
 
-func (adapter *GlipAdapter) SendMessage(message cc.Message) (*fasthttp.Request, *fasthttp.Response, error) {
-	return adapter.SendWebhook(adapter.WebhookURLOrUID, message)
+func (adapter *GlipAdapter) SendMessage(message cc.Message, glipmsg interface{}) (*fasthttp.Request, *fasthttp.Response, error) {
+	return adapter.SendWebhook(adapter.WebhookURLOrUID, message, glipmsg)
 }
 
 func (adapter *GlipAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error) {

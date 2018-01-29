@@ -43,14 +43,14 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 
 	p := bluemonday.StrictPolicy()
 
-	if src.Audit != nil {
+	if src.Audit != nil && len(src.Audit.Changes) > 0 {
+		attachment := cc.NewAttachment()
 		for _, change := range src.Audit.Changes {
-			attachment := cc.NewAttachment()
 			field := cc.Field{}
 			key := strings.TrimSpace(change.FieldName)
 			val := strings.TrimSpace(change.Value)
-			val = html.UnescapeString(val)
 			val = p.Sanitize(val)
+			val = html.UnescapeString(val)
 			addField := false
 			if len(key) > 0 {
 				field.Title = key
@@ -60,11 +60,14 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 				field.Value = val
 				addField = true
 			}
+			if key != "Description" {
+				field.Short = true
+			}
 			if addField {
 				attachment.AddField(field)
-				ccMsg.AddAttachment(attachment)
 			}
 		}
+		ccMsg.AddAttachment(attachment)
 	}
 
 	return ccMsg, nil

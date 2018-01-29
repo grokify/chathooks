@@ -22,13 +22,15 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 	errs := []models.ErrorInfo{}
 	if len(hookData.OutputType) > 0 && len(hookData.OutputURL) > 0 {
 		if adapter, ok := set.Adapters[hookData.OutputType]; ok {
-			req, res, err := adapter.SendWebhook(hookData.OutputURL, hookData.OutputMessage)
+			var msg interface{}
+			req, res, err := adapter.SendWebhook(hookData.OutputURL, hookData.CanonicalMessage, &msg)
 			errs = set.procResponse(errs, req, res, err)
 		}
 	}
 	for _, namedAdapter := range hookData.OutputNames {
 		if adapter, ok := set.Adapters[namedAdapter]; ok {
-			req, res, err := adapter.SendMessage(hookData.OutputMessage)
+			var msg interface{}
+			req, res, err := adapter.SendMessage(hookData.CanonicalMessage, &msg)
 			errs = set.procResponse(errs, req, res, err)
 		}
 	}
@@ -50,8 +52,8 @@ func (set *AdapterSet) procResponse(errs []models.ErrorInfo, req *fasthttp.Reque
 }
 
 type Adapter interface {
-	SendWebhook(url string, message cc.Message) (*fasthttp.Request, *fasthttp.Response, error)
-	SendMessage(message cc.Message) (*fasthttp.Request, *fasthttp.Response, error)
+	SendWebhook(url string, message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
+	SendMessage(message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
 	WebhookUID(ctx *fasthttp.RequestCtx) (string, error)
 }
 

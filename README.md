@@ -62,6 +62,40 @@ Example Webhook Message from Travis CI:
 $ go get github.com/grokify/chathooks
 ```
 
+## Configuration
+
+### Environment Variables
+
+Chathooks uses two environment variables:
+
+| Variable Name | Value |
+|---------------|-------|
+| `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp` |
+| `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
+
+### Engines
+
+Chathooks supports 4 server engines:
+
+* `aws/aws-lambda-go`
+* `eawsy/aws-lambda-go` (deprecated)
+* `net/http`
+* `valyala/fasthttp`
+
+For `aws/aws-lambda-go`, `net/http`, `valyala/fasthttp`, you can select the engine by setting the `CHATHOOKS_ENGINE` environment variable to one of: `["aws", "nethttp", "fasthttp"]`.
+
+#### Using the AWS Engine
+
+##### Update Lambda Code:
+
+You can update the Lambda funciton code using the following:
+
+https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html
+
+`$ aws lambda update-function-code --function-name='MyFunction' --zip-file='fileb://main.zip' --publish --region='us-east-1'`
+
+Make sure to set your AWS credentials file.
+
 ## Usage
 
 ### Starting the Service using FastHTTP

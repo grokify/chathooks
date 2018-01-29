@@ -21,12 +21,14 @@ func NewSlackAdapter(webhookURLOrUID string) (*SlackAdapter, error) {
 		WebhookURLOrUID: webhookURLOrUID}, err
 }
 
-func (adapter *SlackAdapter) SendWebhook(urlOrUid string, message commonchat.Message) (*fasthttp.Request, *fasthttp.Response, error) {
-	return adapter.SlackClient.PostWebhookFast(urlOrUid, slack.ConvertCommonMessage(message))
+func (adapter *SlackAdapter) SendWebhook(urlOrUid string, message commonchat.Message, slackmsg interface{}) (*fasthttp.Request, *fasthttp.Response, error) {
+	slackMessage := slack.ConvertCommonMessage(message)
+	slackmsg = &slackMessage
+	return adapter.SlackClient.PostWebhookFast(urlOrUid, slackMessage)
 }
 
-func (adapter *SlackAdapter) SendMessage(message commonchat.Message) (*fasthttp.Request, *fasthttp.Response, error) {
-	return adapter.SendWebhook(adapter.WebhookURLOrUID, message)
+func (adapter *SlackAdapter) SendMessage(message commonchat.Message, slackmsg interface{}) (*fasthttp.Request, *fasthttp.Response, error) {
+	return adapter.SendWebhook(adapter.WebhookURLOrUID, message, slackmsg)
 }
 
 func (adapter *SlackAdapter) WebhookUID(ctx *fasthttp.RequestCtx) (string, error) {

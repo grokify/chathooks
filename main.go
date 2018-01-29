@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -14,6 +15,8 @@ import (
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
+	"github.com/grokify/gotilla/strings/stringsutil"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
@@ -50,12 +53,21 @@ import (
 	"github.com/grokify/chathooks/src/handlers/victorops"
 )
 
+/*
+
+Use the `CHATHOOKS_TOKENS` environment variable to load secret
+tokens as a comma delimited string.
+
+*/
+
 const (
 	ParamNameInput  = "inputType"
 	ParamNameOutput = "outputType"
 	ParamNameURL    = "url"
 	ParamNameToken  = "token"
-	SecretToken     = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+	EnvEnvPath      = "ENV_PATH"
+	EnvEngine       = "CHATHOOKS_ENGINE" // aws, nethttp, fasthttp
+	EnvTokens       = "CHATHOOKS_TOKENS"
 )
 
 type HandlerSet struct {
@@ -63,8 +75,8 @@ type HandlerSet struct {
 }
 
 type Handler interface {
-	HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 	HandleCanonical(hookData models.HookData) []models.ErrorInfo
+	HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 	HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error)
 	HandleFastHTTP(ctx *fasthttp.RequestCtx)
 	HandleNetHTTP(res http.ResponseWriter, req *http.Request)
@@ -157,13 +169,19 @@ func getConfig() ServiceInfo {
 		"victorops":  hf.InflateHandler(victorops.NewHandler()),
 	}}
 
-	return ServiceInfo{
+	svcInfo := ServiceInfo{
 		Config:       cfgData,
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
 		RequireToken: false,
-		Tokens:       map[string]int{SecretToken: 1},
+		Tokens:       map[string]int{},
 	}
+	tokens := stringsutil.SplitCondenseSpace(os.Getenv(EnvTokens), ",")
+	for _, token := range tokens {
+		svcInfo.Tokens[token] = 1
+	}
+
+	return svcInfo
 }
 
 var serviceInfo = getConfig()
@@ -272,10 +290,12 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 		token := fhu.GetReqHeader(ctx, ParamNameToken)
 		if len(token) == 0 {
 			ctx.SetStatusCode(http.StatusUnauthorized)
+			log.Warn("E_NO_TOKEN")
 			return
 		}
 		if _, ok := serviceInfo.Tokens[token]; !ok {
 			ctx.SetStatusCode(http.StatusUnauthorized)
+			log.Warn("E_INCORRECT_TOKEN")
 			return
 		}
 	}
@@ -299,7 +319,6 @@ func serveNetHttp() {
 
 func serveFastHttp() {
 	router := fasthttprouter.New()
-	router.GET("/", handlers.HomeHandler)
 	router.GET("/hook", anyHTTPHandler.HandleFastHTTP)
 	router.GET("/hook/", anyHTTPHandler.HandleFastHTTP)
 	router.POST("/hook", anyHTTPHandler.HandleFastHTTP)
@@ -313,7 +332,20 @@ func serveAwsLambda() {
 }
 
 func main() {
-	//serveAwsLambda()
-	//serveNetHttp()
-	serveFastHttp()
+	if len(strings.TrimSpace(os.Getenv(EnvEnvPath))) > 0 {
+		err := godotenv.Load(os.Getenv(EnvEnvPath))
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
+
+	engine := strings.ToLower(strings.TrimSpace(os.Getenv(EnvEngine)))
+	switch engine {
+	case "aws":
+		serveAwsLambda()
+	case "nethttp":
+		serveNetHttp()
+	case "fasthttp":
+		serveFastHttp()
+	}
 }
