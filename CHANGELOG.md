@@ -1,3 +1,5 @@
+- 2018-01-28
+  - Add support for `aws/aws-lambda-go`
 - 2018-01-09
   - Rename to `chathooks`
 - 2017-09-05
