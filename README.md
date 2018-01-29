@@ -6,6 +6,8 @@ Chathooks - A chat webhook proxy
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
 
+![](docs/logos/logo_chathooks_long_600x150.png "")
+
 Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to the chat / team messaging platform of your choice.
 
 This is useful because:
