@@ -8,9 +8,13 @@ Chathooks - A webhook formatter for chat
 
 ![](docs/logos/logo_chathooks_long_600x150.png "")
 
-* [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
+# Overview
 
-Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to any chat / team messaging platform supportedy by CommonChat such as Glip or Slack.
+Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to any chat / team messaging platform supported by the [CommonChat](https://github.com/grokify/commonchat) chat post abstraction library.
+
+See the following video to get started:
+
+* [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
 
 This is useful because:
 
@@ -18,18 +22,18 @@ This is useful because:
 * the conversion can be done one time for all chat / team messaging solutions supported by CommonChat.
 * one service can proxy an arbitrary number of webhook sources and event types so you don't have to configure multiple inbound webhooks going to the same group / channel.
 
-It is easy to add additional inbound webhook handlers and outbound webhook adapters by using the `commonchat.Adapter` and `handlers.Handler` interfaces.
+## Supported HTTP Engines
 
-Chathooks currently supports four HTTP server engines.
+Chathooks supports multiple HTTP engines including the following:
 
 * [net/http](https://golang.org/pkg/net/http/)
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
 * [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) (deprecated)
 
-Conversion of the following webhook message formats to Glip inbound webhooks include:
+## Supported Webhook Formats
 
-Outbound Webhook Formats supported:
+Multiple input webhook formats are supported via handlers. New ones can be easily created by using the `handlers.Handler` interface.
 
 1. [Aha!](https://support.aha.io/hc/en-us/articles/202000997-Integrate-with-Webhooks)
 1. [AppSignal](http://docs.appsignal.com/application/integrations/webhooks.html)
@@ -44,8 +48,8 @@ Outbound Webhook Formats supported:
 1. [Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook)
 1. [Librato](https://www.librato.com/docs/kb/alert/service_integrations/webhook/)
 1. [Magnum CI](https://github.com/magnumci/documentation/blob/master/webhooks.md)
-1. [Marketo]()
-1. [OpsGenie]()
+1. [Marketo](http://developers.marketo.com/webhooks/)
+1. [OpsGenie](https://docs.opsgenie.com/docs/webhook-integration)
 1. [Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/)
 1. [Pingdom](https://www.pingdom.com/resources/webhooks)
 1. [Raygun](https://raygun.com/docs/integrations/webhooks)
@@ -56,25 +60,29 @@ Outbound Webhook Formats supported:
 1. [Userlike](https://www.userlike.com/en/public/tutorial/addon/api)
 1. [VictorOps](https://help.victorops.com/knowledge-base/custom-outbound-webhooks/)
 
-Inbound Webhook Format supported:
-
-* Slack (inbound message format) - `text` only
-
-**Note:** Slack inbound message formatting is for services sending outbound webhooks using Slack's inbound webhook message format, which can be directed to Glip via this proxy.
-
-Example Webhook Message from Travis CI:
+Here is an exmaple Webhook Message from Travis CI formatted for Glip.
 
 ![](src/handlers/travisci/travisci_glip.png)
 
-## Installation
+The above are "outbound" webhook formats from the perspective of the service providing the events.
+
+A special webhook format supported is the Slack "inbound" webhook format. This format message isn't sent by Slack but is accepted by Slack. It is useful to allow modification of messages already formatted for Slack.
+
+* [Slack](https://api.slack.com/incoming-webhooks)
+
+## Supported Chat Services
+
+Chathooks can post messages to any service supported by [CommonChat](). New services can be added by creating an adapter using the `commonchat.Adapter` interface.
+
+# Installation
 
 ```
 $ go get github.com/grokify/chathooks
 ```
 
-## Configuration
+# Configuration
 
-### Environment Variables
+## Environment Variables
 
 Chathooks uses two environment variables:
 
@@ -83,11 +91,11 @@ Chathooks uses two environment variables:
 | `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
 
-### Using the AWS Engine
+## Using the AWS Engine
 
 To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
 
-#### Installation via AWS Lambda
+### Installation via AWS Lambda
 
 See the AWS docs for deployment:
 
@@ -111,7 +119,7 @@ aws lambda create-function \
 
 You can use the `aws-package.sh` shell script to package your handler.
 
-#### Update Lambda Code:
+### Update Lambda Code:
 
 You can update the Lambda function code using the following:
 
@@ -123,9 +131,9 @@ The `aws-update.sh` file has this command with default settings.
 
 Make sure to set your AWS credentials file.
 
-## Usage
+# Usage
 
-### Starting the Service using FastHTTP
+## Starting the Service using FastHTTP
 
 Start the service in `main.go`.
 
@@ -148,7 +156,7 @@ Start the service with the following.
 
 Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. `EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
 
-### Creating the Glip Webhook
+## Creating the Glip Webhook
 
 1. create a Glip webhook
 2. use webhook URL's GUID to create the proxy URL as shown below
@@ -165,7 +173,7 @@ The webhook proxy URLs support both inbound and outbound formats. When available
 
 To create the Glip webhook and receive a webhook URL do the following:
 
-#### Add the Webhook Integration
+### Add the Webhook Integration
 
 At the top of any conversation page, click the Settings gear icon and then click `Add Integration`.
 
@@ -175,13 +183,13 @@ Select the `Glip Webhooks` integration.
 
 ![](docs/images/glip_webhook_step-2_add-webhook.png)
 
-#### Get the Webhook URL
+### Get the Webhook URL
 
 Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `hooks?inputType=slack&outputType=glip` (e.g. `https://glip-proxy.example.com/hooks?inputType=slack&outputType=glip&url=1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
 
 ![](docs/images/glip_webhook_step-3_details.png)
 
-## Example Requests
+# Example Requests
 
 Most of the time you will likely either:
 
@@ -190,7 +198,7 @@ Most of the time you will likely either:
 
 The following examples are provided for reference and testing.
 
-### Using `application/json`
+## Using `application/json`
 
 ```bash
 $ curl -X POST \
@@ -199,7 +207,7 @@ $ curl -X POST \
   "http://localhost:8080/hook?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
-### Using `application/x-www-form-urlencoded`
+## Using `application/x-www-form-urlencoded`
 
 ```bash
 $ curl -X POST \
@@ -207,7 +215,7 @@ $ curl -X POST \
   "http://localhost:8080/hook?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
-### Using `multipart/form-data`
+## Using `multipart/form-data`
 
 ```bash
 $ curl -X POST \
@@ -215,7 +223,7 @@ $ curl -X POST \
   "http://localhost:8080/hook?inputType=slack&outputType=glip&url=11112222-3333-4444-5555-666677778888"
 ```
 
-### Using Community Ruby SDK
+## Using Community Ruby SDK
 
 This has been tested using:
 
