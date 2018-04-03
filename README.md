@@ -74,6 +74,8 @@ A special webhook format supported is the Slack "inbound" webhook format. This f
 
 Chathooks can post messages to any service supported by [CommonChat](https://github.com/grokify/commonchat). New services can be added by creating an adapter using the `commonchat.Adapter` interface.
 
+Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. `EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
+
 # Installation
 
 ```
@@ -90,6 +92,26 @@ Chathooks uses two environment variables:
 |---------------|-------|
 | `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
+
+## Using the `net/http` and `fasthttp` Engines
+
+1. To adjust supported handlers, edit server.go to add and remove handlers.
+1. To select the `net/http` or `fasthttp` engine, set the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp` respective.
+1. Start the service in `main.go`.
+
+For testing purposes, use:
+
+```bash
+$ go run main.go
+```
+
+For production services, compile and run the binary:
+
+```bash
+$ go build main.go
+$ ./main
+```
+
 
 ## Using the AWS Engine
 
@@ -132,29 +154,6 @@ The `aws-update.sh` file has this command with default settings.
 Make sure to set your AWS credentials file.
 
 # Usage
-
-## Starting the Service using FastHTTP
-
-Start the service in `main.go`.
-
-For testing purposes, use:
-
-```bash
-$ go run main.go
-```
-
-For production services, compile the code:
-
-```bash
-$ go build main.go
-$ ./main
-```
-
-* To adjust supported handlers, edit server.go to add and remove handlers.
-
-Start the service with the following.
-
-Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. `EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
 
 ## Creating the Glip Webhook
 
