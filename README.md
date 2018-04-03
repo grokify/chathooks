@@ -72,7 +72,7 @@ A special webhook format supported is the Slack "inbound" webhook format. This f
 
 ## Supported Chat Services
 
-Chathooks can post messages to any service supported by [CommonChat](). New services can be added by creating an adapter using the `commonchat.Adapter` interface.
+Chathooks can post messages to any service supported by [CommonChat](https://github.com/grokify/commonchat). New services can be added by creating an adapter using the `commonchat.Adapter` interface.
 
 # Installation
 
