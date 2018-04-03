@@ -90,7 +90,7 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 	req.SetBody(bytes)
 	req.Header.SetRequestURI(fullUrl)
 	req.Header.SetMethod("POST")
-	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.HeaderContentTypeValueJSONUTF8)
 
 	fastClient := fasthttp.Client{}
 
