@@ -12,15 +12,15 @@ Chathooks - A webhook formatter for chat
 
 Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to any chat / team messaging platform supported by the [CommonChat](https://github.com/grokify/commonchat) chat post abstraction library.
 
-See the following video to get started:
-
-* [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
-
 This is useful because:
 
 * many services with outbound webhooks need to be formatted before they can be consumed by an inbound webhook. This proxy service does the conversion so you don't have to. The code is all open source so customizations can be done easily.
 * the conversion can be done one time for all chat / team messaging solutions supported by CommonChat.
 * one service can proxy an arbitrary number of webhook sources and event types so you don't have to configure multiple inbound webhooks going to the same group / channel.
+
+See the following video to get started quickly:
+
+* [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
 
 ## Supported HTTP Engines
 
