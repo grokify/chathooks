@@ -96,7 +96,7 @@ Chathooks uses two environment variables:
 ## Using the `net/http` and `fasthttp` Engines
 
 1. To adjust supported handlers, edit server.go to add and remove handlers.
-1. To select the `net/http` or `fasthttp` engine, set the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp` respective.
+1. TSt the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp`.
 1. Start the service in `main.go`.
 
 For testing purposes, use:
