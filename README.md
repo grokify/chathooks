@@ -112,7 +112,6 @@ $ go build main.go
 $ ./main
 ```
 
-
 ## Using the AWS Engine
 
 To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
@@ -123,7 +122,7 @@ See the AWS docs for deployment:
 
 https://docs.aws.amazon.com/lambda/latest/dg/lambda-go-how-to-create-deployment-package.html
 
-Using the `aws-cli` you can use the following approach:
+Using the [`aws-cli`](https://aws.amazon.com/cli/) you can use the following approach:
 
 ```
 $ GOOS=linux go build main.go
@@ -140,6 +139,20 @@ $ aws lambda create-function \
 ```
 
 You can use the `aws-package.sh` shell script to package your handler.
+
+Note: you can install the `aws-cli` using the appropriate command below:
+
+```
+$ pip install awscli
+$ pip3 install awscli
+```
+
+After installation, you may need to add your Python `bin` directory to your path. The following is an example for OS X.
+
+```
+$ export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.6/bin
+```
+
 
 ### Update Lambda Code:
 
