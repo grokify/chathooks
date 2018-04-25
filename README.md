@@ -126,10 +126,10 @@ https://docs.aws.amazon.com/lambda/latest/dg/lambda-go-how-to-create-deployment-
 Using the `aws-cli` you can use the following approach:
 
 ```
-GOOS=linux go build main.go
-zip main.zip ./main
+$ GOOS=linux go build main.go
+$ zip main.zip ./main
 # --handler is the path to the executable inside the .zip
-aws lambda create-function \
+$ aws lambda create-function \
   --region region \
   --function-name Chathook \
   --memory 128 \
