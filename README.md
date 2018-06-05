@@ -147,9 +147,10 @@ $ pip install awscli
 $ pip3 install awscli
 ```
 
-After installation, you may need to add your Python `bin` directory to your path. The following is an example for OS X.
+After installation, you may need to add your Python `bin` directory to your path. The following are examples for OS X.
 
 ```
+$ export PATH=$PATH:/Users/~/Library/Python/2.7/bin
 $ export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.6/bin
 ```
 
