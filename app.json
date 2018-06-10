@@ -4,6 +4,9 @@
     "keywords": ["glip"],
     "website": "https://github.com/grokify/chathooks",
     "repository": "https://github.com/grokify/chathooks",
+    "addons": [
+        "papertrail:choklad"
+    ],
     "formation": {
         "web": {
             "quantity": 1,
