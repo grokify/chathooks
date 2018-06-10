@@ -1,0 +1,20 @@
+{
+    "name": "Chathooks",
+    "description": "Webhook proxy for team chat",
+    "keywords": ["glip"],
+    "website": "",
+    "repository": "https://github.com/grokify/chathooks",
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "Free"
+        }
+    },
+    "env": {
+        "CHATHOOKS_ENGINE": {
+            "description": "HTTP server engine to use, e.g. 'fasthttp' or 'nethttp'.",
+            "value": "fasthttp",
+            "required": false
+        }
+    }
+}
