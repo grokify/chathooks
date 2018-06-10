@@ -8,11 +8,10 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/grokify/gotilla/fmt/fmtutil"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	cc "github.com/grokify/commonchat"
+	"github.com/grokify/gotilla/net/anyhttp"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
 	"github.com/grokify/gotilla/strings/stringsutil"
@@ -75,8 +74,7 @@ func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatew
 		Headers:               awsReq.Headers,
 		Body:                  awsReq.Body,
 		IsBase64Encoded:       awsReq.IsBase64Encoded,
-		QueryStringParameters: awsReq.QueryStringParameters,
-	})
+		QueryStringParameters: awsReq.QueryStringParameters})
 }
 
 func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, eawsyReq *apigatewayproxyevt.Event) HookData {
@@ -85,8 +83,7 @@ func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, eawsyReq *apigateway
 		Headers:               eawsyReq.Headers,
 		Body:                  eawsyReq.Body,
 		IsBase64Encoded:       eawsyReq.IsBase64Encoded,
-		QueryStringParameters: eawsyReq.QueryStringParameters,
-	})
+		QueryStringParameters: eawsyReq.QueryStringParameters})
 }
 
 func newHookDataGeneric(req hookDataRequest) HookData {
@@ -126,6 +123,16 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 	return data
 }
 
+func HookDataFromAnyHTTPReq(bodyType MessageBodyType, aReq anyhttp.Request) HookData {
+	return HookData{
+		InputType:   aReq.QueryArgs().GetString(QueryParamInputType),
+		InputBody:   BodyToMessageBytesAnyHTTP(bodyType, aReq),
+		OutputType:  aReq.QueryArgs().GetString(QueryParamOutputType),
+		OutputURL:   aReq.QueryArgs().GetString(QueryParamOutputURL),
+		Token:       aReq.QueryArgs().GetString(QueryParamToken),
+		OutputNames: strings.Split(aReq.QueryArgs().GetString(QueryParamOutputAdapters), ",")}
+}
+
 func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
 	return HookData{
 		InputType:   nhu.GetReqQueryParam(req, QueryParamInputType),
@@ -133,8 +140,7 @@ func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookDat
 		OutputType:  nhu.GetReqQueryParam(req, QueryParamOutputType),
 		OutputURL:   nhu.GetReqQueryParam(req, QueryParamOutputURL),
 		Token:       nhu.GetReqQueryParam(req, QueryParamToken),
-		OutputNames: nhu.GetSplitReqQueryParam(req, QueryParamOutputAdapters, ","),
-	}
+		OutputNames: nhu.GetSplitReqQueryParam(req, QueryParamOutputAdapters, ",")}
 }
 
 func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestCtx) HookData {
@@ -144,8 +150,7 @@ func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestC
 		OutputType:  fhu.GetReqQueryParam(ctx, QueryParamOutputType),
 		OutputURL:   fhu.GetReqQueryParam(ctx, QueryParamOutputURL),
 		Token:       fhu.GetReqQueryParam(ctx, QueryParamToken),
-		OutputNames: fhu.GetSplitReqQueryParam(ctx, QueryParamOutputAdapters, ",'"),
-	}
+		OutputNames: fhu.GetSplitReqQueryParam(ctx, QueryParamOutputAdapters, ",'")}
 }
 
 func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]string, body string, isBase64Encoded bool) []byte {
@@ -177,6 +182,36 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 		return []byte(v.Get("payload"))
 	default:
 		return []byte(body)
+	}
+}
+
+func BodyToMessageBytesAnyHTTP(bodyType MessageBodyType, aReq anyhttp.Request) []byte {
+	switch bodyType {
+	case URLEncodedJSONPayload:
+		if err := aReq.ParseForm(); err != nil {
+			return []byte("")
+		}
+		return aReq.PostArgs().GetBytes("payload")
+	case URLEncodedJSONPayloadOrJSON:
+		ct := strings.TrimSpace(strings.ToLower(aReq.HeaderString("Content-Type")))
+		if strings.Index(ct, `application/json`) > -1 {
+			bytes, err := aReq.PostBody()
+			if err != nil {
+				return []byte("")
+			}
+			return bytes
+		}
+		if err := aReq.ParseForm(); err != nil {
+			return []byte("")
+		}
+		return aReq.PostArgs().GetBytes("payload")
+		//return []byte(req.Form.Get("payload"))
+	default:
+		bytes, err := aReq.PostBody()
+		if err != nil {
+			return []byte("")
+		}
+		return bytes
 	}
 }
 
@@ -306,42 +341,10 @@ func ErrorsInfoToResponseInfoOld(errs ...ErrorInfo) ErrorInfo {
 	return resInfo
 }
 
-/*
-//func ErrorInfosToAlexaResponse(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
-func ErrorInfosToAwsAPIGatewayProxyOutput(errs ...ErrorInfo) AwsAPIGatewayProxyOutput {
-	resInfo := ErrorsInfoToResponseInfo()
-
-	return AwsAPIGatewayProxyOutput{
-		StatusCode: resInfo.StatusCode,
-		Body:       string(resInfo.Body),
-	}
-}
-*/
-
 func BuildAwsAPIGatewayProxyResponse(hookData HookData, errs ...ErrorInfo) (events.APIGatewayProxyResponse, error) {
 	resInfo := ResponseInfo{
 		HookData:   hookData,
 		Responses:  errs,
-		StatusCode: GetMaxStatusCode(errs...),
-	}
-	fmtutil.PrintJSON(resInfo)
+		StatusCode: GetMaxStatusCode(errs...)}
 	return resInfo.ToAPIGatewayProxyResponse()
-	//resInfo := ErrorsInfoToResponseInfo()
-	/*
-		return events.APIGatewayProxyResponse{
-			StatusCode: resInfo.StatusCode,
-			Body:       string(resInfo.Body),
-		}
-	*/
 }
-
-/*
-func ErrorInfosToAwsAPIGatewayProxyResponse(errs ...ErrorInfo) events.APIGatewayProxyResponse {
-	resInfo := ErrorsInfoToResponseInfo()
-
-	return events.APIGatewayProxyResponse{
-		StatusCode: resInfo.StatusCode,
-		Body:       string(resInfo.Body),
-	}
-}
-*/

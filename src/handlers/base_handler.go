@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
+	"github.com/grokify/gotilla/net/anyhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
@@ -43,6 +45,35 @@ func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime
 	errs := h.HandleCanonical(hookData)
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
 	return awsRes, err
+}
+
+// HandleNetHTTP is the method to respond to a fasthttp request.
+func (h Handler) HandleAnyHTTP(aRes anyhttp.Response, aReq anyhttp.Request) {
+	hookData := models.HookDataFromAnyHTTPReq(h.MessageBodyType, aReq)
+	errs := h.HandleCanonical(hookData)
+
+	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
+
+	if err != nil {
+		aRes.SetStatusCode(http.StatusInternalServerError)
+		log.WithFields(log.Fields{
+			"event":   "outgoing.webhook.error",
+			"handler": err.Error()}).Info("ERROR")
+	} else {
+		if bytes, err := json.Marshal(awsRes.Body); err != nil {
+			aRes.SetStatusCode(http.StatusInternalServerError)
+		} else {
+			_, err := aRes.SetBodyBytes(bytes)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"event":   "outgoing.webhook.error",
+					"handler": err.Error()}).Info("ERROR")
+				aRes.SetStatusCode(http.StatusInternalServerError)
+			} else {
+				aRes.SetStatusCode(awsRes.StatusCode)
+			}
+		}
+	}
 }
 
 // HandleNetHTTP is the method to respond to a fasthttp request.

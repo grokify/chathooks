@@ -15,8 +15,7 @@ import (
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/gotilla/fmt/fmtutil"
-	fhu "github.com/grokify/gotilla/net/fasthttputil"
-	nhu "github.com/grokify/gotilla/net/nethttputil"
+	"github.com/grokify/gotilla/net/anyhttp"
 	"github.com/grokify/gotilla/strings/stringsutil"
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
@@ -67,7 +66,7 @@ const (
 	ParamNameOutput = "outputType"
 	ParamNameURL    = "url"
 	ParamNameToken  = "token"
-	EnvEnvPath      = "ENV_PATH"
+	EnvPath         = "ENV_PATH"
 	EnvEngine       = "CHATHOOKS_ENGINE" // aws, nethttp, fasthttp
 	EnvTokens       = "CHATHOOKS_TOKENS"
 )
@@ -81,6 +80,7 @@ type Handler interface {
 	HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 	HandleFastHTTP(ctx *fasthttp.RequestCtx)
 	HandleNetHTTP(res http.ResponseWriter, req *http.Request)
+	HandleAnyHTTP(aRes anyhttp.Response, aReq anyhttp.Request)
 }
 
 type Service struct {
@@ -237,56 +237,46 @@ func HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (ev
 }
 */
 
-func (svc *Service) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("HANDLE_NetHTTP")
+func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
+	log.Info("HANDLE_AnyHTTP")
 	if len(svc.Tokens) > 0 {
-		token := nhu.GetReqQueryParam(req, ParamNameToken)
+		token := aReq.QueryArgs().GetString(ParamNameToken)
+
 		if len(token) == 0 {
-			res.WriteHeader(http.StatusUnauthorized)
+			aRes.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_NO_TOKEN")
 			return
 		}
 		fmt.Println("HANDLE_NetHTTP_S2b")
 		if _, ok := svc.Tokens[token]; !ok {
-			res.WriteHeader(http.StatusUnauthorized)
+			aRes.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_INCORRECT_TOKEN")
 			return
 		}
 	}
-	inputType := nhu.GetReqQueryParam(req, ParamNameInput)
+	if err := aReq.ParseForm(); err != nil {
+		aRes.SetStatusCode(http.StatusInternalServerError)
+		log.Warn("E_CANNOT_PARSE_FORM")
+		return
+	}
+	inputType := aReq.QueryArgs().GetString(ParamNameInput)
 
 	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
-		handler.HandleNetHTTP(res, req)
+		handler.HandleAnyHTTP(aRes, aReq)
 	} else {
 		fmt.Printf("Input_Handler_Not_Found [%v]\n", inputType)
 	}
 }
 
+func (svc *Service) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
+	log.Info("HANDLE_NetHTTP")
+	svc.HandleAnyRequest(anyhttp.NewResReqNetHttp(res, req))
+}
+
 func (svc *Service) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	fmt.Println("HANDLE_FastHTTP")
-	if len(svc.Tokens) > 0 {
-		token := fhu.GetReqQueryParam(ctx, ParamNameToken)
-		if len(token) == 0 {
-			ctx.SetStatusCode(http.StatusUnauthorized)
-			log.Warn("E_NO_TOKEN")
-			return
-		}
-		if _, ok := svc.Tokens[token]; !ok {
-			ctx.SetStatusCode(http.StatusUnauthorized)
-			log.Warn("E_INCORRECT_TOKEN")
-			return
-		}
-	}
-
-	inputType := fhu.GetReqQueryParam(ctx, ParamNameInput)
-
-	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
-		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
-		handler.HandleFastHTTP(ctx)
-	} else {
-		fmt.Printf("Input_Handler_Not_Found [%v]\n", inputType)
-	}
+	log.Info("HANDLE_FastHTTP")
+	svc.HandleAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
 
 func getHttpServeMux(svc Service) *http.ServeMux {
@@ -297,10 +287,12 @@ func getHttpServeMux(svc Service) *http.ServeMux {
 }
 
 func serveNetHttp(svc Service) {
+	log.Info("STARTING_NET_HTTP")
 	http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc))
 }
 
 func serveFastHttp(svc Service) {
+	log.Info("STARTING_FAST_HTTP")
 	router := fasthttprouter.New()
 	router.POST("/hook", svc.HandleFastHTTP)
 	router.POST("/hook/", svc.HandleFastHTTP)
@@ -315,8 +307,8 @@ func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
 func portAddress(port int) string      { return ":" + strconv.Itoa(port) }
 
 func main() {
-	if len(strings.TrimSpace(os.Getenv(EnvEnvPath))) > 0 {
-		err := godotenv.Load(os.Getenv(EnvEnvPath))
+	if len(strings.TrimSpace(os.Getenv(EnvPath))) > 0 {
+		err := godotenv.Load(os.Getenv(EnvPath))
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
@@ -333,7 +325,7 @@ func main() {
 
 	engine := strings.ToLower(strings.TrimSpace(os.Getenv(EnvEngine)))
 	if len(engine) == 0 {
-		engine = "nethttp"
+		engine = "fasthttp"
 	}
 	switch engine {
 	case "awslambda":
