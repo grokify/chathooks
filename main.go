@@ -123,10 +123,9 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 func getConfig() ServiceInfo {
 	cfgData := config.Configuration{
 		Port:           8080,
-		EmojiURLFormat: "https://grokify.github.io/emoji/assets/images/%s.png",
 		LogrusLogLevel: 5,
-		IconBaseURL:    "http://grokify.github.io/chathooks/icons/",
-	}
+		EmojiURLFormat: config.EmojiURLFormat,
+		IconBaseURL:    config.IconBaseURL}
 
 	fmtutil.PrintJSON(cfgData)
 	adapterSet := adapters.NewAdapterSet()
@@ -169,16 +168,14 @@ func getConfig() ServiceInfo {
 		"statuspage": hf.InflateHandler(statuspage.NewHandler()),
 		"travisci":   hf.InflateHandler(travisci.NewHandler()),
 		"userlike":   hf.InflateHandler(userlike.NewHandler()),
-		"victorops":  hf.InflateHandler(victorops.NewHandler()),
-	}}
+		"victorops":  hf.InflateHandler(victorops.NewHandler())}}
 
 	svcInfo := ServiceInfo{
 		Config:       cfgData,
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
 		RequireToken: false,
-		Tokens:       map[string]int{},
-	}
+		Tokens:       map[string]int{}}
 	tokens := stringsutil.SplitCondenseSpace(os.Getenv(EnvTokens), ",")
 	for _, token := range tokens {
 		svcInfo.Tokens[token] = 1

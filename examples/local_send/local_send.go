@@ -1,22 +1,25 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/grokify/gotilla/fmt/fmtutil"
+	"github.com/jessevdk/go-flags"
 
-	//"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/util"
 	cc "github.com/grokify/commonchat"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
+	errs "github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
+
+	"github.com/grokify/chathooks/examples"
 
 	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
@@ -45,6 +48,12 @@ import (
 	"github.com/grokify/chathooks/src/handlers/victorops"
 )
 
+type cliOptions struct {
+	GuidOrWebhook string `short:"u" long:"url" description:"Webhook or GUID" required:"true"`
+	Adapter       string `short:"a" long:"adapter" description:"Adapter" required:"true"`
+	Service       string `short:"s" long:"service" description:"Service"`
+}
+
 const (
 	GLIP_WEBHOOK_ENV  = "GLIP_WEBHOOK"
 	SLACK_WEBHOOK_ENV = "SLACK_WEBHOOK"
@@ -64,61 +73,85 @@ func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 	if err != nil {
 		fmt.Printf("ERROR [%v]\n", err)
 	}
+
+	fmt.Println(string(resp.Body()))
+
 	fasthttp.ReleaseRequest(req)
 	fasthttp.ReleaseResponse(resp)
 }
 
 func main() {
+	opts := cliOptions{}
+	_, err := flags.Parse(&opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dirs, _, err := examples.DocsHandlersDirInfo()
+	if err != nil {
+		log.Fatal()
+	}
+	fmt.Println(strings.Join(dirs, ","))
+	if len(opts.Service) > 0 {
+		run(opts)
+	}
+	fmt.Println("DONE")
+}
+
+func run(opts cliOptions) {
 	log.SetLevel(log.DebugLevel)
 
-	guidPointer := flag.String("guid", "", "Glip webhook GUID or URL")
-	examplePointer := flag.String("example", "", "Example message type")
-	adapterType := flag.String("adapter", "", "Adapter")
+	fmt.Printf("LENGUID[%v]\n", len(opts.GuidOrWebhook))
+	fmt.Printf("GUID [%v]\n", opts.GuidOrWebhook)
+	fmt.Printf("EXAMPLE [%v]\n", opts.Service)
 
-	flag.Parse()
-	webhookURLOrUID := strings.TrimSpace(*guidPointer)
-	example := strings.ToLower(strings.TrimSpace(*examplePointer))
-
-	fmt.Printf("LENGUID[%v]\n", len(webhookURLOrUID))
-	fmt.Printf("GUID [%v]\n", webhookURLOrUID)
-	fmt.Printf("EXAMPLE [%v]\n", example)
-
-	if len(example) < 1 {
-		panic("Usage: send_example.go -hook=<GUID> -adapter=glip -example=raygun")
+	if len(opts.Service) < 1 {
+		panic("Usage: send_example.go -g=<GUID> -a=glip -s=raygun")
 	}
 
 	cfg := config.Configuration{
-		IconBaseURL:    "https://grokify.github.io/chathooks/icons/",
+		IconBaseURL:    config.IconBaseURL,
 		LogrusLogLevel: log.DebugLevel}
 
+	err := SendMessageAdapterHandler(cfg, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error {
+	webhookURLOrUID := opts.GuidOrWebhook
+	adapterType := opts.Adapter
+	example := opts.Service
+
 	sender := Sender{}
-	if *adapterType == "glip" {
+	if adapterType == "glip" {
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
 			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
 		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID)
 		if err != nil {
-			panic("Incorrect Webhook GUID or URL")
+			return errs.Wrap(err, "Incorrect Webhook GUID or URL")
 		}
 		sender.Adapter = adapter
-	} else if *adapterType == "slack" {
+	} else if adapterType == "slack" {
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
 			fmt.Printf("SLACK_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
 		adapter, err := ccslack.NewSlackAdapter(webhookURLOrUID)
 		if err != nil {
-			panic("Incorrect Webhook GUID or URL")
+			return errs.Wrap(err, "Incorrect Webhook GUID or URL")
 		}
 		sender.Adapter = adapter
 	} else {
-		panic("Invalid Adapter")
+		return errors.New("Invalid Adapter")
 	}
 
 	exampleData, err := util.NewExampleData()
 	if err != nil {
-		panic(fmt.Sprintf("Invalid Example Data: %v\n", err))
+		return errs.Wrap(err, fmt.Sprintf("Invalid Example Data: %v\n", err))
 	}
 	fmtutil.PrintJSON(exampleData)
 
@@ -222,6 +255,7 @@ func main() {
 	case "victorops":
 		sender.SendCcMessage(victorops.ExampleMessage(cfg, exampleData))
 	default:
-		panic(fmt.Sprintf("Unknown webhook source %v\n", example))
+		return errors.New(fmt.Sprintf("Unknown webhook source %v\n", example))
 	}
+	return nil
 }

@@ -13,6 +13,8 @@ import (
 
 const (
 	DocsHandlersSrcDir = "github.com/grokify/chathooks/docs/handlers"
+	IconBaseURL        = "http://grokify.github.io/chathooks/icons/"
+	EmojiURLFormat     = "https://grokify.github.io/emoji/assets/images/%s.png"
 )
 
 func DocsHandlersDir() string {
