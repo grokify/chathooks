@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,16 +11,16 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/grokify/gotilla/fmt/fmtutil"
-
-	"github.com/grokify/chathooks/src/config"
-	"github.com/grokify/chathooks/src/models"
-
 	"github.com/grokify/gotilla/io/ioutilmore"
 	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/gotilla/strings/stringsutil"
+	"github.com/jessevdk/go-flags"
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	"github.com/joho/godotenv"
+	"github.com/grokify/chathooks/src/config"
+	"github.com/grokify/chathooks/src/models"
 )
 
 const (
@@ -32,6 +31,13 @@ const (
 	EnvChathooksReqToken      = "CHATHOOKS_REQ_TOKEN"
 	EnvChathooksReqURL        = "CHATHOOKS_REQ_URL"
 )
+
+type cliOptions struct {
+	UrlOrGuid string `short:"u" long:"url" description:"Webhook URL or GUID" required:"true"`
+	Input     string `short:"i" long:"input" description:"Input Service"`
+	Output    string `short:"o" long:"output" description:"Output Adapter" required:"true"`
+	Token     string `short:"t" long:"token" description:"Token"`
+}
 
 type ExampleWebhookSender struct {
 	DocHandlersDir string
@@ -105,19 +111,17 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 }
 
 func main() {
-	inputTypeP := flag.String("inputType", "travisci", "Example message type")
-	urlP := flag.String("url", "https://hooks.glip.com/webhook/11112222-3333-4444-5555-666677778888", "Your Webhook URL")
-	outputTypeP := flag.String("outputType", "glip", "Adapter name")
-	tokenP := flag.String("token", "token", "You token")
-
-	flag.Parse()
+	opts := cliOptions{}
+	_, err := flags.Parse(&opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	qry := models.RequestParams{
-		InputType:  *inputTypeP,
-		OutputType: *outputTypeP,
-		Token:      *tokenP,
-		URL:        *urlP,
-	}
+		InputType:  opts.Input,
+		OutputType: opts.Output,
+		Token:      opts.Token,
+		URL:        opts.UrlOrGuid}
 	fmtutil.PrintJSON(qry)
 
 	if len(os.Getenv("ENV_PATH")) > 0 {
@@ -145,8 +149,8 @@ func main() {
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
 		BaseUrl:        "http://localhost:8080/hook",
-		RequestParams:  qry,
-	}
+		RequestParams:  qry}
+
 	if len(sender.RequestParams.URL) == 0 {
 		sender.RequestParams.URL = os.Getenv(EnvWebhookUrlGlip)
 	}

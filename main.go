@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
+	"github.com/apex/gateway"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/buaazp/fasthttprouter"
-	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	//"github.com/grokify/commonchat"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/gotilla/fmt/fmtutil"
@@ -80,27 +79,17 @@ type HandlerSet struct {
 type Handler interface {
 	HandleCanonical(hookData models.HookData) []models.ErrorInfo
 	HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
-	HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error)
 	HandleFastHTTP(ctx *fasthttp.RequestCtx)
 	HandleNetHTTP(res http.ResponseWriter, req *http.Request)
 }
 
-type ServiceInfo struct {
+type Service struct {
 	Config       config.Configuration
 	AdapterSet   adapters.AdapterSet
 	HandlerSet   HandlerSet
 	RequireToken bool
 	Tokens       map[string]int
 }
-
-/*
-{
-	"Port": 8080,
-	"EmojiURLFormat": "https://grokify.github.io/emoji/assets/images/%s.png",
-	"IconBaseURL":    "http://grokify.github.io/chathooks/icons/",
-	"LogrusLogLevel": 5,
-}
-*/
 
 type HandlerFactory struct {
 	Config     config.Configuration
@@ -120,7 +109,7 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 	return handler
 }
 
-func getConfig() ServiceInfo {
+func NewService() Service {
 	cfgData := config.Configuration{
 		Port:           8080,
 		LogrusLogLevel: 5,
@@ -170,7 +159,7 @@ func getConfig() ServiceInfo {
 		"userlike":   hf.InflateHandler(userlike.NewHandler()),
 		"victorops":  hf.InflateHandler(victorops.NewHandler())}}
 
-	svcInfo := ServiceInfo{
+	svcInfo := Service{
 		Config:       cfgData,
 		AdapterSet:   adapterSet,
 		HandlerSet:   handlerSet,
@@ -184,8 +173,38 @@ func getConfig() ServiceInfo {
 	return svcInfo
 }
 
-var serviceInfo = getConfig()
+func (svc *Service) HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if len(svc.Tokens) > 0 {
+		token, ok := req.QueryStringParameters[ParamNameToken]
+		if !ok {
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
+				Body:       "Required Token not found"}, nil
+		}
+		if _, ok := svc.Tokens[token]; !ok {
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusUnauthorized,
+				Body:       "Required Token not valid"}, nil
+		}
+	}
+	inputType, ok := req.QueryStringParameters[models.QueryParamInputType]
+	if !ok || len(strings.TrimSpace(inputType)) == 0 {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "InputType not found"}, nil
+	}
 
+	handler, ok := svc.HandlerSet.Handlers[inputType]
+	if !ok {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       fmt.Sprintf("Input Handler Not found for: %v\n", inputType)}, nil
+	}
+
+	return handler.HandleAwsLambda(ctx, req)
+}
+
+/*
 func HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	if len(serviceInfo.Tokens) > 0 {
 		token, ok := req.QueryStringParameters[ParamNameToken]
@@ -216,54 +235,11 @@ func HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (ev
 
 	return handler.HandleAwsLambda(ctx, req)
 }
+*/
 
-func HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error) {
-	if len(serviceInfo.Tokens) > 0 {
-		token, ok := event.QueryStringParameters[ParamNameToken]
-		if !ok {
-			return events.APIGatewayProxyResponse{
-				StatusCode: http.StatusUnauthorized,
-				Body:       "Required Token not found"}, nil
-		}
-		if _, ok := serviceInfo.Tokens[token]; !ok {
-			return events.APIGatewayProxyResponse{
-				StatusCode: http.StatusUnauthorized,
-				Body:       "Required Token not valid"}, nil
-		}
-	}
-
-	inputType, ok := event.QueryStringParameters[models.QueryParamInputType]
-	if !ok || len(strings.TrimSpace(inputType)) == 0 {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 400,
-			Body:       "InputType not found"}, nil
-	}
-
-	handler, ok := serviceInfo.HandlerSet.Handlers[inputType]
-	if !ok {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 400,
-			Body:       fmt.Sprintf("Input Handler Not found for: %v\n", inputType)}, nil
-	}
-
-	return handler.HandleEawsyLambda(event, ctx)
-}
-
-type AnyHTTPHandler struct {
-	Config     config.Configuration
-	AdapterSet adapters.AdapterSet
-	HandlerSet HandlerSet
-}
-
-var anyHTTPHandler = AnyHTTPHandler{
-	Config:     serviceInfo.Config,
-	AdapterSet: serviceInfo.AdapterSet,
-	HandlerSet: serviceInfo.HandlerSet,
-}
-
-func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
+func (svc *Service) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("HANDLE_NetHTTP")
-	if len(serviceInfo.Tokens) > 0 {
+	if len(svc.Tokens) > 0 {
 		token := nhu.GetReqQueryParam(req, ParamNameToken)
 		if len(token) == 0 {
 			res.WriteHeader(http.StatusUnauthorized)
@@ -271,7 +247,7 @@ func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Reques
 			return
 		}
 		fmt.Println("HANDLE_NetHTTP_S2b")
-		if _, ok := serviceInfo.Tokens[token]; !ok {
+		if _, ok := svc.Tokens[token]; !ok {
 			res.WriteHeader(http.StatusUnauthorized)
 			log.Warn("E_INCORRECT_TOKEN")
 			return
@@ -279,7 +255,7 @@ func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Reques
 	}
 	inputType := nhu.GetReqQueryParam(req, ParamNameInput)
 
-	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
+	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
 		handler.HandleNetHTTP(res, req)
 	} else {
@@ -287,16 +263,16 @@ func (h *AnyHTTPHandler) HandleNetHTTP(res http.ResponseWriter, req *http.Reques
 	}
 }
 
-func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (svc *Service) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	fmt.Println("HANDLE_FastHTTP")
-	if len(serviceInfo.Tokens) > 0 {
+	if len(svc.Tokens) > 0 {
 		token := fhu.GetReqQueryParam(ctx, ParamNameToken)
 		if len(token) == 0 {
 			ctx.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_NO_TOKEN")
 			return
 		}
-		if _, ok := serviceInfo.Tokens[token]; !ok {
+		if _, ok := svc.Tokens[token]; !ok {
 			ctx.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_INCORRECT_TOKEN")
 			return
@@ -305,7 +281,7 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 	inputType := fhu.GetReqQueryParam(ctx, ParamNameInput)
 
-	if handler, ok := h.HandlerSet.Handlers[inputType]; ok {
+	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
 		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
 		handler.HandleFastHTTP(ctx)
 	} else {
@@ -313,24 +289,30 @@ func (h *AnyHTTPHandler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-func serveNetHttp() {
+func getHttpServeMux(svc Service) *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hook", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
-	mux.HandleFunc("/hook/", http.HandlerFunc(anyHTTPHandler.HandleNetHTTP))
-	http.ListenAndServe(":8080", mux)
+	mux.HandleFunc("/hook", http.HandlerFunc(svc.HandleNetHTTP))
+	mux.HandleFunc("/hook/", http.HandlerFunc(svc.HandleNetHTTP))
+	return mux
 }
 
-func serveFastHttp() {
+func serveNetHttp(svc Service) {
+	http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc))
+}
+
+func serveFastHttp(svc Service) {
 	router := fasthttprouter.New()
-	router.POST("/hook", anyHTTPHandler.HandleFastHTTP)
-	router.POST("/hook/", anyHTTPHandler.HandleFastHTTP)
-
-	log.Fatal(fasthttp.ListenAndServe(":8080", router.Handler))
+	router.POST("/hook", svc.HandleFastHTTP)
+	router.POST("/hook/", svc.HandleFastHTTP)
+	log.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
 }
 
-func serveAwsLambda() {
-	lambda.Start(HandleAwsLambda)
+func serveAwsLambda(svc Service) {
+	log.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
 }
+
+func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
+func portAddress(port int) string      { return ":" + strconv.Itoa(port) }
 
 func main() {
 	if len(strings.TrimSpace(os.Getenv(EnvEnvPath))) > 0 {
@@ -340,13 +322,27 @@ func main() {
 		}
 	}
 
+	var service = NewService()
+	if len(os.Getenv("PORT")) > 0 {
+		port, err := strconv.Atoi(os.Getenv("PORT"))
+		if err != nil {
+			log.Fatal("Cannot Parse Port Environment Variable [%v]", os.Getenv("PORT"))
+		}
+		service.Config.Port = port
+	}
+
 	engine := strings.ToLower(strings.TrimSpace(os.Getenv(EnvEngine)))
+	if len(engine) == 0 {
+		engine = "nethttp"
+	}
 	switch engine {
-	case "aws":
-		serveAwsLambda()
+	case "awslambda":
+		serveAwsLambda(service)
 	case "nethttp":
-		serveNetHttp()
+		serveNetHttp(service)
 	case "fasthttp":
-		serveFastHttp()
+		serveFastHttp(service)
+	default:
+		log.Fatal(fmt.Sprintf("Engine Not Supported [%v]", engine))
 	}
 }
