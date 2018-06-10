@@ -1,0 +1,38 @@
+{
+    "uuid":"ed1cf00c-0420-4bf5-a0ae-e659bb9f77e0",
+    "event":"/restapi/v1.0/account/~/extension/11111111/message-store/instant?type=SMS",
+    "subscriptionId":"dc853541-66ac-45d8-a289-1a239fd72888",
+    "timestamp":"2013-06-14T12:00:00.000Z",
+    "body":{
+        "id":"123456789012",
+        "to":[
+            {
+                "phoneNumber":"+16505550100",
+                "location":"Moss Beach, CA"
+            }
+        ],
+        "from":{
+            "phoneNumber":"+14155550100",
+            "name":"John Smith"
+        },
+        "type":"SMS",
+        "creationTime":"2016-02-22T17:01:00.000Z",
+        "lastModifiedTime":"2016-02-22T17:01:00.000Z",
+        "readStatus":"Unread",
+        "priority":"Normal",
+        "attachments":[
+            {
+                "uri":"/restapi/v1.0/account/~/extension/11111111/message-store/22222222/content/33333333",
+                "id":"606090030016",
+                "type":"Text",
+                "contentType":"text/plain",
+                "size":4096
+            }
+        ],
+        "direction":"Inbound",
+        "availability":"Alive",
+        "subject":"Hi there",
+        "messageStatus":"Received",
+        "conversationId":"12345678901234567890"
+    }
+}

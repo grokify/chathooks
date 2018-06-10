@@ -1,0 +1,63 @@
+{
+  "uri": "https://platform.ringcentral.com/restapi/v1.0/account/11111111/extension/22222222/message-store",
+  "records": [
+    {
+      "uri": "https://platform.ringcentral.com/restapi/v1.0/account/11111111/extension/22222222/message-store/33333333",
+      "id": 33333333,
+      "to": [
+        {
+          "phoneNumber": "+16509316655",
+          "extensionNumber": "3610",
+          "name": "(650) 931-6655 * 3610 (John Wang)",
+          "location": "San Mateo, CA"
+        }
+      ],
+      "from": {
+        "extensionNumber": "5032",
+        "name": "Andy Thompson"
+      },
+      "type": "VoiceMail",
+      "creationTime": "2018-04-12T22:58:58.000Z",
+      "readStatus": "Unread",
+      "priority": "Normal",
+      "attachments": [
+        {
+          "id": 33333333,
+          "uri": "https://media.ringcentral.com/restapi/v1.0/account/11111111/extension/22222222/message-store/33333333/content/33333333",
+          "type": "AudioRecording",
+          "contentType": "audio/mpeg",
+          "vmDuration": 80
+        },
+        {
+          "id": 44444444,
+          "uri": "https://media.ringcentral.com/restapi/v1.0/account/11111111/extension/22222222/message-store/33333333/content/44444444",
+          "type": "AudioTranscription",
+          "contentType": "text/plain",
+          "vmDuration": 80,
+          "fileName": "transcription"
+        }
+      ],
+      "direction": "Inbound",
+      "availability": "Alive",
+      "messageStatus": "Received",
+      "lastModifiedTime": "2018-04-12T22:59:10.313Z",
+      "vmTranscriptionStatus": "CompletedPartially"
+    }
+  ],
+  "paging": {
+    "page": 1,
+    "totalPages": 1,
+    "perPage": 100,
+    "totalElements": 1,
+    "pageStart": 0,
+    "pageEnd": 0
+  },
+  "navigation": {
+    "firstPage": {
+      "uri": "https://platform.ringcentral.com/restapi/v1.0/account/11111111/extension/557601020/message-store?availability=Alive"
+    },
+    "lastPage": {
+      "uri": "https://platform.ringcentral.com/restapi/v1.0/account/11111111/extension/557601020/message-store?availability=Alive"
+    }
+  }
+}

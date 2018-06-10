@@ -225,12 +225,30 @@ The easiest way to add a handler is to inspect the code of an existing handler a
 
 # Notes
 
+## Maintenance
+
+Rebuild `vendor` directory with:
+
+```
+$ godep save ./...
+```
+
+More information on deploying Go on Heroku here:
+
+* https://devcenter.heroku.com/articles/go-support
+
+### Heroku
+
+Set up your own Go app on Heroku easily using [`goheroku`](https://github.com/grokify/goheroku).
+
+
+## Credeits
+
 Chathooks is built using:
 
 * [net/http](https://golang.org/pkg/net/http/)
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
-* [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)
 
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [sirupsen/logrus](https://github.com/sirupsen/logrus)

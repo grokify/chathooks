@@ -1,0 +1,35 @@
+{
+    "uuid": "045b81dc-9f73-4864-84de-08aa6324a7f5",
+    "event": "/restapi/v1.0/account/~/extension/6610372004/presence?detailedTelephonyState=true",
+    "timestamp": "2016-02-18T09:37:24.597Z",
+    "subscriptionId": "9d38419f-645f-4ee3-a053-8cf1368c21c4",
+    "body": {
+      "extensionId": 6610372004,
+      "telephonyStatus": "CallConnected",
+      "activeCalls": [
+        {
+          "id": "39247ebfdc324e3b96d7519672aec3e4",
+          "direction": "Inbound",
+          "from": "+18775380038",
+          "to": "+18445810019",
+          "telephonyStatus": "CallConnected",
+          "sessionId": "17133704004"
+        },
+         {
+          "id": "39247ebfdc324e3b96d7519672aec3e5",
+          "direction": "Outbound",
+          "from": "+18776480025",
+          "to": "+18445654321",
+          "telephonyStatus": "NoCall",
+          "sessionId": "17133804005"
+        }
+      ],
+      "sequence": 2698,
+      "presenceStatus": "Busy",
+      "userStatus": "Available",
+      "dndStatus": "TakeAllCalls",
+      "allowSeeMyPresence": true,
+      "ringOnMonitoredCall": false,
+      "pickUpCallsOnHold": false
+    }
+  } 

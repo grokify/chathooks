@@ -1,0 +1,29 @@
+{
+    "uuid":"1234567890123456789",
+    "event":"/restapi/v1.0/glip/posts",
+    "timestamp":"2018-04-17T07:35:37.381Z",
+    "subscriptionId":"11112222-3333-4444-5555-666677778888",
+    "ownerId":"11111111",
+    "body":{
+        "id":"4156822175748",
+        "groupId":"3154083846",
+        "type":"TextMessage",
+        "text":"![:Person](11111111) ![:Person](glip-22222222) Hello!",
+        "creatorId":"33333333",
+        "creationTime":"2018-04-17T07:35:37.244Z",
+        "lastModifiedTime":"2018-04-17T07:35:37.244Z",
+        "mentions":[
+            {
+                "id":"11111111",
+                "type":"Person",
+                "name":"mybot"
+            },
+            {
+                "id":"glip-22222222",
+                "type":"Person",
+                "name":"guest"
+            }
+        ],
+        "eventType":"PostAdded"
+    }
+}

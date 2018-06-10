@@ -1,0 +1,10 @@
+{
+    "uuid":"1234567890123456789",
+    "event":"/restapi/v1.0/subscription/~?threshold=80&interval=30",
+    "timestamp":"2018-04-18T09:27:11.513Z",
+    "subscriptionId":"11112222-3333-4444-5555-666677778888",
+    "ownerId":"11111111",
+    "body":{
+        "expiresIn":75
+    }
+}

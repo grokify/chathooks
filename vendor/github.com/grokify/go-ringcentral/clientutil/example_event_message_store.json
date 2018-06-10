@@ -1,0 +1,23 @@
+{
+    "uuid":"123456789012345678901234567890",
+    "event":"/restapi/v1.0/account/11111111/extension/22222222/message-store",
+    "timestamp":"2018-02-13T09:08:06.383Z",
+    "subscriptionId":"11112222-3333-4444-5555-666677778888",
+    "ownerId":"33333333",
+    "body":{
+        "extensionId":44444444,
+        "lastUpdated":"2018-02-13T09:08:00.053+0000",
+        "changes":[
+            {
+                "type":"Fax",
+                "newCount":1,
+                "updatedCount":0
+            },
+            {
+                "type":"SMS",
+                "newCount":1,
+                "updatedCount":0
+            }
+        ]
+    }
+}
