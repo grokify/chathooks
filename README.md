@@ -5,6 +5,7 @@ Chathooks - A webhook formatter for chat
 [![Go Report Card][goreport-svg]][goreport-link]
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
+[![Heroku][heroku-svg]][heroku-link]
 
 ![](docs/logos/logo_chathooks_long_600x150.png "")
 
@@ -78,8 +79,22 @@ Note: The emoji to URL is designed to take a `icon_emoji` value and convert it t
 
 # Installation
 
+## Local
+
 ```
 $ go get github.com/grokify/chathooks
+```
+
+## Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+or
+
+```sh
+$ heroku create
+$ git push heroku master
+$ heroku open
 ```
 
 # Configuration
@@ -232,3 +247,5 @@ Chathooks is built using:
  [docs-godoc-link]: https://godoc.org/github.com/grokify/chathooks
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-link]: https://github.com/grokify/chathooks/blob/master/LICENSE.md
+ [heroku-svg]: https://img.shields.io/badge/%E2%86%91_Deploy_to-Heroku-7056bf.svg?style=flat
+ [heroku-link]: https://heroku.com/deploy
