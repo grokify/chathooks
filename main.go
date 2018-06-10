@@ -67,7 +67,7 @@ const (
 	ParamNameURL    = "url"
 	ParamNameToken  = "token"
 	EnvPath         = "ENV_PATH"
-	EnvEngine       = "CHATHOOKS_ENGINE" // aws, nethttp, fasthttp
+	EnvEngine       = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
 	EnvTokens       = "CHATHOOKS_TOKENS"
 )
 
