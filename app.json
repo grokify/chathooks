@@ -18,6 +18,10 @@
             "description": "HTTP server engine to use, e.g. 'fasthttp' or 'nethttp'.",
             "value": "fasthttp",
             "required": false
+        },
+        "CHATHOOKS_TOKENS": {
+            "description": "Comma-delimited list of secret tokens for validation",
+            "required": false
         }
     }
 }
