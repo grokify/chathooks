@@ -2,7 +2,7 @@
     "name": "Chathooks",
     "description": "Webhook proxy for team chat",
     "keywords": ["glip"],
-    "website": "",
+    "website": "https://github.com/grokify/chathooks",
     "repository": "https://github.com/grokify/chathooks",
     "formation": {
         "web": {
