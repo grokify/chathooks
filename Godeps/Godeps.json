@@ -97,6 +97,10 @@
 			"Rev": "0eb79f4baa7034bd92af95b6555b34c18133bac0"
 		},
 		{
+			"ImportPath": "github.com/grokify/gotilla/config",
+			"Rev": "80245fd392b8420450ebe3f30858b411e13bd72c"
+		},
+		{
 			"ImportPath": "github.com/grokify/gotilla/crypto/hash/argon2",
 			"Rev": "80245fd392b8420450ebe3f30858b411e13bd72c"
 		},
@@ -138,6 +142,10 @@
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/urlutil",
+			"Rev": "80245fd392b8420450ebe3f30858b411e13bd72c"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/os/osutil",
 			"Rev": "80245fd392b8420450ebe3f30858b411e13bd72c"
 		},
 		{
@@ -243,6 +251,11 @@
 			"ImportPath": "github.com/valyala/fasthttp/stackless",
 			"Comment": "v20160617-123-ge5f51c1",
 			"Rev": "e5f51c11919d4f66400334047b897ef0a94c6f3c"
+		},
+		{
+			"ImportPath": "github.com/valyala/quicktemplate",
+			"Comment": "v20160617-24-g23fa366",
+			"Rev": "23fa366b12e538aeda01aa072f7583faf764559f"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/argon2",

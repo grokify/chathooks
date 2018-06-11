@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/caarlos0/env"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -23,10 +24,25 @@ func DocsHandlersDir() string {
 
 // Configuration is the webhook proxy configuration struct.
 type Configuration struct {
-	Port           int
+	Port           int      `env:"PORT" envDefault:"3000"`
+	Engine         string   `env:"CHATHOOKS_ENGINE" envDefault:"fasthttp"`
+	HomeUrl        string   `env:"CHATHOOKS_HOME_URL"`
+	WebhookUrl     string   `env:"CHATHOOKS_WEBHOOK_URL"`
+	Tokens         []string `env:"CHATHOOKS_TOKENS" envSeparator:","`
 	EmojiURLFormat string
-	LogrusLogLevel log.Level
 	IconBaseURL    string
+	LogrusLogLevel log.Level
+}
+
+func NewConfigurationEnv() (Configuration, error) {
+	cfg := Configuration{}
+	if err := env.Parse(&cfg); err != nil {
+		return cfg, err
+	}
+	cfg.EmojiURLFormat = EmojiURLFormat
+	cfg.IconBaseURL = IconBaseURL
+	cfg.LogrusLogLevel = 5
+	return cfg, nil
 }
 
 func ReadConfigurationFile(filepath string) (Configuration, error) {

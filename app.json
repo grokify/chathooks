@@ -14,13 +14,24 @@
         }
     },
     "env": {
-        "CHATHOOKS_ENGINE": {
-            "description": "HTTP server engine to use, e.g. 'fasthttp' or 'nethttp'.",
-            "value": "fasthttp",
+        "CHATHOOKS_HOME_URL":{
+            "description": "Homepage for project, for homepage rendering only.",
+            "value": "https://<myProject>.herokuapp.com",
+            "required": false
+        },
+        "CHATHOOKS_WEBHOOK_URL":{
+            "description": "Webhook URL for project, for homepage rendering only.",
+            "value": "https://<myProject>.herokuapp.com/hook",
             "required": false
         },
         "CHATHOOKS_TOKENS": {
             "description": "Comma-delimited list of secret tokens for validation",
+            "default": "demo account - do not use for production",
+            "required": false
+        },
+        "CHATHOOKS_ENGINE": {
+            "description": "HTTP server engine to use, e.g. 'fasthttp' or 'nethttp'.",
+            "value": "fasthttp",
             "required": false
         }
     }

@@ -14,16 +14,17 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
-	"github.com/grokify/gotilla/fmt/fmtutil"
+	cfg "github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/net/anyhttp"
+	hum "github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/gotilla/strings/stringsutil"
-	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
+	"github.com/grokify/chathooks/src/templates"
 
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/handlers/aha"
@@ -61,6 +62,8 @@ tokens as a comma delimited string.
 
 */
 
+// CHATHOOKS_URL=http://localhost:8080/hook CHATHOOKS_HOME_URL=http://localhost:8080 go run main.go
+
 const (
 	ParamNameInput  = "inputType"
 	ParamNameOutput = "outputType"
@@ -69,6 +72,8 @@ const (
 	EnvPath         = "ENV_PATH"
 	EnvEngine       = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
 	EnvTokens       = "CHATHOOKS_TOKENS"
+	EnvWebhookUrl   = "CHATHOOKS_URL"
+	EnvHomeUrl      = "CHATHOOKS_HOME_URL"
 )
 
 type HandlerSet struct {
@@ -110,13 +115,20 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 }
 
 func NewService() Service {
-	cfgData := config.Configuration{
-		Port:           8080,
-		LogrusLogLevel: 5,
-		EmojiURLFormat: config.EmojiURLFormat,
-		IconBaseURL:    config.IconBaseURL}
+	/*
+		cfgData := config.Configuration{
+			Port:           8080,
+			LogrusLogLevel: 5,
+			EmojiURLFormat: config.EmojiURLFormat,
+			IconBaseURL:    config.IconBaseURL}
+	*/
 
-	fmtutil.PrintJSON(cfgData)
+	cfgData, err := config.NewConfigurationEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//fmtutil.PrintJSON(cfgData)
 	adapterSet := adapters.NewAdapterSet()
 	glipAdapter, err := ccglip.NewGlipAdapter("")
 	if err != nil {
@@ -279,21 +291,47 @@ func (svc *Service) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 	svc.HandleAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
 
+func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
+	log.Info("HANDLE_HOME_AnyHTTP")
+	fmt.Println(svc.Config.WebhookUrl)
+	data := templates.HomeData{
+		HomeUrl:    svc.Config.HomeUrl,
+		WebhookUrl: svc.Config.WebhookUrl}
+	if _, err := aRes.SetBodyBytes([]byte(templates.HomePage(data))); err != nil {
+		aRes.SetStatusCode(http.StatusInternalServerError)
+	} else {
+		aRes.SetStatusCode(http.StatusOK)
+		aRes.SetContentType(hum.ContentTypeTextHtmlUtf8)
+	}
+}
+
+func (svc *Service) HandleHomeNetHTTP(res http.ResponseWriter, req *http.Request) {
+	log.Info("HANDLE_NetHTTP")
+	svc.HandleHomeAnyRequest(anyhttp.NewResReqNetHttp(res, req))
+}
+
+func (svc *Service) HandleHomeFastHTTP(ctx *fasthttp.RequestCtx) {
+	log.Info("HANDLE_FastHTTP")
+	svc.HandleHomeAnyRequest(anyhttp.NewResReqFastHttp(ctx))
+}
+
 func getHttpServeMux(svc Service) *http.ServeMux {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", http.HandlerFunc(svc.HandleHomeNetHTTP))
 	mux.HandleFunc("/hook", http.HandlerFunc(svc.HandleNetHTTP))
 	mux.HandleFunc("/hook/", http.HandlerFunc(svc.HandleNetHTTP))
 	return mux
 }
 
 func serveNetHttp(svc Service) {
-	log.Info("STARTING_NET_HTTP")
+	log.Info(fmt.Sprintf("STARTING_NET_HTTP [%v]", svc.Config.Port))
 	http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc))
 }
 
 func serveFastHttp(svc Service) {
-	log.Info("STARTING_FAST_HTTP")
+	log.Info(fmt.Sprintf("STARTING_FAST_HTTP [%v]", svc.Config.Port))
 	router := fasthttprouter.New()
+	router.GET("/", svc.HandleHomeFastHTTP)
 	router.POST("/hook", svc.HandleFastHTTP)
 	router.POST("/hook/", svc.HandleFastHTTP)
 	log.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
@@ -307,33 +345,21 @@ func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
 func portAddress(port int) string      { return ":" + strconv.Itoa(port) }
 
 func main() {
-	if len(strings.TrimSpace(os.Getenv(EnvPath))) > 0 {
-		err := godotenv.Load(os.Getenv(EnvPath))
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
+	if err := cfg.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env"); err != nil {
+		panic(err)
 	}
 
-	var service = NewService()
-	if len(os.Getenv("PORT")) > 0 {
-		port, err := strconv.Atoi(os.Getenv("PORT"))
-		if err != nil {
-			log.Fatal("Cannot Parse Port Environment Variable [%v]", os.Getenv("PORT"))
-		}
-		service.Config.Port = port
-	}
+	svc := NewService()
 
-	engine := strings.ToLower(strings.TrimSpace(os.Getenv(EnvEngine)))
-	if len(engine) == 0 {
-		engine = "fasthttp"
-	}
+	engine := svc.Config.Engine
+
 	switch engine {
 	case "awslambda":
-		serveAwsLambda(service)
+		serveAwsLambda(svc)
 	case "nethttp":
-		serveNetHttp(service)
+		serveNetHttp(svc)
 	case "fasthttp":
-		serveFastHttp(service)
+		serveFastHttp(svc)
 	default:
 		log.Fatal(fmt.Sprintf("Engine Not Supported [%v]", engine))
 	}
