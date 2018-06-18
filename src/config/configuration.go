@@ -29,6 +29,7 @@ type Configuration struct {
 	HomeUrl        string   `env:"CHATHOOKS_HOME_URL"`
 	WebhookUrl     string   `env:"CHATHOOKS_WEBHOOK_URL"`
 	Tokens         []string `env:"CHATHOOKS_TOKENS" envSeparator:","`
+	LogFormat      string   `env:"CHATHOOKS_LOG_FORMAT"`
 	EmojiURLFormat string
 	IconBaseURL    string
 	LogrusLogLevel log.Level

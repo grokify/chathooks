@@ -351,6 +351,12 @@ func main() {
 
 	svc := NewService()
 
+	if strings.ToLower(strings.TrimSpace(svc.Config.LogFormat)) == "json" {
+		log.SetFormatter(&log.JSONFormatter{})
+	} else {
+		log.SetFormatter(&log.TextFormatter{})
+	}
+
 	engine := svc.Config.Engine
 
 	switch engine {
