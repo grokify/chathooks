@@ -143,8 +143,7 @@ func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMes
 		}
 	}
 	if len(src.ClientName) > 0 {
-		url, linked := LinkifyURL(src.ClientName, src.URL, displayedUrl)
-		displayedUrl = linked
+		url, _ := LinkifyURL(src.ClientName, src.URL, displayedUrl)
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
 			Value: url,

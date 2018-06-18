@@ -51,9 +51,7 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		"TakeOwnership":   "ownership taken",
 		"UnAcknowledge":   "unacknowledged"}
 
-	verb := ""
-	ok := false
-	if verb, ok = actions[src.Action]; ok {
+	if verb, ok := actions[src.Action]; ok {
 		ccMsg.Activity = fmt.Sprintf("Alert %s", verb)
 	} else {
 		ccMsg.Activity = fmt.Sprintf("Alert %s", src.Action)
