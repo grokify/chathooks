@@ -265,5 +265,5 @@ Chathooks is built using:
  [docs-godoc-link]: https://godoc.org/github.com/grokify/chathooks
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-link]: https://github.com/grokify/chathooks/blob/master/LICENSE.md
- [heroku-svg]: https://img.shields.io/badge/%E2%86%91_Deploy_to-Heroku-7056bf.svg?style=flat
+ [heroku-svg]: https://img.shields.io/badge/%E2%86%91_deploy-Heroku-7056bf.svg?style=flat
  [heroku-link]: https://heroku.com/deploy
