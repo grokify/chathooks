@@ -14,7 +14,7 @@ import (
 	"github.com/grokify/gotilla/net/anyhttp"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
-	"github.com/grokify/gotilla/strings/stringsutil"
+	"github.com/grokify/gotilla/type/stringsutil"
 	"github.com/valyala/fasthttp"
 )
 

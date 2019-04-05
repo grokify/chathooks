@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"io"
+	"io/ioutil"
 )
 
 var (
@@ -13,6 +15,13 @@ var (
 
 type mustMarhshalError struct {
 	MustMarhshalError string `json:"must_marshal_error"`
+}
+
+func MarshalSimple(v interface{}, prefix, indent string) ([]byte, error) {
+	if prefix == "" && indent == "" {
+		return json.Marshal(v)
+	}
+	return json.MarshalIndent(v, prefix, indent)
 }
 
 func MustMarshal(i interface{}, embedError bool) []byte {
@@ -57,4 +66,12 @@ func MarshalBase64(i interface{}) (string, error) {
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
+}
+
+func UnmarshalIoReader(r io.Reader, i interface{}) ([]byte, error) {
+	b, err := ioutil.ReadAll(r)
+	if err != nil {
+		return b, err
+	}
+	return b, json.Unmarshal(b, i)
 }

@@ -116,6 +116,14 @@ func (w *QWriter) D(n int) {
 
 // F writes f to w.
 func (w *QWriter) F(f float64) {
+	n := int(f)
+	if float64(n) == f {
+		// Fast path - just int.
+		w.D(n)
+		return
+	}
+
+	// Slow path.
 	w.FPrec(f, -1)
 }
 

@@ -105,7 +105,7 @@ Chathooks uses two environment variables:
 
 | Variable Name | Value |
 |---------------|-------|
-| `CHATHOOKS_ENGINE` | The engine to be used: `aws` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
+| `CHATHOOKS_ENGINE` | The engine to be used: `awslambda` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
 
 ## Using the `net/http` and `fasthttp` Engines
@@ -169,7 +169,6 @@ $ export PATH=$PATH:/Users/~/Library/Python/2.7/bin
 $ export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.6/bin
 ```
 
-
 ### Update Lambda Code:
 
 You can update the Lambda function code using the following:
@@ -181,6 +180,29 @@ https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.htm
 The `aws-update.sh` file has this command with default settings.
 
 Make sure to set your AWS credentials file.
+
+### Manual Setup
+
+* Configure AWS Lambda Function
+  1. Create AWS Lambda function
+  2. Set `CHATHOOKS_ENGINE` to `aws`
+  3. Set `CHATHOOKS_TOKEN` as desired
+  4. Set Handler to `main`
+* Configure API Gateway
+  1. Create "REST" API
+  2. Select "New API"
+  3. Select "Actions" > "Create Resource"
+  4. Click "Configure as proxy resource"
+  5. Use Resource Path `{proxy+}`
+  6. Click "Enable API Gateway CORS"
+  7. Click "Create Resource"
+  8. Leave "Integration Type" as "Lambda Function Proxy"
+  8. In "Lambda Function", paste in your Lamda ARN
+  10. Click "Deploy API" and create stage if necessary.
+
+### Troubleshooting
+
+401 Unauthorized Error. If you can run a test on API Gateway and have deployed your API but are running into a 401 Unauthorized error.....
 
 # Usage
 

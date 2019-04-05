@@ -17,7 +17,6 @@ import (
 	cfg "github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/net/anyhttp"
 	hum "github.com/grokify/gotilla/net/httputilmore"
-	"github.com/grokify/gotilla/strings/stringsutil"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
@@ -65,15 +64,17 @@ tokens as a comma delimited string.
 // CHATHOOKS_URL=http://localhost:8080/hook CHATHOOKS_HOME_URL=http://localhost:8080 go run main.go
 
 const (
-	ParamNameInput  = "inputType"
-	ParamNameOutput = "outputType"
-	ParamNameURL    = "url"
-	ParamNameToken  = "token"
-	EnvPath         = "ENV_PATH"
-	EnvEngine       = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
-	EnvTokens       = "CHATHOOKS_TOKENS"
-	EnvWebhookUrl   = "CHATHOOKS_URL"
-	EnvHomeUrl      = "CHATHOOKS_HOME_URL"
+	ParamNameInputType       = "inputType"
+	ParamNameOutputType      = "outputType"
+	ParamNameURL             = "url"
+	ParamNameToken           = "token"
+	EnvPath                  = "ENV_PATH"
+	EnvEngine                = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
+	EnvTokens                = "CHATHOOKS_TOKENS"
+	EnvWebhookUrl            = "CHATHOOKS_URL"
+	EnvHomeUrl               = "CHATHOOKS_HOME_URL"
+	ErrRequiredTokenNotFound = "401.01 Required Token Not Found"
+	ErrRequiredTokenNotValid = "401.02 Required Token Not Valid"
 )
 
 type HandlerSet struct {
@@ -115,20 +116,11 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 }
 
 func NewService() Service {
-	/*
-		cfgData := config.Configuration{
-			Port:           8080,
-			LogrusLogLevel: 5,
-			EmojiURLFormat: config.EmojiURLFormat,
-			IconBaseURL:    config.IconBaseURL}
-	*/
-
 	cfgData, err := config.NewConfigurationEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//fmtutil.PrintJSON(cfgData)
 	adapterSet := adapters.NewAdapterSet()
 	glipAdapter, err := ccglip.NewGlipAdapter("")
 	if err != nil {
@@ -177,26 +169,30 @@ func NewService() Service {
 		HandlerSet:   handlerSet,
 		RequireToken: false,
 		Tokens:       map[string]int{}}
-	tokens := stringsutil.SplitCondenseSpace(os.Getenv(EnvTokens), ",")
-	for _, token := range tokens {
-		svcInfo.Tokens[token] = 1
+
+	for _, token := range cfgData.Tokens {
+		token = strings.TrimSpace(token)
+		if len(token) > 0 {
+			svcInfo.Tokens[token] = 1
+		}
 	}
 
 	return svcInfo
 }
 
 func (svc *Service) HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Info("FUNC_HandleAwsLambda__BEGIN")
 	if len(svc.Tokens) > 0 {
 		token, ok := req.QueryStringParameters[ParamNameToken]
 		if !ok {
 			return events.APIGatewayProxyResponse{
 				StatusCode: http.StatusUnauthorized,
-				Body:       "Required Token not found"}, nil
+				Body:       ErrRequiredTokenNotFound}, nil
 		}
 		if _, ok := svc.Tokens[token]; !ok {
 			return events.APIGatewayProxyResponse{
 				StatusCode: http.StatusUnauthorized,
-				Body:       "Required Token not valid"}, nil
+				Body:       ErrRequiredTokenNotValid}, nil
 		}
 	}
 	inputType, ok := req.QueryStringParameters[models.QueryParamInputType]
@@ -250,43 +246,45 @@ func HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (ev
 */
 
 func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
-	log.Info("HANDLE_AnyHTTP")
+	log.Info("FUNC_HandleAnyRequest__BEGIN")
+
+	if err := aReq.ParseForm(); err != nil {
+		aRes.SetStatusCode(http.StatusInternalServerError)
+		log.Warn("E_CANNOT_PARSE_FORM")
+		return
+	}
+
 	if len(svc.Tokens) > 0 {
-		token := aReq.QueryArgs().GetString(ParamNameToken)
+		token := strings.TrimSpace(aReq.QueryArgs().GetString(ParamNameToken))
 
 		if len(token) == 0 {
 			aRes.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_NO_TOKEN")
 			return
 		}
-		fmt.Println("HANDLE_NetHTTP_S2b")
 		if _, ok := svc.Tokens[token]; !ok {
 			aRes.SetStatusCode(http.StatusUnauthorized)
 			log.Warn("E_INCORRECT_TOKEN")
 			return
 		}
 	}
-	if err := aReq.ParseForm(); err != nil {
-		aRes.SetStatusCode(http.StatusInternalServerError)
-		log.Warn("E_CANNOT_PARSE_FORM")
-		return
-	}
-	inputType := aReq.QueryArgs().GetString(ParamNameInput)
+
+	inputType := aReq.QueryArgs().GetString(ParamNameInputType)
 
 	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
-		fmt.Printf("Input_Handler_Found_Processing [%v]\n", inputType)
+		log.Info(fmt.Sprintf("Input_Handler_Found_Processing [%v]", inputType))
 		handler.HandleAnyHTTP(aRes, aReq)
 	} else {
 		fmt.Printf("Input_Handler_Not_Found [%v]\n", inputType)
 	}
 }
 
-func (svc *Service) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
-	log.Info("HANDLE_NetHTTP")
+func (svc *Service) HandleHookNetHTTP(res http.ResponseWriter, req *http.Request) {
+	log.Info("FUNC_HandleNetHTTP__BEGIN")
 	svc.HandleAnyRequest(anyhttp.NewResReqNetHttp(res, req))
 }
 
-func (svc *Service) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
+func (svc *Service) HandleHookFastHTTP(ctx *fasthttp.RequestCtx) {
 	log.Info("HANDLE_FastHTTP")
 	svc.HandleAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
@@ -318,8 +316,10 @@ func (svc *Service) HandleHomeFastHTTP(ctx *fasthttp.RequestCtx) {
 func getHttpServeMux(svc Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", http.HandlerFunc(svc.HandleHomeNetHTTP))
-	mux.HandleFunc("/hook", http.HandlerFunc(svc.HandleNetHTTP))
-	mux.HandleFunc("/hook/", http.HandlerFunc(svc.HandleNetHTTP))
+	mux.HandleFunc("/hook", http.HandlerFunc(svc.HandleHookNetHTTP))
+	mux.HandleFunc("/hook/", http.HandlerFunc(svc.HandleHookNetHTTP))
+	mux.HandleFunc("/webhook", http.HandlerFunc(svc.HandleHookNetHTTP))
+	mux.HandleFunc("/webhook/", http.HandlerFunc(svc.HandleHookNetHTTP))
 	return mux
 }
 
@@ -332,8 +332,10 @@ func serveFastHttp(svc Service) {
 	log.Info(fmt.Sprintf("STARTING_FAST_HTTP [%v]", svc.Config.Port))
 	router := fasthttprouter.New()
 	router.GET("/", svc.HandleHomeFastHTTP)
-	router.POST("/hook", svc.HandleFastHTTP)
-	router.POST("/hook/", svc.HandleFastHTTP)
+	router.POST("/hook", svc.HandleHookFastHTTP)
+	router.POST("/hook/", svc.HandleHookFastHTTP)
+	router.POST("/webhook", svc.HandleHookFastHTTP)
+	router.POST("/webhook/", svc.HandleHookFastHTTP)
 	log.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
 }
 

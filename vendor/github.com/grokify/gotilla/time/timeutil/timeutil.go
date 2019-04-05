@@ -62,6 +62,14 @@ var intervals = [...]string{
 	"nanosecond",
 }
 
+func MustParse(layout, value string) time.Time {
+	t, err := time.Parse(layout, value)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 func (i Interval) String() string { return intervals[i] }
 
 func ParseInterval(src string) (Interval, error) {
@@ -112,6 +120,12 @@ func (tr *TimeRange) InsertMin(t time.Time) {
 // in milliseconds
 func UnixMillis(epochMillis int64) time.Time {
 	return time.Unix(0, epochMillis*MillisToNanoMultiplier)
+}
+
+// UnixToDay converts an epoch in seconds to a time.Time for the day.
+func UnixToDay(epoch int64) time.Time {
+	t := time.Unix(epoch, 0).UTC()
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 }
 
 // Dt6ForTime returns the Dt6 value for time.Time.
@@ -218,9 +232,12 @@ func Dt8ForString(layout, value string) (int32, error) {
 }
 
 // Dt8ForInts returns a Dt8 value for year, month, and day.
-func Dt8ForInts(yyyy int, mm int, dd int) int32 {
+func Dt8ForInts(yyyy, mm, dd int) int32 {
 	sDt8 := fmt.Sprintf("%04d%02d%02d", yyyy, mm, dd)
-	iDt8, _ := strconv.ParseInt(sDt8, 10, 32)
+	iDt8, err := strconv.ParseInt(sDt8, 10, 32)
+	if err != nil {
+		panic(err)
+	}
 	return int32(iDt8)
 }
 
@@ -228,7 +245,10 @@ func Dt8ForInts(yyyy int, mm int, dd int) int32 {
 func Dt8ForTime(t time.Time) int32 {
 	u := t.UTC()
 	s := u.Format(DT8)
-	iDt8, _ := strconv.ParseInt(s, 10, 32)
+	iDt8, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		panic(err)
+	}
 	return int32(iDt8)
 }
 
@@ -253,9 +273,12 @@ func Dt14ForString(layout, value string) (int64, error) {
 }
 
 // Dt8ForInts returns a Dt8 value for a UTC year, month, day, hour, minute and second.
-func Dt14ForInts(yyyy int, mm int, dd int, hr int, mn int, dy int) int64 {
+func Dt14ForInts(yyyy, mm, dd, hr, mn, dy int) int64 {
 	sDt14 := fmt.Sprintf("%04d%02d%02d%02d%02d%02d", yyyy, mm, dd, hr, mn, dy)
-	iDt14, _ := strconv.ParseInt(sDt14, 10, 64)
+	iDt14, err := strconv.ParseInt(sDt14, 10, 64)
+	if err != nil {
+		panic(err)
+	}
 	return int64(iDt14)
 }
 
@@ -263,7 +286,10 @@ func Dt14ForInts(yyyy int, mm int, dd int, hr int, mn int, dy int) int64 {
 func Dt14ForTime(t time.Time) int64 {
 	u := t.UTC()
 	s := u.Format(DT14)
-	iDt14, _ := strconv.ParseInt(s, 10, 64)
+	iDt14, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		panic(err)
+	}
 	return int64(iDt14)
 }
 
@@ -318,20 +344,13 @@ func YearEnd(dt time.Time) time.Time {
 	return time.Date(dt.UTC().Year(), time.December, 31, 23, 59, 59, 999999999, time.UTC)
 }
 
+func NextYearStart(dt time.Time) time.Time {
+	return time.Date(dt.UTC().Year()+1, time.January, 1, 0, 0, 0, 0, time.UTC)
+}
+
 func QuarterStartString(dt time.Time) string {
 	dtStart := QuarterStart(dt)
 	return fmt.Sprintf("%v Q%v", dtStart.Year(), MonthToQuarter(uint8(dtStart.Month())))
-}
-
-func PrevQuarters(dt time.Time, n int) time.Time {
-	for i := 0; i < n; i++ {
-		dt = PrevQuarter(dt)
-	}
-	return dt
-}
-
-func PrevQuarter(dt time.Time) time.Time {
-	return TimeDt6SubNMonths(QuarterStart(dt), 3)
 }
 
 func NextQuarter(dt time.Time) time.Time {
@@ -345,9 +364,21 @@ func NextQuarters(dt time.Time, num int) time.Time {
 	return dt
 }
 
+func PrevQuarter(dt time.Time) time.Time {
+	return TimeDt6SubNMonths(QuarterStart(dt), 3)
+}
+
+func PrevQuarters(dt time.Time, num int) time.Time {
+	for i := 0; i < num; i++ {
+		dt = PrevQuarter(dt)
+	}
+	return dt
+}
+
 func IsQuarterStart(t time.Time) bool {
 	t = t.UTC()
-	if t.Second() == 0 &&
+	if t.Nanosecond() == 0 &&
+		t.Second() == 0 &&
 		t.Minute() == 0 &&
 		t.Hour() == 0 &&
 		t.Day() == 1 &&
@@ -362,7 +393,8 @@ func IsQuarterStart(t time.Time) bool {
 
 func IsYearStart(t time.Time) bool {
 	t = t.UTC()
-	if t.Second() == 0 &&
+	if t.Nanosecond() == 0 &&
+		t.Second() == 0 &&
 		t.Minute() == 0 &&
 		t.Hour() == 0 &&
 		t.Day() == 1 &&
@@ -404,6 +436,13 @@ func ParseWeekday(s string) (time.Weekday, error) {
 		}
 	}
 	return time.Weekday(0), fmt.Errorf("Cannot parse weekday: %s", s)
+}
+
+func ToMonthStart(t time.Time) time.Time {
+	return time.Date(
+		t.Year(), t.Month(), 1,
+		0, 0, 0, 0,
+		t.Location())
 }
 
 // TimeMeta is a struct for holding various times related

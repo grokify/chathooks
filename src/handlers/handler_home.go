@@ -9,7 +9,7 @@ import (
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	//cc "github.com/grokify/commonchat"
-	//"github.com/grokify/gotilla/strings/stringsutil"
+	//"github.com/grokify/gotilla/type/stringsutil"
 	"github.com/valyala/fasthttp"
 )
 

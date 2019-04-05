@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
-	im "github.com/grokify/gotilla/io/ioutilmore"
+	iom "github.com/grokify/gotilla/io/ioutilmore"
 	"github.com/grokify/gotilla/os/osutil"
 	"github.com/joho/godotenv"
 )
@@ -40,7 +41,7 @@ func LoadDotEnvSkipEmpty(paths ...string) error {
 		paths = DefaultPaths()
 	}
 
-	envPaths := im.FilterFilenamesSizeGtZero(paths...)
+	envPaths := iom.FilterFilenamesSizeGtZero(paths...)
 
 	if len(envPaths) > 0 {
 		return godotenv.Load(envPaths...)
@@ -53,7 +54,7 @@ func LoadDotEnvFirst(paths ...string) error {
 		paths = DefaultPaths()
 	}
 
-	envPaths := im.FilterFilenamesSizeGtZero(paths...)
+	envPaths := iom.FilterFilenamesSizeGtZero(paths...)
 
 	if len(envPaths) > 0 {
 		return godotenv.Load(envPaths[0])
@@ -70,4 +71,50 @@ func GetDotEnvVal(envPath, varName string) (string, error) {
 		return "", fmt.Errorf("Failed to execute command: %s", cmd)
 	}
 	return string(out), nil
+}
+
+// LoadEnvPaths attempts to load an explicit, env and current path.
+// It returns an error ifexplicit/env paths are present but do not
+// exist or are empty. This is was designed to flexibly handle common
+// .env file paths in a prioritzed and differentiated order.
+func LoadEnvPathsPrioritized(fixedPath, envPath string) error {
+	if goodPath, err := checkEnvPathsPrioritized(fixedPath, envPath); err != nil {
+		return err
+	} else if len(goodPath) > 0 {
+		return godotenv.Load(goodPath)
+	}
+	return nil
+}
+
+func checkEnvPathsPrioritized(fixedPath, envPath string) (string, error) {
+	fixedPath = strings.TrimSpace(fixedPath)
+	if len(fixedPath) > 0 {
+		isFile, err := iom.IsFileWithSizeGtZero(fixedPath)
+		if err != nil {
+			return fixedPath, err
+		} else if !isFile {
+			return fixedPath, fmt.Errorf("Path is not a file or is 0 size [%v]", fixedPath)
+		}
+		return fixedPath, nil
+	}
+
+	envPath = strings.TrimSpace(envPath)
+	if len(envPath) > 0 {
+		isFile, err := iom.IsFileWithSizeGtZero(fixedPath)
+		if err != nil {
+			return envPath, err
+		} else if !isFile {
+			return envPath, fmt.Errorf("Path is not a file or is 0 size [%v]", envPath)
+		}
+		return envPath, nil
+	}
+
+	thisDirPath := "./.env"
+	isFile, err := iom.IsFileWithSizeGtZero(thisDirPath)
+	if err != nil {
+		return thisDirPath, err
+	} else if !isFile {
+		return thisDirPath, fmt.Errorf("Path is not a file or is 0 size [%v]", thisDirPath)
+	}
+	return thisDirPath, nil
 }

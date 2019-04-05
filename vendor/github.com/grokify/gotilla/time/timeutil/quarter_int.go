@@ -5,20 +5,43 @@ package timeutil
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
 func InQuarter(dt time.Time, yyyyq int32) (bool, error) {
+	thsQtrStart, err := QuarterInt32StartTime(yyyyq)
+	if err != nil {
+		return false, err
+	}
+	nxtQtrStart := NextQuarter(thsQtrStart)
+	return (thsQtrStart.Before(dt) || thsQtrStart.Equal(dt)) &&
+		nxtQtrStart.After(dt), nil
+}
+
+func MustInQuarter(dt time.Time, yyyyq int32) bool {
+	thsQtrStart, err := QuarterInt32StartTime(yyyyq)
+	if err != nil {
+		panic(err)
+	}
+	nxtQtrStart := NextQuarter(thsQtrStart)
+	return (thsQtrStart.Before(dt) || thsQtrStart.Equal(dt)) &&
+		nxtQtrStart.After(dt)
+}
+
+/*
+func InQuarterOld(dt time.Time, yyyyq int32) (bool, error) {
 	qtrStart, err := QuarterInt32StartTime(yyyyq)
 	if err != nil {
 		return false, err
 	}
 	return (IsGreaterThan(dt, qtrStart, true) &&
-		IsLessThan(dt, QuarterEnd(qtrStart), true)), nil
+		IsLessThan(dt, NextQuarter(qtrStart), false)), nil
 }
 
-func MustInQuarter(dt time.Time, yyyyq int32) bool {
+func MustInQuarterOld(dt time.Time, yyyyq int32) bool {
 	qtrStart, err := QuarterInt32StartTime(yyyyq)
 	if err != nil {
 		panic(err)
@@ -26,6 +49,7 @@ func MustInQuarter(dt time.Time, yyyyq int32) bool {
 	return (IsGreaterThan(dt, qtrStart, true) &&
 		IsLessThan(dt, QuarterEnd(qtrStart), true))
 }
+*/
 
 func InQuarterTime(dt, qtr time.Time) bool {
 	return IsGreaterThan(dt, QuarterStart(qtr), true) &&
@@ -42,6 +66,16 @@ func QuarterInt32ForTime(dt time.Time) int32 {
 	return (int32(dt.Year()) * int32(10)) + int32(q)
 }
 
+func QuarterInt32Now() int32 { return QuarterInt32ForTime(time.Now()) }
+
+func PraseQuarterInt32StartEndTimes(yyyyq int32) (time.Time, time.Time, error) {
+	start, err := QuarterInt32StartTime(yyyyq)
+	if err != nil {
+		return start, start, err
+	}
+	return start, QuarterEnd(start), nil
+}
+
 func ParseQuarterInt32(yyyyq int32) (int32, uint8, error) {
 	yyyy := int32(float32(yyyyq) / 10.0)
 	q := yyyyq - 10*yyyy
@@ -52,6 +86,22 @@ func ParseQuarterInt32(yyyyq int32) (int32, uint8, error) {
 		return int32(0), uint8(0), fmt.Errorf("Quarter '%v' is not valid", q)
 	}
 	return yyyy, uint8(q), nil
+}
+
+func QuarterStringStartTime(yyyyqStr string) (time.Time, error) {
+	yyyyq, err := strconv.Atoi(yyyyqStr)
+	if err != nil {
+		return time.Now(), err
+	}
+	return QuarterInt32StartTime(int32(yyyyq))
+}
+
+func QuarterStringEndTime(yyyyqStr string) (time.Time, error) {
+	yyyyq, err := strconv.Atoi(yyyyqStr)
+	if err != nil {
+		return time.Now(), err
+	}
+	return QuarterInt32EndTime(int32(yyyyq))
 }
 
 func QuarterInt32StartTime(yyyyq int32) (time.Time, error) {
@@ -103,4 +153,48 @@ func ParseHalf(yyyyh int32) (int32, uint8, error) {
 		return int32(0), uint8(0), fmt.Errorf("Half '%v' is not valid", h)
 	}
 	return yyyy, uint8(h), nil
+}
+
+func QuarterInt32ToYear(yyyyq int32) int32 { return int32(float32(yyyyq) / 10) }
+
+func NextQuarterInt32(yyyyq int32) (int32, error) {
+	t, err := QuarterInt32StartTime(yyyyq)
+	if err != nil {
+		return int32(0), err
+	}
+	tNext := NextQuarter(t)
+	return QuarterInt32ForTime(tNext), nil
+}
+
+// AnyStringToQuarterTime returns the current time if in the
+// current quarter or the end of any previous quarter.
+func AnyStringToQuarterTime(yyyyqSrcStr string) time.Time {
+	yyyyqSrcStr = strings.TrimSpace(yyyyqSrcStr)
+	// If not a string, return now time.
+	if len(yyyyqSrcStr) != 5 {
+		return time.Now().UTC()
+	}
+	// If not a yyyyq pattern, return now time.
+	rx := regexp.MustCompile(`^[0-9]{4}[1-4]$`)
+	m := rx.FindString(strings.TrimSpace(yyyyqSrcStr))
+	if len(m) != 5 {
+		return time.Now().UTC()
+	}
+	// If cannot parse to integer, return now time.
+	yyyyqSrc, err := strconv.Atoi(yyyyqSrcStr)
+	if err != nil {
+		return time.Now().UTC()
+	}
+	// Have good yyyyq
+	// If yyyySrc == yyyyNow, return now time.
+	yyyyqNow := QuarterInt32ForTime(time.Now().UTC())
+	if int32(yyyyqSrc) == yyyyqNow {
+		return time.Now().UTC()
+	}
+	// return quarter end time
+	dtQtrEnd, err := QuarterInt32EndTime(int32(yyyyqSrc))
+	if err != nil {
+		return time.Now().UTC()
+	}
+	return dtQtrEnd.UTC()
 }

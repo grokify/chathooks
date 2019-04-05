@@ -13,23 +13,48 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/grokify/gotilla/encoding/jsonutil"
+	"github.com/grokify/gotilla/type/maputil"
 )
 
-func Copy(src string, dst string) error {
+func CopyFile(src, dst string) (err error) {
 	r, err := os.Open(src)
 	if err != nil {
-		return err
+		return
 	}
 	defer r.Close()
 
 	w, err := os.Create(dst)
 	if err != nil {
-		return err
+		return
 	}
-	defer w.Close()
+	defer func() {
+		if e := w.Close(); e != nil {
+			err = e
+		}
+	}()
 
 	_, err = io.Copy(w, r)
-	return err
+	if err != nil {
+		return
+	}
+
+	err = w.Sync()
+	if err != nil {
+		return
+	}
+
+	si, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	err = os.Chmod(dst, si.Mode())
+	if err != nil {
+		return
+	}
+
+	return
 }
 
 func ReadDirSplit(dirname string, skipDotDirs bool) ([]os.FileInfo, []os.FileInfo, error) {
@@ -76,10 +101,39 @@ func DirEntriesReSizeGt0(dir string, rx1 *regexp.Regexp) ([]os.FileInfo, error) 
 	return filesMatch, nil
 }
 
-// DirFilesSubmatchGreatest takes a directory, regular expression and boolean to indicate
+// DirEntriesRegexpGreatest takes a directory, regular expression and boolean to indicate
 // whether to include zero size files and returns the greatest of a single match in the
 // regular expression.
-func DirFilesSubmatchGreatest(dir string, rx1 *regexp.Regexp, nonZeroFilesOnly bool) (string, error) {
+func DirFilesRegexpSubmatchGreatest(dir string, rx1 *regexp.Regexp, nonZeroFilesOnly bool) ([]os.FileInfo, error) {
+	files := map[string][]os.FileInfo{}
+
+	filesAll, e := ioutil.ReadDir(dir)
+	if e != nil {
+		return []os.FileInfo{}, e
+	}
+	for _, f := range filesAll {
+		if f.Name() == "." || f.Name() == ".." ||
+			(nonZeroFilesOnly && f.Size() <= int64(0)) {
+			continue
+		}
+
+		if rs1 := rx1.FindStringSubmatch(f.Name()); len(rs1) > 1 {
+			extract := rs1[1]
+			if _, ok := files[extract]; !ok {
+				files[extract] = []os.FileInfo{}
+			}
+			files[extract] = append(files[extract], f)
+		}
+	}
+	keysSorted := maputil.StringKeysSorted(files)
+	greatest := keysSorted[len(keysSorted)-1]
+	return files[greatest], nil
+}
+
+// DirFilesRegexpSubmatchGreatestSubmatch takes a directory, regular expression and boolean to indicate
+// whether to include zero size files and returns the greatest of a single match in the
+// regular expression.
+func DirFilesRegexpSubmatchGreatestSubmatch(dir string, rx1 *regexp.Regexp, nonZeroFilesOnly bool) (string, error) {
 	filesAll, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return "", err
@@ -131,53 +185,36 @@ func DirFromPath(path string) (string, error) {
 	return dir, nil
 }
 
-func GetFileInfo(path string) (os.FileInfo, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return f.Stat()
-}
-
-func IsDir(path string) (bool, error) {
-	fi, err := GetFileInfo(path)
-	if err != nil {
+func IsDir(name string) (bool, error) {
+	if fi, err := os.Stat(name); err != nil {
 		return false, err
-	}
-	switch mode := fi.Mode(); {
-	case mode.IsDir():
-		return true, nil
-	case mode.IsRegular():
+	} else if !fi.Mode().IsDir() {
 		return false, nil
 	}
-	return false, nil
+	return true, nil
 }
 
-func IsFile(path string) (bool, error) {
-	fi, err := GetFileInfo(path)
-	if err != nil {
+func IsFile(name string) (bool, error) {
+	if fi, err := os.Stat(name); err != nil {
 		return false, err
-	}
-	switch mode := fi.Mode(); {
-	case mode.IsDir():
+	} else if !fi.Mode().IsRegular() {
 		return false, nil
-	case mode.IsRegular():
-		return true, nil
 	}
-	return false, nil
+	return true, nil
 }
 
-func IsFileWithSizeGtZero(path string) (bool, error) {
-	fi, err := GetFileInfo(path)
-	if err != nil {
+// IsFileWithSizeGtZero verifies a path exists, is a file and is not empty,
+// returning an error otherwise. An os file not exists check can be done
+// with os.IsNotExist(err) which acts on error from os.Stat()
+func IsFileWithSizeGtZero(name string) (bool, error) {
+	if fi, err := os.Stat(name); err != nil {
 		return false, err
-	}
-	if fi.Mode().IsRegular() == false {
-		err = errors.New("400: file path is not a file")
-		return false, err
+	} else if !fi.Mode().IsRegular() {
+		return false, nil
+		// return fmt.Errorf("Filepath [%v] exists but is not a file.", name)
 	} else if fi.Size() <= 0 {
 		return false, nil
+		// return fmt.Errorf("Filepath [%v] exists but is empty with size [%v].", name, fi.Size())
 	}
 	return true, nil
 }
@@ -190,8 +227,7 @@ func FilterFilenamesSizeGtZero(filepaths ...string) []string {
 		for _, envPath := range envPathVals {
 			envPath = strings.TrimSpace(envPath)
 
-			good, err := IsFileWithSizeGtZero(envPath)
-			if err == nil && good {
+			if isFile, err := IsFileWithSizeGtZero(envPath); isFile && err == nil {
 				filepathsExist = append(filepathsExist, envPath)
 			}
 		}
@@ -239,21 +275,35 @@ func ReaderToBytes(ior io.Reader) []byte {
 	return buf.Bytes()
 }
 
-func WriteJSON(filepath string, data interface{}, perm os.FileMode, wantPretty bool) error {
-	bytes := []byte{}
-	if wantPretty {
-		bytesTry, err := json.MarshalIndent(data, "", "  ")
-		if err != nil {
-			return err
-		}
-		bytes = bytesTry
-	} else {
-		bytesTry, err := json.Marshal(data)
-		if err != nil {
-			return err
-		}
-		bytes = bytesTry
+// ReadFileJSON reads and unmarshals a file.
+func ReadFileJSON(file string, v interface{}) error {
+	bytes, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err
 	}
+	return json.Unmarshal(bytes, v)
+}
+
+func WriteFileJSON(filepath string, data interface{}, perm os.FileMode, prefix, indent string) error {
+	var bytes []byte
+	bytes, err := jsonutil.MarshalSimple(data, prefix, indent)
+	if err != nil {
+		return err
+	}
+	/*
+		if wantPretty {
+			bytesTry, err := json.MarshalIndent(data, "", "  ")
+			if err != nil {
+				return err
+			}
+			bytes = bytesTry
+		} else {
+			bytesTry, err := json.Marshal(data)
+			if err != nil {
+				return err
+			}
+			bytes = bytesTry
+		}*/
 	return ioutil.WriteFile(filepath, bytes, perm)
 }
 
