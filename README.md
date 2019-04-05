@@ -264,7 +264,7 @@ More information on deploying Go on Heroku here:
 Set up your own Go app on Heroku easily using [`goheroku`](https://github.com/grokify/goheroku).
 
 
-## Credeits
+## Credits
 
 Chathooks is built using:
 
