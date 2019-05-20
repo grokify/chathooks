@@ -1,0 +1,415 @@
+{
+    // The account connected to the event (always present)
+    account: {
+
+      // The ID of the account (always present)
+      id: "56b9ca7f17025f8756f69054",
+
+      // The name of the account (always present)
+      name: "My Company",
+
+      // The URL to the account (always present)
+      url: "https://app.bugsnag.com/accounts/my-company"
+    },
+
+    // The project connected to the event (always present)
+    project: {
+
+      // The ID of the project (always present)
+      id: "56b9ca7f17025f8756f69054",
+
+      // The name of the project (always present)
+      name: "My Test Project",
+
+      // The URL to the project (always present)
+      url: "https://app.bugsnag.com/my-company/my-test-project"
+    },
+
+    // The reason why the payload was fired (always present)
+    trigger: {
+
+        // The type of trigger sent (always present)
+        // - "firstException"         A new error is created from a new exception
+        // - "powerTen"               An error occurs frequently
+        // - "exception"              Every time an exception is received
+        // - "reopened"               An error is automatically reopened
+        // - "projectSpiking"         A spike in exception in a project has been detected
+        // - "comment"                A comment is added to an error
+        // - "errorStateManualChange" A user has manually changed the state of an error
+        type: "exception",
+
+        // Detailed description of why the trigger was fired (always present)
+        message: "1000th exception",
+
+        // The snooze rule associated with the trigger, if applicable (optional).
+        // This can be the snooze rule that caused this event to occur if its reopened from
+        // archived, or the snooze rule connected to the user action of snoozing
+        // or cancelling a snooze.
+        snoozeRule: {
+
+            // The type of rule that (always present)
+            // - "occurrences"          An error as reoccurred a number of times
+            // - "occurrence_per_hour"  An error as reoccurred a number of times in an hour
+            // - "occurs_after"         An error as reoccurred after a period of time
+            type: "occurrences",
+
+            // The number of occurrences or minutes (always present)
+            ruleValue: 10            
+        },
+
+        // The number of events that have occurred in the project of the spiking time,
+        // if the trigger is project spiking (optional)
+        rate: 5000,
+
+        // The state change that occurred if the trigger is a manual error state change (optional).
+        // This can be "fixed", "reopened", "snoozed", "snoozeCancelled", "ignored"
+        // and "unignored".
+        stateChange: ""
+    },
+
+    // The comment details if a comment was added (optional)
+    comment: {
+
+    },
+
+    // The user that created the comment, if comment was added (optional)
+    user: {
+
+        // A unique identifier for a user who made the comment (always present)
+        id: "56b9ca7f17025f8756f69054",
+
+        // The user's name, or a string used to identify them (always present)
+        name: "Example User",
+
+        // The user's email address (always present)
+        email: "user@example.com"
+    },
+
+    // The event that caused this trigger to fire if applicable (optional)
+    error: {
+
+        // The ID of the event (always present)
+        id: "56b9ca7f17025f8756f69054",
+
+        // The ID of the error containing the event (always present)
+        errorId: "56b9ca7f17025f8756f69054",
+
+        // The name of the exception class from the event (always present)
+        exceptionClass: "NoMethodError",
+
+        // The message associated with the event (always present)
+        message: "Unable to connect to database.",
+
+        // A string representing what was happening in the application at the
+        // time of the error (always present)
+        context: "auth/session#create",
+
+        // The timestamp when the error was first created (always present)
+        firstReceived: "2015-11-27T15:26:11.000Z",
+
+        // The timestamp when this event was received (always present)
+        receivedAt: "2015-11-27T15:26:11.000Z",
+
+        // The request URL that caused the exception (optional)
+        requestUrl: "http://localhost:3000/admin/raise_exception",
+
+        // The user ID that the error is assigned to (optional)
+        assignedUserId: "5642494942656e7eac000004",
+
+        // The bugsnag URL to the event (always present)
+        url: "https://app.bugsnag.com/my-company/my-test-project/errors/56b9ca7f17025f8756f69054?event_id=56b9ca7f17025f8756f69054",
+
+        // The severity of the error (always present)
+        // - "error"   the default for unhandled errors
+        // - "warning" the default when Bugsnag.notify is called
+        // - "info"    can be used in manual Bugsnag.notify calls
+        severity: "error",
+
+        // The status of the error (always present)
+        // - "open"    the error is open/new in Bugsnag
+        // - "fixed"   the error has been marked as fixed in Bugsnag
+        // - "snoozed" the error has been snoozed in Bugsnag
+        // - "ignored" the error has been ignored in Bugsnag
+        status: "open",
+
+        // Whether or not the error was unhandled (optional)
+        // This can be set to:
+        // - true   The error was detected by the notifier because it was not
+        //          handled by the application
+        // - false  The error was handled and reported using Bugsnag.notify
+        unhandled: true,
+
+        // If there is a linked issue in an issue tracker then the details
+        // will be given here (optional)
+        createdIssue: {
+
+            // The ID of the issue in the issue tracker (optional)
+            id: "BUG123",
+
+            // The number of the issue in the issue tracker (optional)
+            number: 3,
+
+            // The name of the issue tracker (always present)
+            type: "bugify",
+
+            // The url to view the issue (always present)
+            url: "http://demo.bugify.com/issues/3"
+        },
+
+        // Information about the user affected by the error. Custom data
+        // will be included in the metaData object in a user object (optional)
+        user: {
+
+            // A unique identifier for a user affected by the event.
+            // This is a distinct identifier that makes sense for your
+            // application/platform (optional)
+            id: "19",
+
+            // The user's name, or a string you use to identify them (optional)
+            name: "Robert Hawkins",
+
+            //The user's email address (optional)
+            email: "bob@example.com"          
+        },
+
+        // Information about the app where the error occurred. Custom data
+        // will be included in the metaData object in an app object (always present)
+        app: {
+
+            // A unique ID for the application (optional)
+            id: "com.bugsnag.android.example.debug",
+
+            // The version number of the application which generated the error (optional)
+            version: "1.1.3",
+
+            // The version code of the application (optional, Android/iOS/macOS/tvOS only)
+            versionCode: "12",
+
+            // The bundle version/build number of the application (optional, iOS/macOS/tvOS only)
+            bundleVersion: "1.0.2",
+
+            // A unique identifier to identify a code bundle release when using
+            // tools like AppCenter CodePush (optional, mobile only)
+            codeBundleId: "1.0-1234",
+
+            // A build ID that is required to identify a specific build when the
+            // version and version code are the same (optional, Android only)
+            buildUUID: "BE5BA3D0-971C-4418-9ECF-E2D1ABCB66BE",
+
+            // The release stage that this error occurred in, for example
+            // "development", "staging" or "production" (always present)
+            releaseStage: "staging",
+
+            // A specialized type of the application, such as the worker queue
+            // or web framework used, like "rails", "mailman", or "celery" (optional)
+            type: "rails",
+
+            // The UUIDs of the debug symbols file corresponding to this
+            // application, if any (optional)
+            dsymUUIDs: [
+              "e6173678256785afd940392abee"
+            ],
+
+            // How long the app has been running for in milliseconds (optional)
+            duration: 1275,
+
+            // How long the app has been in the foreground of the device in
+            // milliseconds (optional)
+            durationInForeground: 983,
+
+            // Whether or not the app was in the foreground when the error
+            // occurred (optional)
+            inForeground: true
+        },
+
+        // Information about the computer/device running the app. Custom data
+        // will be included in the metaData object in a device object (optional)
+        device: {
+
+            // The hostname of the server running your code, if applicable (optional)
+            hostname: "web1.internal",
+
+            // A unique identifier for the device (optional)
+            id: "fd124e87760c4281aef",
+
+            // The manufacturer of the device (optional)
+            manufacturer: "LGE",
+
+            // The model of the device (optional)
+            model: "Nexus 6P",
+
+            // The model number of the device (optional)
+            modelNumber: "600",
+
+            // The device's operating system name (optional)
+            osName: "android",
+
+            // The device's operating system version (optional)
+            osVersion: "8.0.1",
+
+            // The number of bytes unused in the device's RAM (optional)
+            freeMemory: 183879616,
+
+            // The number of total bytes in the device's RAM (optional)
+            totalMemory: 201326592,
+
+            // The number of unused bytes on the drive running the application (optional)
+            freeDisk: 13478064128,
+
+            // If a web application, the web browser used by the device (optional)
+            browserName: "Chrome",
+
+            // If a web application, the version of the browser used by the
+            // device (optional)
+            browserVersion: "61.0.3163.100",
+
+            // Whether or not the device has been modified to give users root
+            // access (optional)
+            jailbroken: false,
+
+            // The orientation of the device at the time of the error (optional)
+            orientation: "portrait",
+
+            // The locale of the device (optional)
+            locale: "en_US",
+
+            // Whether or not the device was currently charging at the time of
+            // error (optional)
+            charging: false,
+
+            // The battery level at the time of error, between 0 and 1 (optional)
+            batteryLevel: 0.99,
+
+            // The time that the error occurred (optional)
+            time: "2015-01-15T02:42:16.000Z",
+
+            // The timezone of the device (optional)
+            timezone: "PST"
+        },
+
+        // An object containing any further data attached to this
+        // error event (optional)
+        metaData: {
+
+            // Custom user data that is displayed in the User tab along
+            // with standard user fields on the Bugsnag Website (optional)
+            user: {
+               ...
+            },
+
+            // Custom app data that is displayed in the App tab along
+            // with standard app fields on the Bugsnag Website (optional)
+            app: {
+               ...
+            },
+
+            // Custom device data that is displayed in the Device tab along
+            // with standard device fields on the Bugsnag Website (optional)
+            device: {
+               ...
+            },
+
+            // Custom data that is displayed as an extra tab on the Bugsnag
+            // website (optional)
+            someData: {
+
+                // A key value pair that is be displayed in the first tab (optional)
+                key: "value",
+
+                // This is shown as a section within the first tab (optional)
+                setOfKeys: {
+                    key: "value",
+                    key2: "value"
+                }
+            },
+
+            // This would be the second extra tab on the Bugsnag website (optional)
+            someMoreData: {
+                ...
+            }
+        },
+
+        // An array of stacktrace objects. Each object represents one line
+        // in the exception's stacktrace (optional)
+        stackTrace: [{
+
+            // Whether or not this line is in the user's project code (always present)
+            inProject: true,
+
+            // The line of the file that this frame of the stack was in (optional)
+            lineNumber: 1234,
+
+            // The column of the file that this frame of the stack was in (optional)
+            columnNumber: 123,
+
+            // The file that this stack frame was executing (optional)
+            file: "controllers/auth/session_controller.rb",
+
+            // The method that this particular stack frame is within (optional)
+            method: "create",
+
+            // The code in this file surrounding this line, up to three lines
+            // either side of the line that caused the problem (optional)
+            code: {
+                1231: "  def a",
+                1232: "",
+                1233: "    if problem?",
+                1234: "      raise 'something went wrong'",
+                1235: "    end"
+                1236: "",
+                1237: "  end"
+            }
+        }]   
+    },
+
+    // Information relating to a new release, if a new release occurred (optional)
+    release: {
+
+        // The ID of the release (always present)
+        id: "5a8ef30ed1befa487890a0fc",
+
+        // The version number of the application (always present)
+        version: "1.2.3",
+
+        // The version code of the application (optional, Android only)
+        versionCode: "1234",
+
+        // The bundle version/build number of the application (optional, iOS/macOS/tvOS only)
+        bundleVersion: "1.2.3",
+
+        // The release stage the release was released to e.g. production, staging (always present)
+        releaseStage: "staging",
+
+        // The URL to the release (always present)
+        url: "https://app.bugsnag.com/bugsnag/website/releases/5a8ef30ed1befa487890a0fc",
+
+        // The time the release was released (always present)
+        releaseTime: "2018-02-23T16:42:16.080Z",
+
+        // The person the release was released by, if provided (optional)
+        releasedBy: "John Smith",
+
+        // The source control information related to the release, if provided (optional)
+        sourceControl: {
+
+            // The name of the source control provider that contains the source code for the build (always present)
+            provider: "github",
+
+            // The source control SHA-1 hash for the code that has been built ,short or long hash (always present)
+            revision: "2ea8b513f049e8b9db8d3ad4f148242c422bb9e6",
+
+            // The URL to the revision of the release (always present)
+            revisionUrl: "https://github.com/bugsnag/website/tree/2ea8b513f049e8b9db8d3ad4f148242c422bb9e6",
+
+            // The URL to the diff between this release and the previous release, if applicable (optional)
+            diffUrl: "https://github.com/bugsnag/website/compare/2ea8b513f049e8b9db8d3ad4f148242c422bb9e6...2ea8b513f049e8b9db8d3ad4f148242c422bb9e6"
+        },
+
+        // Key value pairs containing any custom build information that provides useful metadata about the build. e.g. 
+        // build configuration parameters, versions of dependencies, reason for the build etc. The keys and values are 
+        // strings (optional)
+        metadata: {
+            "myKey": "myValue"
+        }
+    }
+}

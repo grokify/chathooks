@@ -29,6 +29,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
 	"github.com/grokify/chathooks/src/handlers/apteligent"
+	"github.com/grokify/chathooks/src/handlers/bugsnag"
 	"github.com/grokify/chathooks/src/handlers/circleci"
 	"github.com/grokify/chathooks/src/handlers/codeship"
 	"github.com/grokify/chathooks/src/handlers/confluence"
@@ -139,6 +140,7 @@ func NewService() Service {
 		"aha":        hf.InflateHandler(aha.NewHandler()),
 		"appsignal":  hf.InflateHandler(appsignal.NewHandler()),
 		"apteligent": hf.InflateHandler(apteligent.NewHandler()),
+		"bugsnag":    hf.InflateHandler(bugsnag.NewHandler()),
 		"circleci":   hf.InflateHandler(circleci.NewHandler()),
 		"codeship":   hf.InflateHandler(codeship.NewHandler()),
 		"confluence": hf.InflateHandler(confluence.NewHandler()),
