@@ -97,6 +97,17 @@ $ git push heroku master
 $ heroku open
 ```
 
+## AWS Lambda
+
+The following will generate a `main.zip` file to upload to AWS Lambda.
+
+```
+$ go get github.com/grokify/chathooks
+$ cd chathooks
+$ sh aws-package.sh
+$ ls main.zip
+```
+
 # Configuration
 
 ## Environment Variables
@@ -130,6 +141,9 @@ $ ./main
 ## Using the AWS Engine
 
 To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
+
+### Installing using the AWS Lambda UI
+
 
 ### Installation via AWS Lambda
 
