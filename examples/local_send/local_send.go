@@ -24,6 +24,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers/aha"
 	"github.com/grokify/chathooks/src/handlers/appsignal"
 	"github.com/grokify/chathooks/src/handlers/apteligent"
+	"github.com/grokify/chathooks/src/handlers/bugsnag"
 	"github.com/grokify/chathooks/src/handlers/circleci"
 	"github.com/grokify/chathooks/src/handlers/codeship"
 	"github.com/grokify/chathooks/src/handlers/confluence"
@@ -51,7 +52,7 @@ import (
 type cliOptions struct {
 	GuidOrWebhook string `short:"u" long:"url" description:"Webhook or GUID" required:"true"`
 	Adapter       string `short:"a" long:"adapter" description:"Adapter" required:"true"`
-	Service       string `short:"s" long:"service" description:"Service"`
+	Service       string `short:"s" long:"service" description:"Service" required:"true"`
 }
 
 const (
@@ -122,7 +123,7 @@ func run(opts cliOptions) {
 func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error {
 	webhookURLOrUID := opts.GuidOrWebhook
 	adapterType := opts.Adapter
-	example := opts.Service
+	service := opts.Service
 
 	sender := Sender{}
 	if adapterType == "glip" {
@@ -155,7 +156,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 	}
 	fmtutil.PrintJSON(exampleData)
 
-	switch example {
+	switch service {
 	case "aha":
 		source := exampleData.Data[aha.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
@@ -171,6 +172,8 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(apteligent.ExampleMessage(cfg, exampleData, eventSlug))
 		}
+	case "bugsnag":
+		sender.SendCcMessage(bugsnag.ExampleMessage(cfg, exampleData))
 	case "circleci":
 		sender.SendCcMessage(circleci.ExampleMessage(cfg, exampleData))
 	case "codeship":
@@ -255,7 +258,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 	case "victorops":
 		sender.SendCcMessage(victorops.ExampleMessage(cfg, exampleData))
 	default:
-		return errors.New(fmt.Sprintf("Unknown webhook source %v\n", example))
+		return errors.New(fmt.Sprintf("Unknown webhook source [%s]\n", service))
 	}
 	return nil
 }

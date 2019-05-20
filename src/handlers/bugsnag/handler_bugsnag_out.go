@@ -220,11 +220,11 @@ func (bp *BugsnagProject) MarkdownLink() string {
 }
 
 type BugsnagTrigger struct {
-	Type        string `json:"type,omitempty"`
-	Message     string `json:"message,omitempty"`
-	SnoozeRule  string `json:"snoozeRule,omitempty"`
-	Rate        int32  `json:"rate,omitempty"`
-	StateChange string `json:"stateChange,omitempty"`
+	Type        string            `json:"type,omitempty"`
+	Message     string            `json:"message,omitempty"`
+	SnoozeRule  BugsnagSnoozeRule `json:"snoozeRule,omitempty"`
+	Rate        int32             `json:"rate,omitempty"`
+	StateChange string            `json:"stateChange,omitempty"`
 }
 
 type BugsnagSnoozeRule struct {
@@ -315,7 +315,7 @@ type BugsnagErrorDevice struct {
 	FreeDisk       int       `json:"freeDisk,omitempty"`
 	BrowserName    string    `json:"browserName,omitempty"`
 	BrowserVersion string    `json:"browserVersion,omitempty"`
-	Jailbroken     string    `json:"jailbroken,omitempty"`
+	Jailbroken     bool      `json:"jailbroken,omitempty"`
 	Orientation    string    `json:"orientation,omitempty"`
 	Locale         string    `json:"locale,omitempty"`
 	Charging       bool      `json:"charging,omitempty"`
@@ -325,7 +325,7 @@ type BugsnagErrorDevice struct {
 }
 
 type BugsnagErrorStackTrace struct {
-	InProject    string            `json:"inProject,omitempty"`
+	InProject    bool              `json:"inProject,omitempty"`
 	LineNumber   int               `json:"lineNumber,omitempty"`
 	ColumnNumber int               `json:"columnNumber,omitempty"`
 	File         string            `json:"file,omitempty"`

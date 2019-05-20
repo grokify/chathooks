@@ -38,6 +38,9 @@ func ExampleDataRaw() []byte {
         "apteligent":{
             "event_slugs": ["alert","alert-open","alert-close"]
         },
+        "bugsnag":{
+            "event_slugs": ["exception"]
+        },
         "confluence":{
             "event_slugs": ["page-created","comment-created"]
         },
