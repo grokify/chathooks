@@ -51,34 +51,9 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		return ccMsg, err
 	}
 
-	parts := []string{}
-
-	triggerMsg := strings.TrimSpace(src.Trigger.Message)
-	if len(triggerMsg) > 0 {
-		parts = append(parts, fmt.Sprintf("**%s**", triggerMsg))
-	}
-
-	stage := strings.TrimSpace(src.Release.ReleaseStage)
-	if len(stage) > 0 {
-		parts = append(parts, fmt.Sprintf("in **%s**", stage))
-	}
-
-	projLink := src.Project.MarkdownLink()
-	if len(projLink) > 0 {
-		parts = append(parts, fmt.Sprintf("from **%s**", projLink))
-	}
-
-	if len(src.Error.Context) > 0 {
-		parts = append(parts, fmt.Sprintf("in %s", src.Error.Context))
-	}
-
-	if len(src.Error.Url) > 0 {
-		details := fmt.Sprintf("([details](%s))", src.Error.Url)
-		parts = append(parts, details)
-	}
-
-	if len(parts) > 0 {
-		ccMsg.Title = strings.Join(parts, " ")
+	textMessage := buildTextMessage(src)
+	if len(textMessage) > 0 {
+		ccMsg.Title = textMessage
 	}
 
 	fields := []cc.Field{}
@@ -110,6 +85,10 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 			}
 		}
 
+		if len(src.Error.Url) > 0 {
+			status = fmt.Sprintf("[%s](%s)", status, src.Error.Url)
+		}
+
 		fields = append(fields, cc.Field{
 			Title: "Status",
 			Value: status})
@@ -123,44 +102,37 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		ccMsg.AddAttachment(attachment)
 	}
 
-	/*
-				if len(src.ActorName) > 0 {
-					ccMsg.Activity = src.ActorName
-				}
-
-				attachment := cc.NewAttachment()
-
-				if len(src.Model.Subject) > 0 {
-					attachment.Text = src.Model.Subject
-				}
-				if len(src.Model.State) > 0 {
-					attachment.AddField(cc.Field{
-						Title: "State",
-						Value: stringsutil.ToUpperFirst(src.Model.State)})
-				}
-				ccMsg.AddAttachment(attachment)
-
-		   "stackTrace":[
-		     {
-		       "inProject":true,
-		       "lineNumber":1234,
-		       "columnNumber":123,
-		       "file":"controllers/auth/session_controller.rb",
-		       "method":"create",
-		       "code":{
-		         "1231":"  def a",
-		         "1232":"",
-		         "1233":"    if problem?",
-		         "1234":"      raise 'something went wrong'",
-		         "1235":"    end",
-		         "1236":"",
-		         "1237":"  end"
-		       }
-		     }
-		   ]
-	*/
-
 	return ccMsg, nil
+}
+
+func buildTextMessage(src BugsnagOutMessage) string {
+	parts := []string{}
+
+	triggerMsg := strings.TrimSpace(src.Trigger.Message)
+	if len(triggerMsg) > 0 {
+		parts = append(parts, fmt.Sprintf("**%s**", triggerMsg))
+	}
+
+	stage := strings.TrimSpace(src.Release.ReleaseStage)
+	if len(stage) > 0 {
+		parts = append(parts, fmt.Sprintf("in **%s**", stage))
+	}
+
+	projLink := src.Project.MarkdownLink()
+	if len(projLink) > 0 {
+		parts = append(parts, fmt.Sprintf("from **%s**", projLink))
+	}
+
+	if len(src.Error.Context) > 0 {
+		parts = append(parts, fmt.Sprintf("in %s", src.Error.Context))
+	}
+
+	if len(src.Error.Url) > 0 {
+		details := fmt.Sprintf("([details](%s))", src.Error.Url)
+		parts = append(parts, details)
+	}
+
+	return strings.Join(parts, " ")
 }
 
 func BugsnagOutMessageFromBytes(bytes []byte) (BugsnagOutMessage, error) {
@@ -349,27 +321,3 @@ func (st *BugsnagErrorStackTrace) Location() string {
 	}
 	return location
 }
-
-/*
-
-controllers/example.rb:11 - example_call
-
-   "stackTrace":[
-     {
-       "inProject":true,
-       "lineNumber":1234,
-       "columnNumber":123,
-       "file":"controllers/auth/session_controller.rb",
-       "method":"create",
-       "code":{
-         "1231":"  def a",
-         "1232":"",
-         "1233":"    if problem?",
-         "1234":"      raise 'something went wrong'",
-         "1235":"    end",
-         "1236":"",
-         "1237":"  end"
-       }
-     }
-   ]
-*/
