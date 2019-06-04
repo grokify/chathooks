@@ -33,10 +33,11 @@ const (
 )
 
 type cliOptions struct {
-	UrlOrGuid string `short:"u" long:"url" description:"Webhook URL or GUID" required:"true"`
-	Input     string `short:"i" long:"input" description:"Input Service"`
-	Output    string `short:"o" long:"output" description:"Output Adapter" required:"true"`
-	Token     string `short:"t" long:"token" description:"Token"`
+	UrlOrGuid    string `short:"u" long:"url" description:"Webhook URL or GUID" required:"true"`
+	Input        string `short:"i" long:"input" description:"Input Service"`
+	Output       string `short:"o" long:"output" description:"Output Adapter" required:"true"`
+	Token        string `short:"t" long:"token" description:"Token"`
+	ChathooksURL string `short:"c" long:"chathooks_url" description:"Chathooks URL"`
 }
 
 type ExampleWebhookSender struct {
@@ -84,8 +85,7 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 		InputType:  inputType,
 		OutputType: s.RequestParams.OutputType,
 		Token:      s.RequestParams.Token,
-		URL:        s.RequestParams.URL,
-	}
+		URL:        s.RequestParams.URL}
 
 	fullUrl := BuildURLQueryString(s.BaseUrl, qry)
 	fmt.Printf("FULL_URL: %v\n", fullUrl)
@@ -146,9 +146,14 @@ func main() {
 
 	fmtutil.PrintJSON(qry)
 
+	chathooksUrl := "http://localhost:8080/hook"
+	if len(strings.TrimSpace(opts.ChathooksURL)) > 0 {
+		chathooksUrl = opts.ChathooksURL
+	}
+
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
-		BaseUrl:        "http://localhost:8080/hook",
+		BaseUrl:        chathooksUrl,
 		RequestParams:  qry}
 
 	if len(sender.RequestParams.URL) == 0 {

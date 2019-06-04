@@ -39,6 +39,7 @@ Multiple input webhook formats are supported via handlers. New ones can be easil
 1. [Aha!](https://support.aha.io/hc/en-us/articles/202000997-Integrate-with-Webhooks)
 1. [AppSignal](http://docs.appsignal.com/application/integrations/webhooks.html)
 1. [Apteligent/Crittercism]()
+1. [Bugsnag](https://docs.bugsnag.com/product/integrations/webhook/)
 1. [Circle CI](https://circleci.com/docs/1.0/configuration/#notify)
 1. [Codeship](https://documentation.codeship.com/basic/getting-started/webhooks/)
 1. [Confluence](https://developer.atlassian.com/static/connect/docs/beta/modules/common/webhook.html)
@@ -253,7 +254,16 @@ Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112
 
 ![](docs/images/glip_webhook_step-3_details.png)
 
-# Extending
+# Development
+
+## Testing new handlers
+
+It's easy to test handlers by sending messages using the example messages per service.
+
+Code is provided to both send the message locally (without HTTP) and over HTTP.
+
+* [`local_send.go` without HTTP](https://github.com/grokify/chathooks/tree/master/examples/local_send)
+* [`proxy_send.go` over HTTP](https://github.com/grokify/chathooks/tree/master/examples/proxy_send)
 
 ## Adding Handlers
 
