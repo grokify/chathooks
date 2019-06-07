@@ -3,7 +3,6 @@ package bugsnag
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -298,8 +297,8 @@ type BugsnagErrorDevice struct {
 
 type BugsnagErrorStackTrace struct {
 	InProject    bool              `json:"inProject,omitempty"`
-	LineNumber   int               `json:"lineNumber,omitempty"`
-	ColumnNumber int               `json:"columnNumber,omitempty"`
+	LineNumber   json.Number       `json:"lineNumber,omitempty"`
+	ColumnNumber json.Number       `json:"columnNumber,omitempty"`
 	File         string            `json:"file,omitempty"`
 	Method       string            `json:"method,omitempty"`
 	Code         map[string]string `json:"code,omitempty"`
@@ -312,8 +311,8 @@ func (st *BugsnagErrorStackTrace) Location() string {
 	st.Method = strings.TrimSpace(st.Method)
 	if len(st.File) > 0 {
 		location = st.File
-		if st.LineNumber > 0 {
-			location += ":" + strconv.Itoa(st.LineNumber)
+		if len(st.LineNumber.String()) > 0 {
+			location += ":" + st.LineNumber.String()
 		}
 		if len(st.Method) > 0 {
 			location += " - " + st.Method
