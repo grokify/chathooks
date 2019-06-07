@@ -6,8 +6,8 @@ import (
 	cc "github.com/grokify/commonchat"
 )
 
-func ExampleMessage(cfg config.Configuration, data util.ExampleData) (cc.Message, error) {
-	bytes, err := data.ExampleMessageBytes(HandlerKey, "exception")
+func ExampleMessage(cfg config.Configuration, data util.ExampleData, eventSlug string) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, eventSlug)
 	if err != nil {
 		return cc.Message{}, err
 	}

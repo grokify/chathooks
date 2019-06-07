@@ -63,14 +63,17 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 			Value: src.Error.Message})
 	}
 
+	stLocations := []string{}
 	for _, st := range src.Error.StackTrace {
 		location := strings.TrimSpace(st.Location())
 		if len(location) > 0 {
-			fields = append(fields, cc.Field{
-				Title: "Location",
-				Value: location})
-			break
+			stLocations = append(stLocations, "* "+location)
 		}
+	}
+	if len(stLocations) > 0 {
+		fields = append(fields, cc.Field{
+			Title: "Stack Trace",
+			Value: strings.Join(stLocations, "\n")})
 	}
 
 	if len(strings.TrimSpace(src.Error.Status)) > 0 {

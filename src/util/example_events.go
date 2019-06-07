@@ -39,7 +39,7 @@ func ExampleDataRaw() []byte {
             "event_slugs": ["alert","alert-open","alert-close"]
         },
         "bugsnag":{
-            "event_slugs": ["exception"]
+            "event_slugs": ["exception-stack-trace-single","exception-stack-trace-multi"]
         },
         "confluence":{
             "event_slugs": ["page-created","comment-created"]

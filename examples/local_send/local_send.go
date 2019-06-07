@@ -173,7 +173,11 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 			sender.SendCcMessage(apteligent.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "bugsnag":
-		sender.SendCcMessage(bugsnag.ExampleMessage(cfg, exampleData))
+		//sender.SendCcMessage(bugsnag.ExampleMessage(cfg, exampleData))
+		source := exampleData.Data[bugsnag.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(bugsnag.ExampleMessage(cfg, exampleData, eventSlug))
+		}
 	case "circleci":
 		sender.SendCcMessage(circleci.ExampleMessage(cfg, exampleData))
 	case "codeship":
