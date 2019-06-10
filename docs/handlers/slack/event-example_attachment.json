@@ -1,0 +1,16 @@
+{
+    "username":"updown.io",
+    "attachments":[
+      {
+        "text":"*World* :+1:",
+        "fallback":"Hello World :+1:",
+        "mrkdwn_in":[
+          "text",
+          "pretext",
+          "fields"
+        ],
+        "pretext":"Hello"
+      }
+    ],
+    "icon_url":"https://updown.io/square-logo.png"
+}
