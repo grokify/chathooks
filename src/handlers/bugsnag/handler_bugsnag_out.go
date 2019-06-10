@@ -273,8 +273,8 @@ type BugsnaggErrorApp struct {
 	Type                 string   `json:"type,omitempty"`
 	DsymUUIDs            []string `json:"dsymUUIDs,omitempty"`
 	Duration             int      `json:"duration,omitempty"`
-	durationInForeground int      `json:"durationInForeground,omitempty"`
-	inForeground         bool     `json:"inForeground,omitempty"`
+	DurationInForeground int      `json:"durationInForeground,omitempty"`
+	InForeground         bool     `json:"inForeground,omitempty"`
 }
 
 type BugsnagErrorDevice struct {
