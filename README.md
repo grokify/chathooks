@@ -51,6 +51,7 @@ Multiple input webhook formats are supported via handlers. New ones can be easil
 1. [Librato](https://www.librato.com/docs/kb/alert/service_integrations/webhook/)
 1. [Magnum CI](https://github.com/magnumci/documentation/blob/master/webhooks.md)
 1. [Marketo](http://developers.marketo.com/webhooks/)
+1. [Nixstats](https://help.nixstats.com/en/article/nixstats-slack-integration-outgoing-webhook-oui1lg/) (Slack webhook proxy)
 1. [OpsGenie](https://docs.opsgenie.com/docs/webhook-integration)
 1. [Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/)
 1. [Pingdom](https://www.pingdom.com/resources/webhooks)
