@@ -80,6 +80,9 @@ func ExampleDataRaw() []byte {
         "semaphore":{
             "event_slugs":["build","deploy"]
         },
+        "slack":{
+            "event_slugs":["attachment"]
+        },
         "statuspage":{
             "event_slugs":["incident-updates","incident-updates-create","component-updates"]
         },

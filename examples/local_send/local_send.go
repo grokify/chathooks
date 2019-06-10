@@ -43,6 +43,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers/raygun"
 	"github.com/grokify/chathooks/src/handlers/runscope"
 	"github.com/grokify/chathooks/src/handlers/semaphore"
+	"github.com/grokify/chathooks/src/handlers/slack"
 	"github.com/grokify/chathooks/src/handlers/statuspage"
 	"github.com/grokify/chathooks/src/handlers/travisci"
 	"github.com/grokify/chathooks/src/handlers/userlike"
@@ -246,6 +247,11 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		source := exampleData.Data[semaphore.HandlerKey]
 		for _, eventSlug := range source.EventSlugs {
 			sender.SendCcMessage(semaphore.ExampleMessage(cfg, exampleData, eventSlug))
+		}
+	case "slack":
+		source := exampleData.Data[slack.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(slack.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	case "statuspage":
 		source := exampleData.Data[statuspage.HandlerKey]

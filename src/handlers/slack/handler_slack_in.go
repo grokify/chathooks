@@ -1,7 +1,6 @@
 package slack
 
 import (
-	"encoding/json"
 	"strings"
 
 	"github.com/grokify/chathooks/src/config"
@@ -9,6 +8,8 @@ import (
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
 	"github.com/valyala/fasthttp"
+
+	ccslack "github.com/grokify/commonchat/slack"
 )
 
 const (
@@ -68,19 +69,24 @@ func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 }
 
 func Normalize(config config.Configuration, bytes []byte) (cc.Message, error) {
-	slack, err := SlackWebhookMessageFromBytes(bytes)
+	slMsg, err := ccslack.NewMessageFromBytes(bytes)
 	if err != nil {
 		return cc.Message{}, err
 	}
 
-	message := cc.Message{
-		Activity:  slack.Username,
-		Text:      slack.Text,
-		IconEmoji: slack.IconEmoji,
-		IconURL:   slack.IconURL}
-	return message, nil
+	ccMsg := ccslack.WebhookInBodySlackToCc(slMsg)
+
+	return ccMsg, nil
+	/*
+		message := cc.Message{
+			Activity:  slack.Username,
+			Text:      slack.Text,
+			IconEmoji: slack.IconEmoji,
+			IconURL:   slack.IconURL}
+		return message, nil*/
 }
 
+/*
 type SlackWebhookMessage struct {
 	Username  string `json:"username"`
 	IconEmoji string `json:"icon_emoji"`
@@ -89,7 +95,8 @@ type SlackWebhookMessage struct {
 }
 
 func SlackWebhookMessageFromBytes(bytes []byte) (SlackWebhookMessage, error) {
-	msg := SlackWebhookMessage{}
+	msg := webhook.SlackWebhookMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	return msg, err
 }
+*/
