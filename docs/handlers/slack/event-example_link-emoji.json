@@ -1,0 +1,35 @@
+{
+  "username":"updown.io",
+  "attachments":[
+    {
+      "text":"Down since *20:17:29 (CEST)*, reason: *Couldn't find the string*",
+      "fallback":"DOWN ALERT: http://example.com Down since 20:17:29 (CEST), reason: Couldn't find the string",
+      "mrkdwn_in":[
+        "text",
+        "pretext",
+        "fields"
+      ],
+      "pretext":"DOWN ALERT: :frowning:",
+      "author_name":"http://example.com",
+      "author_icon":"https://staging.updown.io/checks/mycheck/favicon",
+      "author_link":"http://example.com",
+      "color":"#e43",
+      "fields":[
+        {
+          "title":"String match:",
+          "value":"_“12345”_",
+          "short":true
+        },
+        {
+          "title":"🔇 Mute alerts:",
+          "value":"\u003chttps://staging.updown.io/checks/mycheck/mute#1h|For 1 hour\u003e, \u003chttps://staging.updown.io/checks/mycheck/mute#1d|for 1 day\u003e, \u003chttps://staging.updown.io/checks/mycheck/mute#1w|for 1 week\u003e, \u003chttps://staging.updown.io/checks/mycheck/mute#recovery|until recovery\u003e or \u003chttps://staging.updown.io/checks/mycheck/mute#forever|forever\u003e"
+        },
+        {
+          "title":"↻ Reproduce request:",
+          "value":"```curl -gkvL -H 'User-Agent: updown.io daemon 2.2' -H 'Accept: */*' -H 'Connection: Close' -H 'Accept-Language: en' -m 30 --connect-timeout 5 \u003chttp://example.com|http://example.com\u003e```"
+        }
+      ]
+    }
+  ],
+  "icon_url":"https://updown.io/square-logo.png"
+}

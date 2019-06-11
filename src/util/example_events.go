@@ -81,7 +81,7 @@ func ExampleDataRaw() []byte {
             "event_slugs":["build","deploy"]
         },
         "slack":{
-            "event_slugs":["attachment"]
+            "event_slugs":["attachment","link-emoji"]
         },
         "statuspage":{
             "event_slugs":["incident-updates","incident-updates-create","component-updates"]
