@@ -69,6 +69,9 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 		if len(location) > 0 {
 			stLocations = append(stLocations, "* "+location)
 		}
+		if len(stLocations) >= 10 {
+			break
+		}
 	}
 	if len(stLocations) > 0 {
 		fields = append(fields, cc.Field{
