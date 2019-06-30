@@ -1,45 +1,54 @@
 {
 	"ImportPath": "github.com/grokify/chathooks",
 	"GoVersion": "go1.11",
-	"GodepVersion": "v79",
+	"GodepVersion": "v80",
 	"Packages": [
 		"./..."
 	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/apex/gateway",
-			"Comment": "v1.0.0-13-gcdfe71d",
-			"Rev": "cdfe71df1421609687c01dda11f13ef068784e5b"
+			"Comment": "v1.1.1-1-gc02213e",
+			"Rev": "c02213e499362049b64785b8482e7ec246cd254e"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-lambda-go/events",
-			"Comment": "v1.0.1-17-gb2a9167",
-			"Rev": "b2a9167f3412a1daa5a3051a10839631063bd3d8"
+			"Comment": "v1.11.1-1-gaf0b813",
+			"Rev": "af0b813d5803d9754b920ed666b1cf8c16becfb3"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-lambda-go/lambda",
-			"Comment": "v1.0.1-17-gb2a9167",
-			"Rev": "b2a9167f3412a1daa5a3051a10839631063bd3d8"
+			"Comment": "v1.11.1-1-gaf0b813",
+			"Rev": "af0b813d5803d9754b920ed666b1cf8c16becfb3"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-lambda-go/lambda/handlertrace",
+			"Comment": "v1.11.1-1-gaf0b813",
+			"Rev": "af0b813d5803d9754b920ed666b1cf8c16becfb3"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-lambda-go/lambda/messages",
-			"Comment": "v1.0.1-17-gb2a9167",
-			"Rev": "b2a9167f3412a1daa5a3051a10839631063bd3d8"
+			"Comment": "v1.11.1-1-gaf0b813",
+			"Rev": "af0b813d5803d9754b920ed666b1cf8c16becfb3"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-lambda-go/lambdacontext",
-			"Comment": "v1.0.1-17-gb2a9167",
-			"Rev": "b2a9167f3412a1daa5a3051a10839631063bd3d8"
+			"Comment": "v1.11.1-1-gaf0b813",
+			"Rev": "af0b813d5803d9754b920ed666b1cf8c16becfb3"
 		},
 		{
 			"ImportPath": "github.com/buaazp/fasthttprouter",
-			"Comment": "v0.1.1-2-g29a27c7",
-			"Rev": "29a27c70315770a2344e11847de85648512717e7"
+			"Comment": "v0.1.1-10-g979d6e5",
+			"Rev": "979d6e516ec324575737805deabe0303794c58bd"
+		},
+		{
+			"ImportPath": "github.com/buger/jsonparser",
+			"Rev": "bf1c66bbce23153d89b23f8960071a680dbef54b"
 		},
 		{
 			"ImportPath": "github.com/caarlos0/env",
-			"Comment": "v3.3.0-4-g3e0f30c",
-			"Rev": "3e0f30cbf50bb82273cf60e7bb70869f4852e9b8"
+			"Comment": "v6.0.0",
+			"Rev": "4bd75bf16b9ef8c1383109b5e4d931bd72c3b6d0"
 		},
 		{
 			"ImportPath": "github.com/eawsy/aws-lambda-go-core/service/lambda/runtime",
@@ -51,171 +60,183 @@
 		},
 		{
 			"ImportPath": "github.com/google/go-querystring/query",
-			"Rev": "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+			"Comment": "v1.0.0-5-gc8c88db",
+			"Rev": "c8c88dbee036db4e4808d1f2ec8c2e15e11c3f80"
 		},
 		{
 			"ImportPath": "github.com/grokify/commonchat",
-			"Rev": "a0e51d20a3aa2f187b6181a956f44181420b3f51"
+			"Rev": "b2997785d39c8499287f26c6c6876e0a795efde1"
 		},
 		{
 			"ImportPath": "github.com/grokify/commonchat/glip",
-			"Rev": "a0e51d20a3aa2f187b6181a956f44181420b3f51"
+			"Rev": "b2997785d39c8499287f26c6c6876e0a795efde1"
 		},
 		{
 			"ImportPath": "github.com/grokify/commonchat/slack",
-			"Rev": "a0e51d20a3aa2f187b6181a956f44181420b3f51"
+			"Rev": "b2997785d39c8499287f26c6c6876e0a795efde1"
 		},
 		{
 			"ImportPath": "github.com/grokify/go-glip",
-			"Rev": "769eb696ce3394d72f890d2217daef2bd35f9219"
+			"Rev": "e7392e094b6cfa9105f671c2ecc577de999ecbcb"
+		},
+		{
+			"ImportPath": "github.com/grokify/go-glip/v2",
+			"Rev": "e7392e094b6cfa9105f671c2ecc577de999ecbcb"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/config",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/encoding/jsonutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/fmt/fmtutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/io/ioutilmore",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/anyhttp",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/fasthttputil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/httputilmore",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/nethttputil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/os/osutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/sort/sortutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/strconv/strconvutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/text/emoji",
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/text/markdown",
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/time/timeutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/listutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/maputil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/stringsutil",
-			"Rev": "4618f49c21f47347c07c553a29e2bb995358c71c"
+			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
 		},
 		{
 			"ImportPath": "github.com/jessevdk/go-flags",
-			"Comment": "v1.4.0-3-g1c38ed7",
-			"Rev": "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb"
+			"Comment": "v1.4.0-47-gc0795c8",
+			"Rev": "c0795c8afcf41dd1d786bebce68636c199b3bb45"
 		},
 		{
 			"ImportPath": "github.com/joho/godotenv",
-			"Comment": "v1.2.0-12-g1709ab1",
-			"Rev": "1709ab122c988931ad53508747b3c061400c2984"
+			"Comment": "v1.3.0-10-g5c0e6c6",
+			"Rev": "5c0e6c6ab1a0a9ef0a8822cba3a05d62f7dad941"
 		},
 		{
 			"ImportPath": "github.com/klauspost/compress/flate",
-			"Comment": "v1.2.1-12-gb88785b",
-			"Rev": "b88785bfd699aa994985ea91b90ee8a1721c3fe1"
+			"Comment": "v1.6.1-1-g8538a23",
+			"Rev": "8538a23ec6392755e902791af6ea557b33952dd0"
 		},
 		{
 			"ImportPath": "github.com/klauspost/compress/gzip",
-			"Comment": "v1.2.1-12-gb88785b",
-			"Rev": "b88785bfd699aa994985ea91b90ee8a1721c3fe1"
+			"Comment": "v1.6.1-1-g8538a23",
+			"Rev": "8538a23ec6392755e902791af6ea557b33952dd0"
 		},
 		{
 			"ImportPath": "github.com/klauspost/compress/zlib",
-			"Comment": "v1.2.1-12-gb88785b",
-			"Rev": "b88785bfd699aa994985ea91b90ee8a1721c3fe1"
+			"Comment": "v1.6.1-1-g8538a23",
+			"Rev": "8538a23ec6392755e902791af6ea557b33952dd0"
 		},
 		{
 			"ImportPath": "github.com/klauspost/cpuid",
-			"Comment": "v1.1-2-gae832f2",
-			"Rev": "ae832f27941af41db13bd6d8efd2493e3b22415a"
+			"Comment": "v1.2.1",
+			"Rev": "05a8198c0f5a27739aec358908d7e12c64ce6eb7"
+		},
+		{
+			"ImportPath": "github.com/konsorten/go-windows-terminal-sequences",
+			"Comment": "v1.0.2",
+			"Rev": "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
 		},
 		{
 			"ImportPath": "github.com/microcosm-cc/bluemonday",
-			"Rev": "542fd4642604d0d0c26112396ce5b1a9d01eee0b"
+			"Comment": "v1.0.2-2-g8980206",
+			"Rev": "89802068f71166e95c92040512bf2e11767721ed"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
-			"Comment": "v0.8.0-12-g816c908",
-			"Rev": "816c9085562cd7ee03e7f8188a1cfd942858cded"
+			"Comment": "v0.8.1-24-g27936f6",
+			"Rev": "27936f6d90f9c8e1145f11ed52ffffbfdb9e0af7"
 		},
 		{
 			"ImportPath": "github.com/sirupsen/logrus",
-			"Comment": "v1.0.5-26-gea8897e",
-			"Rev": "ea8897e79973357ba785ac2533559a6297e83c44"
+			"Comment": "v1.4.2-2-g2a22dbe",
+			"Rev": "2a22dbedbad1fd454910cd1f44f210ef90c28464"
 		},
 		{
 			"ImportPath": "github.com/valyala/bytebufferpool",
-			"Rev": "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
+			"Comment": "v1.0.0-1-gcdfbe93",
+			"Rev": "cdfbe9377474227bb42120c1e22fd4433e7f69bf"
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp",
-			"Comment": "v20160617-123-ge5f51c1",
-			"Rev": "e5f51c11919d4f66400334047b897ef0a94c6f3c"
+			"Comment": "v1.3.0-8-gd3715c3",
+			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp/fasthttputil",
-			"Comment": "v20160617-123-ge5f51c1",
-			"Rev": "e5f51c11919d4f66400334047b897ef0a94c6f3c"
+			"Comment": "v1.3.0-8-gd3715c3",
+			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp/stackless",
-			"Comment": "v20160617-123-ge5f51c1",
-			"Rev": "e5f51c11919d4f66400334047b897ef0a94c6f3c"
+			"Comment": "v1.3.0-8-gd3715c3",
+			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
 		},
 		{
 			"ImportPath": "github.com/valyala/quicktemplate",
-			"Comment": "v1.0.2",
-			"Rev": "d08324ac14fa81325830fae7eb30188ec68427f8"
-		},
-		{
-			"ImportPath": "golang.org/x/crypto/ssh/terminal",
-			"Rev": "a3beeb748656e13e54256fd2cde19e058f41f60f"
+			"Comment": "v1.1.1",
+			"Rev": "480e8b93a60078dd620fcf4b2591f4d6422e3fc1"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "a680a1efc54dd51c040b3b5ce4939ea3cf2ea0d1"
+			"Rev": "60506f45cf65977eb3a9c6e30f995f54a721c271"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
-			"Rev": "a680a1efc54dd51c040b3b5ce4939ea3cf2ea0d1"
+			"Rev": "60506f45cf65977eb3a9c6e30f995f54a721c271"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
-		},
-		{
-			"ImportPath": "golang.org/x/sys/windows",
-			"Rev": "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
+			"Rev": "4c4f7f33c9ed00de01c4c741d2177abfcfe19307"
 		}
 	]
 }
