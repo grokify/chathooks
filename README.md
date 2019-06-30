@@ -274,9 +274,11 @@ The easiest way to add a handler is to inspect the code of an existing handler a
 
 ## Maintenance
 
-Rebuild `vendor` directory with:
+Use [`godep`](https://github.com/tools/godep) to rebuild the `vendor` directory with:
 
 ```
+$ rm -rf Godeps
+$ export GO15VENDOREXPERIMENT=1
 $ godep save ./...
 ```
 
