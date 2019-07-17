@@ -58,9 +58,10 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	fields := []cc.Field{}
 
 	if len(strings.TrimSpace(src.Error.Message)) > 0 {
+    errorMessage := src.Error.Message
 		fields = append(fields, cc.Field{
 			Title: "Error",
-			Value: src.Error.Message})
+      Value: string.Join(strings.Split(src.Error.Message, "\n")[:5], "\n")})
 	}
 
 	stLocations := []string{}
