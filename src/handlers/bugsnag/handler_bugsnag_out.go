@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	DisplayName      = "Bugsnag"
-	HandlerKey       = "bugsnag"
-	MessageDirection = "out"
-	MessageBodyType  = models.JSON
+	DisplayName          = "Bugsnag"
+	HandlerKey           = "bugsnag"
+	MessageDirection     = "out"
+	MessageBodyType      = models.JSON
+	maxErrorMessageLines = 5
 )
 
 func NewHandler() handlers.Handler {
@@ -58,9 +59,15 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 	fields := []cc.Field{}
 
 	if len(strings.TrimSpace(src.Error.Message)) > 0 {
+		// Limit error message lines for readability
+		errorMessage := src.Error.Message
+		lines := strings.Split(errorMessage, "\n")
+		if len(lines) > maxErrorMessageLines {
+			errorMessage = strings.Join(lines[:maxErrorMessageLines], "\n")
+		}
 		fields = append(fields, cc.Field{
 			Title: "Error",
-			Value: src.Error.Message})
+			Value: errorMessage})
 	}
 
 	stLocations := []string{}
