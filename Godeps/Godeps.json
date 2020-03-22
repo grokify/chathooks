@@ -51,12 +51,27 @@
 			"Rev": "4bd75bf16b9ef8c1383109b5e4d931bd72c3b6d0"
 		},
 		{
+			"ImportPath": "github.com/derekstavis/go-qs",
+			"Comment": "0.3.0",
+			"Rev": "9eef69e6c4e70cf2da34be55a5c0e1ae0b6ca0c5"
+		},
+		{
 			"ImportPath": "github.com/eawsy/aws-lambda-go-core/service/lambda/runtime",
 			"Rev": "e26eed6aa244a3d45aa693816a9c5faf39390fcd"
 		},
 		{
 			"ImportPath": "github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt",
 			"Rev": "e888a5ec6428554de39d49d6eda94f60027cfb81"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Comment": "v1.3.1-5-gb285ee9",
+			"Rev": "b285ee9cfc6c881bb20c0d8dc73370ea9b9ec90f"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/ptypes/duration",
+			"Comment": "v1.3.1-5-gb285ee9",
+			"Rev": "b285ee9cfc6c881bb20c0d8dc73370ea9b9ec90f"
 		},
 		{
 			"ImportPath": "github.com/google/go-querystring/query",
@@ -85,75 +100,88 @@
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/config",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/encoding/jsonutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/fmt/fmtutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/html/htmlutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/io/ioutilmore",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/math/mathutil",
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/anyhttp",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/fasthttputil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/httputilmore",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/nethttputil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/net/urlutil",
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/os/osutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/sort/sortutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/strconv/strconvutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/text/emoji",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/text/markdown",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/time/timeutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/listutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/maputil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/stringsutil",
-			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+			"Rev": "db67027568b1403f0c1ae6e6ba73e7e38a10a284"
+		},
+		{
+			"ImportPath": "github.com/huandu/xstrings",
+			"Comment": "v1.2.0-1-g8bbcf2f",
+			"Rev": "8bbcf2f9ccb55755e748b7644164cd4bdce94c1d"
 		},
 		{
 			"ImportPath": "github.com/jessevdk/go-flags",
