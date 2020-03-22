@@ -8,6 +8,7 @@ import (
 
 	iom "github.com/grokify/gotilla/io/ioutilmore"
 	"github.com/grokify/gotilla/os/osutil"
+	"github.com/grokify/gotilla/type/stringsutil"
 	"github.com/joho/godotenv"
 )
 
@@ -36,17 +37,23 @@ func LoadEnvDefaults() error {
 	return godotenv.Load()
 }
 
-func LoadDotEnvSkipEmpty(paths ...string) error {
+func LoadDotEnvSkipEmptyInfo(paths ...string) ([]string, error) {
 	if len(paths) == 0 {
 		paths = DefaultPaths()
 	}
 
 	envPaths := iom.FilterFilenamesSizeGtZero(paths...)
+	envPaths = stringsutil.Dedupe(envPaths)
 
 	if len(envPaths) > 0 {
-		return godotenv.Load(envPaths...)
+		return envPaths, godotenv.Load(envPaths...)
 	}
-	return nil
+	return envPaths, nil
+}
+
+func LoadDotEnvSkipEmpty(paths ...string) error {
+	_, err := LoadDotEnvSkipEmptyInfo(paths...)
+	return err
 }
 
 func LoadDotEnvFirst(paths ...string) error {

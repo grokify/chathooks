@@ -3,21 +3,57 @@ package stringsutil
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-// SliceTrimSpace removes leading and trailing spaces per
-// string and also removes empty strings.
-func SliceTrimSpace(slice []string) []string {
-	trimmed := []string{}
-	for _, part := range slice {
-		part := strings.TrimSpace(part)
-		if len(part) > 0 {
-			trimmed = append(trimmed, part)
-		}
+// Unshift adds an element at the first position
+// of the slice.
+func Unshift(a []string, x string) []string {
+	return append([]string{x}, a...)
+}
+
+// SliceCondenseSpace trims space from lines and removes
+// empty lines. `unique` dedupes lines and `sort` preforms
+// a sort on the results.
+func SliceCondenseSpace(lines []string, dedupeResults, sortResults bool) []string {
+	results := SliceLinesTrimSpace(lines, true)
+	if dedupeResults {
+		results = Dedupe(results)
 	}
-	return trimmed
+	if sortResults {
+		sort.Strings(results)
+	}
+	return results
+}
+
+// SliceLinesTrimSpace removes leading and trailing spaces per
+// string and optionally removes empty strings.
+func SliceLinesTrimSpace(lines []string, condense bool) []string {
+	return SliceLinesTrim(lines, " ", condense)
+}
+
+// SliceLinesTrim trims each line in a slice of lines using a
+// provided cut string.
+func SliceLinesTrim(lines []string, cutstr string, condense bool) []string {
+	for i, line := range lines {
+		line = strings.Trim(line, cutstr)
+		if condense && len(line) == 0 {
+			continue
+		}
+		lines[i] = line
+	}
+	return lines
+}
+
+// SliceIndexOrEmpty returns the element at the index
+// provided or an empty string.
+func SliceIndexOrEmpty(s []string, index uint64) string {
+	if int(index) >= len(s) {
+		return ""
+	}
+	return s[index]
 }
 
 // JoinAny takes an array of interface{} and converts
@@ -39,7 +75,7 @@ func JoinInt(a []int, sep string) string {
 }
 
 func JoinCondenseTrimSpace(slice []string, sep string) string {
-	return strings.Join(SliceTrimSpace(slice), sep)
+	return strings.Join(SliceLinesTrimSpace(slice, true), sep)
 }
 
 func SliceCondenseRegexps(texts []string, regexps []*regexp.Regexp, replacement string) []string {
@@ -108,4 +144,177 @@ func SliceToSingleIntOrNeg(vals []string) int {
 		return -1
 	}
 	return num
+}
+
+// Dedupe returns a string slice with duplicate values
+// removed. First observance is kept.
+func Dedupe(vals []string) []string {
+	deduped := []string{}
+	seen := map[string]int{}
+	for _, val := range vals {
+		if _, ok := seen[val]; ok {
+			continue
+		}
+		seen[val] = 1
+		deduped = append(deduped, val)
+	}
+	return deduped
+}
+
+// SliceIndexOf returns the index of an element in a
+// string slice. Returns -1 if not found.
+func SliceIndexOf(needle string, haystack []string) int {
+	for k, v := range haystack {
+		if v == needle {
+			return k
+		}
+	}
+	return -1 //not found.
+}
+
+// SliceIndexOfLcTrimSpace returns the index of an element in a
+// string slice. Returns -1 if not found.
+func SliceIndexOfLcTrimSpace(needle string, haystack []string) int {
+	needle = strings.ToLower(strings.TrimSpace(needle))
+	for k, v := range haystack {
+		v = strings.ToLower(strings.TrimSpace(v))
+		if v == needle {
+			return k
+		}
+	}
+	return -1 //not found.
+}
+
+func SliceChooseOnePreferredLowerTrimSpace(options, preferenceOrder []string) string {
+	if len(options) == 0 {
+		return ""
+	} else if len(preferenceOrder) == 0 {
+		return strings.ToLower(strings.TrimSpace(options[0]))
+	}
+	optMap := map[string]int{}
+	for _, opt := range options {
+		opt = strings.ToLower(strings.TrimSpace(opt))
+		if len(opt) > 0 {
+			optMap[opt] = 1
+		}
+	}
+	for _, pref := range preferenceOrder {
+		pref = strings.ToLower(strings.TrimSpace(pref))
+		if _, ok := optMap[pref]; ok {
+			return pref
+		}
+	}
+	return strings.ToLower(strings.TrimSpace(options[0]))
+}
+
+func SliceJoinQuotedMaxLength(slice []string, begQuote, endQuote, sep string, maxLength int) []string {
+	words := []string{}
+	curWords := []string{}
+	curLength := 0
+	for _, word := range slice {
+		if curLength+len(begQuote+word+endQuote+sep) > maxLength {
+			words = append(words, strings.Join(curWords, sep))
+			curWords = []string{}
+			curLength = 0
+		} else {
+			curWords = append(curWords, begQuote+word+endQuote)
+			curLength += len(begQuote + word + endQuote + sep)
+		}
+	}
+	if len(curWords) > 0 {
+		words = append(words, strings.Join(curWords, sep))
+	}
+	return words
+}
+
+type JoinCustomConfig struct {
+	QuoteBegin string
+	QuoteEnd   string
+	Separator  string
+	MaxLength  int
+	TrimSpace  bool
+	SkipEmpty  bool
+}
+
+func JoinCustom(slice []string, cfg JoinCustomConfig) []string {
+	lines := []string{}
+	curWords := []string{}
+	curLength := 0
+	for _, word := range slice {
+		if cfg.TrimSpace {
+			word = strings.TrimSpace(word)
+		}
+		if cfg.SkipEmpty && len(word) == 0 {
+			continue
+		}
+		if cfg.MaxLength > 0 {
+			if curLength+len(cfg.QuoteBegin+word+cfg.QuoteEnd+cfg.Separator) > cfg.MaxLength {
+				lines = append(lines, strings.Join(curWords, cfg.Separator))
+				curWords = []string{}
+				curLength = 0
+			} else {
+				curWords = append(curWords, cfg.QuoteBegin+word+cfg.QuoteEnd)
+				curLength += len(cfg.QuoteBegin + word + cfg.QuoteEnd + cfg.Separator)
+			}
+		} else {
+			curWords = append(curWords, cfg.QuoteBegin+word+cfg.QuoteEnd)
+		}
+	}
+	if len(curWords) > 0 {
+		lines = append(lines, strings.Join(curWords, cfg.Separator))
+	}
+	return lines
+}
+
+func SliceJoinQuotedMaxLengthTrimSpaceSkipEmpty(slice []string, begQuote, endQuote, sep string, maxLength int) []string {
+	words := []string{}
+	curWords := []string{}
+	curLength := 0
+	for _, word := range slice {
+		if curLength+len(begQuote+word+endQuote+sep) > maxLength {
+			words = append(words, strings.Join(curWords, sep))
+			curWords = []string{}
+			curLength = 0
+		} else {
+			curWords = append(curWords, begQuote+word+endQuote)
+			curLength += len(begQuote + word + endQuote + sep)
+		}
+	}
+	if len(curWords) > 0 {
+		words = append(words, strings.Join(curWords, sep))
+	}
+	return words
+}
+
+func SliceJoinQuoted(slice []string, begQuote, endQuote, sep string) string {
+	words := []string{}
+	for _, word := range slice {
+		words = append(words, begQuote+word+endQuote)
+	}
+	return strings.Join(words, sep)
+}
+
+func Remove(real, filter []string) []string {
+	filtered := []string{}
+	filterMap := map[string]int{}
+	for _, f := range filter {
+		filterMap[f] = 1
+	}
+	for _, r := range real {
+		if _, ok := filterMap[r]; !ok {
+			filtered = append(filtered, r)
+		}
+	}
+	return filtered
+}
+
+func SliceToMap(strs []string) map[string]int {
+	strmap := map[string]int{}
+	for _, s := range strs {
+		if _, ok := strmap[s]; !ok {
+			strmap[s] = 0
+		}
+		strmap[s]++
+	}
+	return strmap
 }

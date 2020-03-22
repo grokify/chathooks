@@ -6,12 +6,18 @@ import (
 	"sort"
 	"strings"
 	"unicode"
+
+	"github.com/huandu/xstrings"
 )
 
 const (
 	StringToLower     = "StringToLower"
 	SpaceToHyphen     = "SpaceToHyphen"
 	SpaceToUnderscore = "SpaceToUnderscore"
+	lowerAZ           = "abcdefghijklmnopqrstuvwxyz"
+	upperAZ           = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	lowerUpper        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	upperLower        = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
 var (
@@ -79,7 +85,7 @@ func ToUpperFirst(s1 string) string {
 // ToBool converts a string to a boolean value
 // looking for the string "true" in any case.
 func ToBool(v string) bool {
-	if strings.TrimSpace(strings.ToLower(v)) == "true" {
+	if strings.ToLower(strings.TrimSpace(v)) == "true" {
 		return true
 	}
 	return false
@@ -93,6 +99,13 @@ func SubstringIsSuffix(s1, s2 string) bool {
 		return true
 	}
 	return false
+}
+
+var rxSpace = regexp.MustCompile(`\s+`)
+
+// RemoveSpaces eliminates all spaces in a string.
+func RemoveSpaces(input string) string {
+	return rxSpace.ReplaceAllString(input, "")
 }
 
 // SplitCondenseSpace splits a string and trims spaces on
@@ -126,6 +139,11 @@ func CondenseString(content string, join_lines bool) string {
 	// Collapse
 	content = regexp.MustCompile(`\s+`).ReplaceAllString(content, " ")
 	return strings.TrimSpace(content)
+}
+
+// CondenseStringSimple removes extra spaces.
+func CondenseStringSimple(s string) string {
+	return strings.Join(strings.Fields(s), " ")
 }
 
 func StripControl(s string) string { return rxControl.ReplaceAllString(s, "") }
@@ -257,4 +275,17 @@ func StringToConstant(s string) string {
 		}
 	}
 	return strings.Join(newParts, "")
+}
+
+func ToOpposite(s string) string {
+	return xstrings.Translate(s, lowerUpper, upperLower)
+}
+
+var (
+	rxRN = regexp.MustCompile(`\r\n`)
+	rxR  = regexp.MustCompile(`\r`)
+)
+
+func NewlineToLinux(input string) string {
+	return rxR.ReplaceAllString(rxRN.ReplaceAllString(input, "\n"), "\n")
 }

@@ -11,7 +11,35 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/golang/protobuf/ptypes/duration"
 )
+
+// NewDurationSeconds returns a new `time.Duration` given
+// a number of seconds.
+func NewDurationSeconds(secs float64) time.Duration {
+	nanos := int64(secs * float64(nanosPerSecond))
+	dur, err := time.ParseDuration(strconv.Itoa(int(nanos)) + "ns")
+	if err != nil {
+		panic(err)
+	}
+	return dur
+}
+
+// NewDurationDays returns `time.Duration` given
+// a number of days
+func NewDurationDays(days uint16) time.Duration {
+	durString := fmt.Sprintf("%dh", 24*days)
+	dur, err := time.ParseDuration(durString)
+	if err != nil {
+		panic(err)
+	}
+	return dur
+}
+
+func NewDurationStrings(h, m, s string) (time.Duration, error) {
+	return time.ParseDuration(fmt.Sprintf("%vh%vm%vs", h, m, s))
+}
 
 // ParseDuration adds days (d), weeks (w), years (y).
 func ParseDuration(s string) (time.Duration, error) {
@@ -102,6 +130,17 @@ func SumDurations(durations ...time.Duration) time.Duration {
 	return dur
 }
 
+// SubDuration subtracts one duration from another and
+// returns the result as a `time.Duration`.
+func SubDuration(dur1, dur2 time.Duration) time.Duration {
+	ns := dur1.Nanoseconds() - dur2.Nanoseconds()
+	diff, err := time.ParseDuration(fmt.Sprintf("%dns", ns))
+	if err != nil {
+		panic("err")
+	}
+	return diff
+}
+
 func DurationDays(dur time.Duration) int64 { return int64(dur.Hours()/24.0) + 1 }
 
 func DurationIsZero(dur time.Duration) bool {
@@ -124,4 +163,16 @@ func MaxDuration(durs []time.Duration) time.Duration {
 		}
 	}
 	return max
+}
+
+// DurationFromProtobuf converts a protobuf duration to a
+// `time.Duration`.
+// More on protobuf: https://godoc.org/github.com/golang/protobuf/ptypes/duration#Duration
+func DurationFromProtobuf(pdur *duration.Duration) time.Duration {
+	dur, err := time.ParseDuration(
+		strconv.Itoa(int((pdur.Seconds*nanosPerSecond)+int64(pdur.Nanos))) + "ns")
+	if err != nil {
+		panic(err)
+	}
+	return dur
 }

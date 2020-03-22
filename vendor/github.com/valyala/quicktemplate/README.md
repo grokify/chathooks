@@ -32,6 +32,7 @@ Inspired by the [Mako templates](http://www.makotemplates.org/) philosophy.
     are compiled into a single binary.
     Take a look at [fasttemplate](https://github.com/valyala/fasttemplate)
     if you need a fast template engine for simple dynamically updated templates.
+    [There are ways](https://www.reddit.com/r/golang/comments/f290ja/hot_reloading_with_quicktemplates_sqlc_and/) to dynamically update the templates during development.
 
 # Performance comparison with html/template
 
@@ -81,6 +82,15 @@ and [quicktemplate compiler](https://github.com/valyala/quicktemplate/tree/maste
 ```
 go get -u github.com/valyala/quicktemplate
 go get -u github.com/valyala/quicktemplate/qtc
+```
+
+If you using `go generate`, you just need put following into your `main.go`
+
+Important: please specify your own folder (-dir) to generate template file
+
+```
+//go:generate go get -u github.com/valyala/quicktemplate/qtc
+//go:generate qtc -dir=app/views  
 ```
 
 Let's start with a minimal template example:
@@ -208,7 +218,7 @@ The `{%s x %}` is used for printing HTML-safe strings, while `{%= F() %}`
 is used for embedding template function calls. Quicktemplate supports also
 other output tags:
 
-  * `{%d num %}` for integers.
+  * `{%d int %}` and `{%dl int64 %}` for integers.
   * `{%f float %}` for float64.
     Floating point precision may be set via `{%f.precision float %}`.
     For example, `{%f.2 1.2345 %}` outputs `1.23`.
@@ -308,6 +318,25 @@ There are other useful tags supported by quicktemplate:
     ```
     <div><div>space between lines</div>and tags<div>is removed unless
     or is used</div></div>
+    ```
+
+  * It is possible removing whitespace before and after the tag by adding `-` after `{%` or prepending `%}` with `-`. For example:
+
+    ```qtpl
+    var sum int
+    {%- for i := 1; i <= 3; i++ -%}
+    sum += {%d i %}
+    {%- endfor -%}
+    return sum
+    ```
+
+    Is converted into:
+    ```
+    var sum int
+    sum += 1
+    sum += 2
+    sum += 3
+    return sum
     ```
 
   * `{% switch %}`, `{% case %}` and `{% default %}`:
@@ -602,10 +631,9 @@ BenchmarkMarshalXMLQuickTemplate1000-4    	   30000	     53000 ns/op	      32 B/
     `Gorazor` is similar to `quicktemplate` in the sense it converts templates into Go code.
     But it misses the following useful features:
 
-      * Clear syntax insead of hard-to-understand magic stuff related
+      * Clear syntax instead of hard-to-understand magic stuff related
         to template arguments, template inheritance and embedding function
         templates into other templates.
-      * Performance optimizations.
 
 * *Is there a syntax highlighting for qtpl files?*
 

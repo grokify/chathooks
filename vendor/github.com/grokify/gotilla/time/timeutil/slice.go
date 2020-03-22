@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -68,4 +69,66 @@ func QuarterSlice(min, max time.Time) []time.Time {
 		cur = NextQuarter(cur)
 	}
 	return times
+}
+
+func FirstNonZeroTimeParsed(format string, times []string) (time.Time, error) {
+	if len(times) == 0 {
+		return time.Now(), errors.New("No times provided")
+	}
+	for _, timeString := range times {
+		timeString = strings.TrimSpace(timeString)
+		if len(timeString) == 0 {
+			continue
+		}
+		t, err := time.Parse(format, timeString)
+		if err != nil {
+			return t, err
+		}
+		if !IsZeroAny(t) {
+			return t, nil
+		}
+	}
+	return time.Now(), errors.New("No times provided")
+}
+
+func FirstNonZeroTime(times ...time.Time) (time.Time, error) {
+	if len(times) == 0 {
+		return time.Now(), errors.New("No times provided")
+	}
+	for _, t := range times {
+		if !IsZeroAny(t) {
+			return t, nil
+		}
+	}
+	return time.Now(), errors.New("No times provided")
+}
+
+func MustFirstNonZeroTime(times ...time.Time) time.Time {
+	t, err := FirstNonZeroTime(times...)
+	if err != nil {
+		return TimeRFC3339Zero()
+	}
+	return t
+}
+
+func TimeSliceMinMax(times []time.Time) (time.Time, time.Time, error) {
+	min := TimeRFC3339Zero()
+	max := TimeRFC3339Zero()
+	if len(times) == 0 {
+		return min, max, errors.New("timeutil.TimeSliceMinMax provided with empty slice")
+	}
+	for i, t := range times {
+		if i == 0 {
+			min = t
+			max = t
+		} else {
+			if t.Before(min) {
+				min = t
+			}
+			if t.After(max) {
+				max = t
+			}
+		}
+	}
+	return min, max, nil
 }

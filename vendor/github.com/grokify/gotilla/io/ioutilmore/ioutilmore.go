@@ -10,12 +10,21 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
 
 	"github.com/grokify/gotilla/encoding/jsonutil"
 	"github.com/grokify/gotilla/type/maputil"
+)
+
+type FileType int
+
+const (
+	File FileType = iota
+	Directory
+	Any
 )
 
 func CopyFile(src, dst string) (err error) {
@@ -85,11 +94,52 @@ func FileInfosSplit(all []os.FileInfo, inclDotDirs bool) ([]os.FileInfo, []os.Fi
 	return subdirs, regular
 }
 
-func DirEntriesReSizeGt0(dir string, rx1 *regexp.Regexp) ([]os.FileInfo, error) {
+// DirEntriesNameRxVarFirsts returns a slice of the first
+// regexp match encountered.
+func DirEntriesNameRxVarFirsts(dir string, rx1 *regexp.Regexp) ([]string, error) {
+	vars := map[string]int{}
+	varsMatch := []string{}
+	filesAll, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return varsMatch, err
+	}
+	for _, f := range filesAll {
+		if f.Name() == "." || f.Name() == ".." {
+			continue
+		}
+		if f.Size() > int64(0) {
+			rs1 := rx1.FindStringSubmatch(f.Name())
+			if len(rs1) > 1 { // len = 2+
+				vars[rs1[1]] = 1
+				//filesMatch = append(filesMatch, f)
+			}
+		}
+	}
+	for varVal := range vars {
+		varsMatch = append(varsMatch, varVal)
+	}
+	return varsMatch, nil
+}
+
+func DirEntriesPathsReNotEmpty(dir string, rx1 *regexp.Regexp) ([]string, error) {
+	paths := []string{}
+	files, err := DirEntriesReNotEmpty(dir, rx1)
+	if err != nil {
+		return paths, err
+	}
+	for _, fi := range files {
+		paths = append(paths, filepath.Join(dir, fi.Name()))
+	}
+	return paths, nil
+}
+
+// DirEntriesReNotEmpty returns a slide of files for non-empty files
+// matching regular expression. It was formerly `DirEntriesReSizeGt0`.
+func DirEntriesReNotEmpty(dir string, rx1 *regexp.Regexp) ([]os.FileInfo, error) {
 	filesMatch := []os.FileInfo{}
-	filesAll, e := ioutil.ReadDir(dir)
-	if e != nil {
-		return filesMatch, e
+	filesAll, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return filesMatch, err
 	}
 	for _, f := range filesAll {
 		if f.Name() == "." || f.Name() == ".." {
@@ -100,6 +150,42 @@ func DirEntriesReSizeGt0(dir string, rx1 *regexp.Regexp) ([]os.FileInfo, error) 
 			if len(rs1) > 0 {
 				filesMatch = append(filesMatch, f)
 			}
+		}
+	}
+	return filesMatch, nil
+}
+
+func DirEntriesRxSizeGt0Filepaths(dir string, fileFilter FileType, rx *regexp.Regexp) ([]string, error) {
+	fileinfos, err := DirEntriesRxSizeGt0(dir, fileFilter, rx)
+	if err != nil {
+		return []string{}, err
+	}
+	filepaths := []string{}
+	for _, fi := range fileinfos {
+		filepaths = append(filepaths, filepath.Join(dir, fi.Name()))
+	}
+	return filepaths, nil
+}
+
+func DirEntriesRxSizeGt0(dir string, fileFilter FileType, rx1 *regexp.Regexp) ([]os.FileInfo, error) {
+	filesMatch := []os.FileInfo{}
+	filesAll, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return filesMatch, err
+	}
+	for _, fi := range filesAll {
+		if fi.Name() == "." || fi.Name() == ".." {
+			continue
+		} else if fileFilter == Directory && !fi.Mode().IsDir() {
+			continue
+		} else if fileFilter == File && !fi.Mode().IsRegular() {
+			continue
+		} else if fi.Size() <= int64(0) {
+			continue
+		}
+		rs1 := rx1.FindStringSubmatch(fi.Name())
+		if len(rs1) > 0 {
+			filesMatch = append(filesMatch, fi)
 		}
 	}
 	return filesMatch, nil
@@ -231,6 +317,44 @@ func IsFileWithSizeGtZero(name string) (bool, error) {
 	return true, nil
 }
 
+func SplitBetter(path string) (dir, file string) {
+	isDir, err := IsDir(path)
+	if err != nil && isDir {
+		return dir, ""
+	}
+	return filepath.Split(path)
+}
+
+func SplitBest(path string) (dir, file string, err error) {
+	isDir, err := IsDir(path)
+	if err != nil {
+		return "", "", err
+	} else if isDir {
+		return path, "", nil
+	}
+	isFile, err := IsFile(path)
+	if err != nil {
+		return "", "", err
+	} else if isFile {
+		dir, file := filepath.Split(path)
+		return dir, file, nil
+	}
+	return "", "", fmt.Errorf("Path is valid but not file or directory: [%v]", path)
+}
+
+func FileinfosToFilepaths(dir string, fileInfos []os.FileInfo) []string {
+	dir = strings.TrimSpace(dir)
+	paths := []string{}
+	for _, fi := range fileInfos {
+		if len(dir) > 0 {
+			paths = append(paths, filepath.Join(dir, fi.Name()))
+		} else {
+			paths = append(paths, fi.Name())
+		}
+	}
+	return paths
+}
+
 func FilterFilenamesSizeGtZero(filepaths ...string) []string {
 	filepathsExist := []string{}
 
@@ -305,25 +429,10 @@ func ReadFileJSON(file string, v interface{}) error {
 }
 
 func WriteFileJSON(filepath string, data interface{}, perm os.FileMode, prefix, indent string) error {
-	var bytes []byte
 	bytes, err := jsonutil.MarshalSimple(data, prefix, indent)
 	if err != nil {
 		return err
 	}
-	/*
-		if wantPretty {
-			bytesTry, err := json.MarshalIndent(data, "", "  ")
-			if err != nil {
-				return err
-			}
-			bytes = bytesTry
-		} else {
-			bytesTry, err := json.Marshal(data)
-			if err != nil {
-				return err
-			}
-			bytes = bytesTry
-		}*/
 	return ioutil.WriteFile(filepath, bytes, perm)
 }
 

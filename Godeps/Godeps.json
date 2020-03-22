@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/grokify/chathooks",
-	"GoVersion": "go1.11",
+	"GoVersion": "go1.13",
 	"GodepVersion": "v80",
 	"Packages": [
 		"./..."
@@ -85,71 +85,75 @@
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/config",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/encoding/jsonutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/fmt/fmtutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
+		},
+		{
+			"ImportPath": "github.com/grokify/gotilla/html/htmlutil",
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/io/ioutilmore",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/anyhttp",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/fasthttputil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/httputilmore",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/net/nethttputil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/os/osutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/sort/sortutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/strconv/strconvutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/text/emoji",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/text/markdown",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/time/timeutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/listutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/maputil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/grokify/gotilla/type/stringsutil",
-			"Rev": "c6d448464c78ee60aaf78b07e1e62dbdb82386ec"
+			"Rev": "d2998ac9f05955010c68d7d06c32119c2ba862d1"
 		},
 		{
 			"ImportPath": "github.com/jessevdk/go-flags",
@@ -193,13 +197,28 @@
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
-			"Comment": "v0.8.1-24-g27936f6",
-			"Rev": "27936f6d90f9c8e1145f11ed52ffffbfdb9e0af7"
+			"Comment": "v0.8.1-27-g7f95ac1",
+			"Rev": "7f95ac13edff643b8ce5398b6ccab125f8a20c1a"
 		},
 		{
 			"ImportPath": "github.com/sirupsen/logrus",
-			"Comment": "v1.4.2-2-g2a22dbe",
-			"Rev": "2a22dbedbad1fd454910cd1f44f210ef90c28464"
+			"Comment": "v1.4.2-54-g67a7fdc",
+			"Rev": "67a7fdcf741f4d5cee82cb9800994ccfd4393ad0"
+		},
+		{
+			"ImportPath": "github.com/tidwall/gjson",
+			"Comment": "v1.3.5",
+			"Rev": "5c2e4b382486589dad7478130a364ee2fa6a068b"
+		},
+		{
+			"ImportPath": "github.com/tidwall/match",
+			"Comment": "v1.0.1",
+			"Rev": "33827db735fff6510490d69a8622612558a557ed"
+		},
+		{
+			"ImportPath": "github.com/tidwall/pretty",
+			"Comment": "v1.0.0",
+			"Rev": "1166b9ac2b65e46a43d8618d30d1554f4652d49b"
 		},
 		{
 			"ImportPath": "github.com/valyala/bytebufferpool",
@@ -208,31 +227,31 @@
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp",
-			"Comment": "v1.3.0-8-gd3715c3",
-			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
+			"Comment": "v1.9.0-10-g38aa88a",
+			"Rev": "38aa88ab52c4b6f61722e2e7809c17b6f7df2b2a"
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp/fasthttputil",
-			"Comment": "v1.3.0-8-gd3715c3",
-			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
+			"Comment": "v1.9.0-10-g38aa88a",
+			"Rev": "38aa88ab52c4b6f61722e2e7809c17b6f7df2b2a"
 		},
 		{
 			"ImportPath": "github.com/valyala/fasthttp/stackless",
-			"Comment": "v1.3.0-8-gd3715c3",
-			"Rev": "d3715c361c6d8d227117caa9a7e6872498bf7283"
+			"Comment": "v1.9.0-10-g38aa88a",
+			"Rev": "38aa88ab52c4b6f61722e2e7809c17b6f7df2b2a"
 		},
 		{
 			"ImportPath": "github.com/valyala/quicktemplate",
-			"Comment": "v1.1.1",
-			"Rev": "480e8b93a60078dd620fcf4b2591f4d6422e3fc1"
+			"Comment": "v1.4.1-6-g042bd8f",
+			"Rev": "042bd8fec5ae9205628c6514c2fb9f12dd526835"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "60506f45cf65977eb3a9c6e30f995f54a721c271"
+			"Rev": "118fecf932d8fea033f3b7aca66fba22cfdd517d"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
-			"Rev": "60506f45cf65977eb3a9c6e30f995f54a721c271"
+			"Rev": "118fecf932d8fea033f3b7aca66fba22cfdd517d"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
