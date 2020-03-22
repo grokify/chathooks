@@ -25,11 +25,27 @@ const (
 type Handler struct {
 	Config          config.Configuration
 	AdapterSet      adapters.AdapterSet
+	Key             string
 	Normalize       Normalize
 	MessageBodyType models.MessageBodyType
 }
 
-type Normalize func(config.Configuration, []byte) (cc.Message, error)
+type HandlerRequest struct {
+	Env    map[string]string // handler environment
+	Params map[string]string // query string params
+	Body   []byte            // message, e.g. request body
+}
+
+func NewHandlerRequest() HandlerRequest {
+	return HandlerRequest{
+		Env:    map[string]string{},
+		Params: map[string]string{},
+		Body:   []byte("")}
+}
+
+type Normalize func(config.Configuration, HandlerRequest) (cc.Message, error)
+
+//type Normalize func(config.Configuration, []byte) (cc.Message, error)
 
 // HandleAwsLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -121,7 +137,7 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info(string(hookData.InputBody))
 
-	ccMsg, err := h.Normalize(h.Config, hookData.InputBody)
+	ccMsg, err := h.Normalize(h.Config, HandlerRequest{Body: hookData.InputBody})
 
 	if err != nil {
 		log.WithFields(log.Fields{

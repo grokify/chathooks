@@ -24,14 +24,14 @@ func NewHandler() handlers.Handler {
 	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	src, err := OpsgenieOutMessageFromBytes(bytes)
+	src, err := OpsgenieOutMessageFromBytes(hReq.Body)
 	if err != nil {
 		return ccMsg, err
 	}

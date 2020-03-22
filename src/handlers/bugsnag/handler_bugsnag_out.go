@@ -37,7 +37,7 @@ Location
 controllers/example.rb:11 - example_call
 */
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
@@ -46,7 +46,7 @@ func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
 
 	ccMsg.Activity = fmt.Sprintf("%s alert", DisplayName)
 
-	src, err := BugsnagOutMessageFromBytes(bytes)
+	src, err := BugsnagOutMessageFromBytes(hReq.Body)
 	if err != nil {
 		return ccMsg, err
 	}

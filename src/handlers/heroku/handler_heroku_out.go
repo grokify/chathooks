@@ -36,8 +36,8 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 }
 
 //func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
-	src, err := HerokuOutMessageFromQuery(bytes)
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	src, err := HerokuOutMessageFromQuery(hReq.Body)
 	if err != nil {
 		return cc.Message{}, err
 	}

@@ -39,7 +39,8 @@ func StatusMessageSuffix(statusMessage string) string {
 	return statusMessage
 }
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	bytes := hReq.Body
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {

@@ -20,8 +20,8 @@ func NewHandler() handlers.Handler {
 	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
-	ccMsg, err := CcMessageFromBytes(bytes)
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	ccMsg, err := CcMessageFromBytes(hReq.Body)
 	if err != nil {
 		return ccMsg, err
 	}

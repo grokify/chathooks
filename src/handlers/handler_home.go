@@ -2,14 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	//"strings"
 
-	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	//"github.com/grokify/commonchat"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
-	//cc "github.com/grokify/commonchat"
-	//"github.com/grokify/gotilla/type/stringsutil"
 	"github.com/valyala/fasthttp"
 )
 

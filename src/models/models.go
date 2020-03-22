@@ -40,6 +40,7 @@ const (
 	URLEncoded
 	URLEncodedJSONPayload
 	URLEncodedJSONPayloadOrJSON
+	URLEncodedRails
 )
 
 var intervals = [...]string{
@@ -118,7 +119,7 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 		data.Token = strings.TrimSpace(token)
 	}
 	if namedOutputs, ok := queryStringParameters[QueryParamOutputAdapters]; ok {
-		data.OutputNames = stringsutil.SliceTrimSpace(strings.Split(namedOutputs, ","))
+		data.OutputNames = stringsutil.SliceCondenseSpace(strings.Split(namedOutputs, ","), true, false)
 	}
 	return data
 }

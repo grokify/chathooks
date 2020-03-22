@@ -33,7 +33,7 @@ func DocsHandlersDirInfo() ([]string, []string, error) {
 	for _, sdir := range sdirs {
 		fmt.Printf("SDIR: %v\n", sdir.Name())
 		absSubDir := filepath.Join(dirname, sdir.Name())
-		files, err := iom.DirEntriesReSizeGt0(absSubDir,
+		files, err := iom.DirEntriesReNotEmpty(absSubDir,
 			regexp.MustCompile(`^event-example_.+\.(json|txt)$`))
 		if err != nil {
 			return dirs, exampleFiles, err

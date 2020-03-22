@@ -26,8 +26,8 @@ func NewHandler() handlers.Handler {
 
 // {$component.name} status changed from {$component_update.old_status} to {$component_update.new_status}. [(Manage your Components)]({http://manage.statuspage.io/pages/{$page.id}/components})
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
-	src, err := StatuspageOutMessageFromBytes(bytes)
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	src, err := StatuspageOutMessageFromBytes(hReq.Body)
 	if err != nil {
 		return cc.NewMessage(), err
 	}

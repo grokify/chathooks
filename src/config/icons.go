@@ -34,7 +34,8 @@ var Icons = map[string]string{
 	"statuspage": "icon_statuspage_512x512.png",
 	"travisci":   "icon_travisci_225x225.png",
 	"userlike":   "icon_userlike_512x512.png",
-	"victorops":  "icon_victorops_225x225.png"}
+	"victorops":  "icon_victorops_225x225.png",
+	"wootric":    "icon_wootric_200x200.png"}
 
 func joinURL(baseURL string, pathPart string) (*url.URL, error) {
 	u, err := url.Parse(pathPart)

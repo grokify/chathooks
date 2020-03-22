@@ -1,5 +1,6 @@
 .DS_Store
 _*
+*.tar
 handler.so
 handler.zip
 main

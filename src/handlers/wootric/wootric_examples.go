@@ -1,4 +1,4 @@
-package apteligent
+package wootric
 
 import (
 	"github.com/grokify/chathooks/src/config"

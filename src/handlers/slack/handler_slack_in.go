@@ -68,8 +68,8 @@ func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 	return ctx.FormValue("payload")
 }
 
-func Normalize(config config.Configuration, bytes []byte) (cc.Message, error) {
-	slMsg, err := ccslack.NewMessageFromBytes(bytes)
+func Normalize(config config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	slMsg, err := ccslack.NewMessageFromBytes(hReq.Body)
 	if err != nil {
 		return cc.Message{}, err
 	}

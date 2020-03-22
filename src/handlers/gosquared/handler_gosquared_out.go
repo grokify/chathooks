@@ -25,7 +25,8 @@ func NewHandler() handlers.Handler {
 	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	bytes := hReq.Body
 	src, err := GosquaredOutBaseMessageFromBytes(bytes)
 	if err != nil {
 		return cc.NewMessage(), err

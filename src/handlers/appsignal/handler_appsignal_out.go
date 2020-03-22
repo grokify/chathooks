@@ -89,14 +89,14 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 }
 */
 
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	src, err := AppsignalOutMessageFromBytes(bytes)
+	src, err := AppsignalOutMessageFromBytes(hReq.Body)
 	if err != nil {
 		return ccMsg, err
 	}

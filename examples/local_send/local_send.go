@@ -48,6 +48,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers/travisci"
 	"github.com/grokify/chathooks/src/handlers/userlike"
 	"github.com/grokify/chathooks/src/handlers/victorops"
+	"github.com/grokify/chathooks/src/handlers/wootric"
 )
 
 type cliOptions struct {
@@ -91,7 +92,7 @@ func main() {
 
 	dirs, _, err := examples.DocsHandlersDirInfo()
 	if err != nil {
-		log.Fatal()
+		log.Fatal(err)
 	}
 	fmt.Println(strings.Join(dirs, ","))
 	if len(opts.Service) > 0 {
@@ -267,6 +268,11 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		}
 	case "victorops":
 		sender.SendCcMessage(victorops.ExampleMessage(cfg, exampleData))
+	case "wootric":
+		source := exampleData.Data[wootric.HandlerKey]
+		for _, eventSlug := range source.EventSlugs {
+			sender.SendCcMessage(wootric.ExampleMessage(cfg, exampleData, eventSlug))
+		}
 	default:
 		return errors.New(fmt.Sprintf("Unknown webhook source [%s]\n", service))
 	}

@@ -89,6 +89,10 @@ func ExampleDataRaw() []byte {
         "userlike":{
         	"event_slugs_":["chat-meta_feedback","chat-meta_forward","chat-meta_rating","chat-meta_receive","chat-meta_start","chat-meta_survey"],
             "event_slugs":["chat-widget_config","offline-message_receive","operator_away","operator_back","operator_offline","operator_online"]
+        },
+        "wootric":{
+            "file_extension": "txt",
+            "event_slugs":["decline-created","response-created"]
         }
     }
 }`)

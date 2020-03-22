@@ -2,6 +2,7 @@ package librato
 
 import (
 	"github.com/grokify/chathooks/src/config"
+	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/util"
 	cc "github.com/grokify/commonchat"
 )
@@ -11,5 +12,5 @@ func ExampleMessage(cfg config.Configuration, data util.ExampleData, eventSlug s
 	if err != nil {
 		return cc.Message{}, err
 	}
-	return Normalize(cfg, bytes)
+	return Normalize(cfg, handlers.HandlerRequest{Body: bytes})
 }

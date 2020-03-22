@@ -89,14 +89,14 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 	return h.AdapterSet.SendWebhooks(hookData)
 }
 */
-func Normalize(cfg config.Configuration, bytes []byte) (cc.Message, error) {
+func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	src, err := ApteligentOutMessageFromBytes(bytes)
+	src, err := ApteligentOutMessageFromBytes(hReq.Body)
 	if err != nil {
 		return ccMsg, err
 	}
