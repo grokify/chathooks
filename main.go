@@ -53,6 +53,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers/travisci"
 	"github.com/grokify/chathooks/src/handlers/userlike"
 	"github.com/grokify/chathooks/src/handlers/victorops"
+	"github.com/grokify/chathooks/src/handlers/wootric"
 )
 
 /*
@@ -163,7 +164,8 @@ func NewService() Service {
 		"statuspage": hf.InflateHandler(statuspage.NewHandler()),
 		"travisci":   hf.InflateHandler(travisci.NewHandler()),
 		"userlike":   hf.InflateHandler(userlike.NewHandler()),
-		"victorops":  hf.InflateHandler(victorops.NewHandler())}}
+		"victorops":  hf.InflateHandler(victorops.NewHandler()),
+		"wootric":    hf.InflateHandler(wootric.NewHandler())}}
 
 	svcInfo := Service{
 		Config:       cfgData,

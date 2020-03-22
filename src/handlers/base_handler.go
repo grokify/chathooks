@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
@@ -32,14 +33,14 @@ type Handler struct {
 
 type HandlerRequest struct {
 	Env    map[string]string // handler environment
-	Params map[string]string // query string params
+	Params url.Values        // query string params
 	Body   []byte            // message, e.g. request body
 }
 
 func NewHandlerRequest() HandlerRequest {
 	return HandlerRequest{
 		Env:    map[string]string{},
-		Params: map[string]string{},
+		Params: url.Values{},
 		Body:   []byte("")}
 }
 
@@ -137,7 +138,10 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 		"event":   "incoming.webhook",
 		"handler": DisplayName}).Info(string(hookData.InputBody))
 
-	ccMsg, err := h.Normalize(h.Config, HandlerRequest{Body: hookData.InputBody})
+	ccMsg, err := h.Normalize(h.Config,
+		HandlerRequest{
+			Params: hookData.CustomParams,
+			Body:   hookData.InputBody})
 
 	if err != nil {
 		log.WithFields(log.Fields{

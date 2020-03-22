@@ -2,6 +2,7 @@ package wootric
 
 import (
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -11,22 +12,31 @@ import (
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/grokify/gotilla/html/htmlutil"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
 	DisplayName      = "Wootric"
 	HandlerKey       = "wootric"
 	MessageDirection = "out"
-	MessageBodyType  = models.URLEncodedRails
+	MessageBodyType  = models.URLEncodedRails // application/x-www-form-urlencoded
 
-	WootricResponseFormat = `score[Score],text[Why];company_name__c[Company Name],(rcAccountId__c[RC Account ID]);email[User email];directorySize__c[Number of users];brand[Brand];survey_id[Survey ID]`
+	WootricFormatVarResponse = "wootricFormatResponse"
+	WootricFormatDefault     = `score[NPS Score],text[Why];email[User email];survey_id[Survey ID]`
 )
 
 func NewHandler() handlers.Handler {
-	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
+	return handlers.Handler{
+		Key:             HandlerKey,
+		MessageBodyType: MessageBodyType,
+		Normalize:       Normalize}
 }
 
 func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
+	if hReq.Params == nil {
+		hReq.Params = url.Values{}
+	}
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
 	if err == nil {
@@ -35,17 +45,39 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 
 	fmtutil.PrintJSON(ccMsg)
 
-	src, err := ParseQueryString(string(hReq.Body))
+	body, err := url.QueryUnescape(string(hReq.Body))
+
+	if err != nil {
+		panic("Z")
+	}
+	//src, err := ParseQueryString(string(hReq.Body))
+	src, err := ParseQueryString(body)
 	if err != nil {
 		return ccMsg, err
 	}
+	log.Info("WOOTRIC_BODY: " + string(hReq.Body))
 
 	ccMsg.Activity = src.Activity()
 	fmtutil.PrintJSON(src)
+	fmtutil.PrintJSON(hReq.Params)
 
 	if src.IsResponse() {
+		responseFormat := WootricFormatDefault
+		tryFormat := strings.TrimSpace(hReq.Params.Get(WootricFormatVarResponse))
+		if len(tryFormat) > 0 {
+			responseFormat = tryFormat
+		}
+		/*
+			if tryFormat, ok := hReq.Params[WootricFormatVarResponse]; ok {
+				tryFormat = strings.TrimSpace(tryFormat)
+				if len(tryFormat) > 0 {
+					responseFormat = tryFormat
+					log.Info("GOOT_LAYOUT")
+				}
+			}*/
+		fmt.Printf("LAYOUT: [%v]\n", responseFormat)
 		attachment := cc.NewAttachment()
-		lines := ParseFields(WootricResponseFormat)
+		lines := ParseFields(responseFormat)
 		fmtutil.PrintJSON(lines)
 
 		scoreInt64, err := src.Response.Score.Int64()
@@ -63,7 +95,12 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 			numFields := len(line.Fields)
 			if numFields == 0 {
 				continue
-			} /*
+			}
+			isShort := false
+			if numFields > 0 {
+				isShort = true
+			}
+			/*
 				isShort := true
 				if numFields == 1 {
 					isShort = false
@@ -73,11 +110,11 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 				if field.Property == "score" {
 					fmtutil.PrintJSON(src.Response)
 					val := strings.TrimSpace(src.Response.Score.String())
-					attachment.AddField(cc.Field{Title: field.Display, Value: val})
+					attachment.AddField(cc.Field{
+						Title: field.Display, Short: isShort, Value: val})
 				} else if field.Property == "text" {
 					attachment.AddField(cc.Field{
-						Title: field.Display,
-						Value: src.Response.Text})
+						Title: field.Display, Short: isShort, Value: src.Response.Text})
 				} else if field.Property == "email" {
 					attachment.AddField(cc.Field{
 						Title: field.Display,
@@ -86,6 +123,16 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 					attachment.AddField(cc.Field{
 						Title: field.Display,
 						Value: src.Response.SurveyID})
+				} else if field.IsCustom {
+					val := ""
+					if src.Response.EndUserProperties != nil {
+						if try, ok := src.Response.EndUserProperties[field.Property]; ok {
+							val = try
+						}
+					}
+					attachment.AddField(cc.Field{
+						Title: field.Display,
+						Value: val})
 				}
 			}
 		}
@@ -93,8 +140,6 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 			ccMsg.AddAttachment(attachment)
 		}
 	}
-
-	// score[Score],text(Why);company_name__c(Company Name),(rcAccountId__c[RC Account ID]);email[User email];directorySize[Number of users];brand[Brand];survey_id[Survey ID]
 
 	return ccMsg, nil
 }
@@ -111,9 +156,10 @@ type Field struct {
 }
 
 var (
-	rxParens   = regexp.MustCompile(`^\((.*)\)$`)
-	rxBrackets = regexp.MustCompile(`^(.*)\[(.*)\]$`)
-	rxCustom   = regexp.MustCompile(`^(.*)__c$`)
+	rxParens    = regexp.MustCompile(`^\((.*)\)$`)
+	rxBrackets  = regexp.MustCompile(`^(.*)\[(.*)\]$`)
+	rxCustom    = regexp.MustCompile(`^_(.*)$`)
+	rxCustomOld = regexp.MustCompile(`^(.*)__c$`)
 )
 
 func ParseFields(fields string) []Line {
@@ -141,13 +187,13 @@ func ParseFields(fields string) []Line {
 			m2 := rxBrackets.FindAllStringSubmatch(lineVar, -1)
 			if len(m2) > 0 {
 				field.Display = strings.TrimSpace(m2[0][2])
-				property := strings.TrimSpace(m2[0][1])
-				m3 := rxCustom.FindAllStringSubmatch(property, -1)
+				propertyNameRaw := strings.TrimSpace(m2[0][1])
+				m3 := rxCustom.FindAllStringSubmatch(propertyNameRaw, -1)
 				if len(m3) > 0 {
 					field.Property = strings.TrimSpace(m3[0][1])
 					field.IsCustom = true
 				} else {
-					field.Property = property
+					field.Property = propertyNameRaw
 				}
 			}
 			if len(field.Property) == 0 {

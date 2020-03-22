@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grokify/gotilla/encoding/jsonutil"
+	"github.com/grokify/gotilla/net/urlutil"
 	"github.com/grokify/gotilla/time/timeutil"
 	"github.com/grokify/gotilla/type/maputil"
 )
@@ -50,7 +50,7 @@ func (we *WootricEvent) Activity() string {
 
 func ParseQueryString(raw string) (WootricEvent, error) {
 	evt := WootricEvent{}
-	err := jsonutil.UnmarshalRailsQS(raw, &evt)
+	err := urlutil.UnmarshalRailsQS(raw, &evt)
 	if err != nil {
 		return evt, err
 	}
@@ -91,7 +91,7 @@ func ParseQueryString(raw string) (WootricEvent, error) {
 }
 
 type WootricResponse struct {
-	ID                      json.Number       `json:"id"`
+	ID                      string            `json:"id"`
 	Email                   string            `json:"email"`
 	ExternalID              string            `json:"external_id"`
 	Score                   json.Number       `json:"score"`

@@ -26,6 +26,13 @@ const (
 	QueryParamOutputURL      = "url"
 )
 
+var FixedParams = map[string]int{
+	QueryParamOutputAdapters: 1,
+	QueryParamInputType:      2,
+	QueryParamOutputType:     3,
+	QueryParamToken:          4,
+	QueryParamOutputURL:      5}
+
 type RequestParams struct {
 	InputType  string `url:"inputType"`
 	OutputType string `url:"outputType"`
@@ -58,6 +65,7 @@ type HookData struct {
 	OutputNames      []string   `json:"outputNames,omitempty"`
 	Token            string     `json:"token,omitempty"`
 	InputMessage     []byte     `json:"inputMessage,omitempty"`
+	CustomParams     url.Values `json:"customParams,omitempty"`
 	CanonicalMessage cc.Message `json:"canonicalMessage,omitempty"`
 }
 
@@ -105,7 +113,8 @@ func GetMapString2Simple(mapSS map[string]string, key string) string {
 }
 
 func newHookDataForQueryString(queryStringParameters map[string]string) HookData {
-	data := HookData{}
+	data := HookData{
+		CustomParams: url.Values{}}
 	if input, ok := queryStringParameters[QueryParamInputType]; ok {
 		data.InputType = strings.TrimSpace(input)
 	}
@@ -121,17 +130,25 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 	if namedOutputs, ok := queryStringParameters[QueryParamOutputAdapters]; ok {
 		data.OutputNames = stringsutil.SliceCondenseSpace(strings.Split(namedOutputs, ","), true, false)
 	}
+	// Include any other parameter as a custom param.
+	for key, val := range queryStringParameters {
+		if _, ok := FixedParams[key]; !ok {
+			data.CustomParams.Add(strings.ToLower(strings.TrimSpace(key)), val)
+			//data.CustomParams[strings.ToLower(strings.TrimSpace(key))] = val
+		}
+	}
 	return data
 }
 
 func HookDataFromAnyHTTPReq(bodyType MessageBodyType, aReq anyhttp.Request) HookData {
 	return HookData{
-		InputType:   aReq.QueryArgs().GetString(QueryParamInputType),
-		InputBody:   BodyToMessageBytesAnyHTTP(bodyType, aReq),
-		OutputType:  aReq.QueryArgs().GetString(QueryParamOutputType),
-		OutputURL:   aReq.QueryArgs().GetString(QueryParamOutputURL),
-		Token:       aReq.QueryArgs().GetString(QueryParamToken),
-		OutputNames: strings.Split(aReq.QueryArgs().GetString(QueryParamOutputAdapters), ",")}
+		InputType:    aReq.QueryArgs().GetString(QueryParamInputType),
+		InputBody:    BodyToMessageBytesAnyHTTP(bodyType, aReq),
+		OutputType:   aReq.QueryArgs().GetString(QueryParamOutputType),
+		OutputURL:    aReq.QueryArgs().GetString(QueryParamOutputURL),
+		Token:        aReq.QueryArgs().GetString(QueryParamToken),
+		CustomParams: aReq.QueryArgs().GetURLValues(),
+		OutputNames:  strings.Split(aReq.QueryArgs().GetString(QueryParamOutputAdapters), ",")}
 }
 
 func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
