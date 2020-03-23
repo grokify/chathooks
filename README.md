@@ -146,7 +146,6 @@ To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the
 
 ### Installing using the AWS Lambda UI
 
-
 ### Installation via AWS Lambda
 
 See the AWS docs for deployment:
@@ -265,6 +264,12 @@ Code is provided to both send the message locally (without HTTP) and over HTTP.
 
 * [`local_send.go` without HTTP](https://github.com/grokify/chathooks/tree/master/examples/local_send)
 * [`proxy_send.go` over HTTP](https://github.com/grokify/chathooks/tree/master/examples/proxy_send)
+
+### cURL
+
+The following is an example curl command that can be used with any host, local or remote.
+
+`curl -XPOST 'https://example.com/webhook?inputType=datadog&outputType=glip&url=https://hooks.glip.com/webhook/11111111-2222-3333-4444-555566667777' --data "@docs/handlers/datadog/event-example_formatted1.json" -H 'Content-Type: application/json' --verbose`
 
 ## Adding Handlers
 
