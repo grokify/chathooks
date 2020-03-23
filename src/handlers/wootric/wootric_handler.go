@@ -12,6 +12,7 @@ import (
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/grokify/gotilla/html/htmlutil"
+	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -23,7 +24,7 @@ const (
 	MessageBodyType  = models.URLEncodedRails // application/x-www-form-urlencoded
 
 	WootricFormatVarResponse = "wootricFormatResponse"
-	WootricFormatDefault     = `score[NPS Score],text[Why];email[User email];survey_id[Survey ID]`
+	WootricFormatDefault     = `score[NPS Score],text[Why];firstName lastName[User name];email[User email];survey_id[Survey ID]`
 )
 
 func NewHandler() handlers.Handler {
@@ -34,8 +35,8 @@ func NewHandler() handlers.Handler {
 }
 
 func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
-	if hReq.Params == nil {
-		hReq.Params = url.Values{}
+	if hReq.QueryParams == nil {
+		hReq.QueryParams = url.Values{}
 	}
 	ccMsg := cc.NewMessage()
 	iconURL, err := cfg.GetAppIconURL(HandlerKey)
@@ -43,14 +44,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		ccMsg.IconURL = iconURL.String()
 	}
 
-	fmtutil.PrintJSON(ccMsg)
-
 	body, err := url.QueryUnescape(string(hReq.Body))
-
 	if err != nil {
-		panic("Z")
+		return ccMsg, errors.Wrap(err, "wootric.Normalize")
 	}
-	//src, err := ParseQueryString(string(hReq.Body))
 	src, err := ParseQueryString(body)
 	if err != nil {
 		return ccMsg, err
@@ -58,12 +55,12 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	log.Info("WOOTRIC_BODY: " + string(hReq.Body))
 
 	ccMsg.Activity = src.Activity()
-	fmtutil.PrintJSON(src)
-	fmtutil.PrintJSON(hReq.Params)
+
+	fmtutil.PrintJSON(hReq.QueryParams)
 
 	if src.IsResponse() {
 		responseFormat := WootricFormatDefault
-		tryFormat := strings.TrimSpace(hReq.Params.Get(WootricFormatVarResponse))
+		tryFormat := strings.TrimSpace(hReq.QueryParams.Get(WootricFormatVarResponse))
 		if len(tryFormat) > 0 {
 			responseFormat = tryFormat
 		}
