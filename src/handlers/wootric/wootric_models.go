@@ -54,34 +54,36 @@ func ParseQueryString(raw string) (WootricEvent, error) {
 	if err != nil {
 		return evt, err
 	}
-	t1, err := time.Parse(timeutil.Ruby, evt.Timestamp)
-	if err != nil {
-		return evt, err
+	if len(strings.TrimSpace(evt.Timestamp)) > 0 {
+		t1, err := time.Parse(timeutil.Ruby, strings.TrimSpace(evt.Timestamp))
+		if err != nil {
+			return evt, err
+		}
+		evt.TimestampTime = t1
 	}
-	evt.TimestampTime = t1
-	if len(evt.Response.CreatedAt) > 0 {
-		t2, err := time.Parse(timeutil.Ruby, evt.Response.CreatedAt)
+	if len(strings.TrimSpace(evt.Response.CreatedAt)) > 0 {
+		t2, err := time.Parse(timeutil.Ruby, strings.TrimSpace(evt.Response.CreatedAt))
 		if err != nil {
 			return evt, err
 		}
 		evt.Response.CreatedAtTime = t2
 	}
-	if len(evt.Response.UpdatedAt) > 0 {
-		t3, err := time.Parse(timeutil.Ruby, evt.Response.UpdatedAt)
+	if len(strings.TrimSpace(evt.Response.UpdatedAt)) > 0 {
+		t3, err := time.Parse(timeutil.Ruby, strings.TrimSpace(evt.Response.UpdatedAt))
 		if err != nil {
 			return evt, err
 		}
 		evt.Response.UpdatedAtTime = t3
 	}
-	if len(evt.Decline.CreatedAt) > 0 {
-		t2, err := time.Parse(timeutil.Ruby, evt.Decline.CreatedAt)
+	if len(strings.TrimSpace(evt.Decline.CreatedAt)) > 0 {
+		t2, err := time.Parse(timeutil.Ruby, strings.TrimSpace(evt.Decline.CreatedAt))
 		if err != nil {
 			return evt, err
 		}
 		evt.Decline.CreatedAtTime = t2
 	}
-	if len(evt.Decline.UpdatedAt) > 0 {
-		t3, err := time.Parse(timeutil.Ruby, evt.Decline.UpdatedAt)
+	if len(strings.TrimSpace(evt.Decline.UpdatedAt)) > 0 {
+		t3, err := time.Parse(timeutil.Ruby, strings.TrimSpace(evt.Decline.UpdatedAt))
 		if err != nil {
 			return evt, err
 		}
