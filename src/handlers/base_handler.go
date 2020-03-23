@@ -8,8 +8,6 @@ import (
 	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	"github.com/grokify/chathooks/src/adapters"
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
@@ -32,21 +30,21 @@ type Handler struct {
 }
 
 type HandlerRequest struct {
-	Env    map[string]string // handler environment
-	Params url.Values        // query string params
-	Body   []byte            // message, e.g. request body
+	Env         map[string]string // handler environment
+	QueryParams url.Values        // query string params
+	Body        []byte            // message, e.g. request body
 }
 
 func NewHandlerRequest() HandlerRequest {
 	return HandlerRequest{
-		Env:    map[string]string{},
-		Params: url.Values{},
-		Body:   []byte("")}
+		Env:         map[string]string{},
+		QueryParams: url.Values{},
+		Body:        []byte("")}
 }
 
 type Normalize func(config.Configuration, HandlerRequest) (cc.Message, error)
 
-//type Normalize func(config.Configuration, []byte) (cc.Message, error)
+// type Normalize func(config.Configuration, []byte) (cc.Message, error)
 
 // HandleAwsLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -56,13 +54,14 @@ func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayPr
 	return awsRes, err
 }
 
+/* DEPRECATE - REMOVE
 // HandleEawsyLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error) {
 	hookData := models.HookDataFromEawsyLambdaEvent(h.MessageBodyType, event)
 	errs := h.HandleCanonical(hookData)
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
 	return awsRes, err
-}
+}*/
 
 // HandleNetHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleAnyHTTP(aRes anyhttp.Response, aReq anyhttp.Request) {
@@ -140,8 +139,8 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 
 	ccMsg, err := h.Normalize(h.Config,
 		HandlerRequest{
-			Params: hookData.CustomParams,
-			Body:   hookData.InputBody})
+			QueryParams: hookData.CustomQueryParams,
+			Body:        hookData.InputBody})
 
 	if err != nil {
 		log.WithFields(log.Fields{

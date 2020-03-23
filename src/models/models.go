@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
+	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/net/anyhttp"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
@@ -58,15 +58,15 @@ var intervals = [...]string{
 }
 
 type HookData struct {
-	InputType        string     `json:"inputType,omitempty"`
-	InputBody        []byte     `json:"inputBody,omitempty"`
-	OutputType       string     `json:"outputType,omitempty"`
-	OutputURL        string     `json:"outputUrl,omitempty"`
-	OutputNames      []string   `json:"outputNames,omitempty"`
-	Token            string     `json:"token,omitempty"`
-	InputMessage     []byte     `json:"inputMessage,omitempty"`
-	CustomParams     url.Values `json:"customParams,omitempty"`
-	CanonicalMessage cc.Message `json:"canonicalMessage,omitempty"`
+	InputType         string     `json:"inputType,omitempty"`
+	InputBody         []byte     `json:"inputBody,omitempty"`
+	OutputType        string     `json:"outputType,omitempty"`
+	OutputURL         string     `json:"outputUrl,omitempty"`
+	OutputNames       []string   `json:"outputNames,omitempty"`
+	Token             string     `json:"token,omitempty"`
+	InputMessage      []byte     `json:"inputMessage,omitempty"`
+	CustomQueryParams url.Values `json:"customParams,omitempty"`
+	CanonicalMessage  cc.Message `json:"canonicalMessage,omitempty"`
 }
 
 type hookDataRequest struct {
@@ -86,6 +86,7 @@ func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatew
 		QueryStringParameters: awsReq.QueryStringParameters})
 }
 
+/*
 func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, eawsyReq *apigatewayproxyevt.Event) HookData {
 	return newHookDataGeneric(hookDataRequest{
 		BodyType:              bodyType,
@@ -93,7 +94,7 @@ func HookDataFromEawsyLambdaEvent(bodyType MessageBodyType, eawsyReq *apigateway
 		Body:                  eawsyReq.Body,
 		IsBase64Encoded:       eawsyReq.IsBase64Encoded,
 		QueryStringParameters: eawsyReq.QueryStringParameters})
-}
+}*/
 
 func newHookDataGeneric(req hookDataRequest) HookData {
 	data := newHookDataForQueryString(req.QueryStringParameters)
@@ -114,7 +115,7 @@ func GetMapString2Simple(mapSS map[string]string, key string) string {
 
 func newHookDataForQueryString(queryStringParameters map[string]string) HookData {
 	data := HookData{
-		CustomParams: url.Values{}}
+		CustomQueryParams: url.Values{}}
 	if input, ok := queryStringParameters[QueryParamInputType]; ok {
 		data.InputType = strings.TrimSpace(input)
 	}
@@ -133,7 +134,7 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 	// Include any other parameter as a custom param.
 	for key, val := range queryStringParameters {
 		if _, ok := FixedParams[key]; !ok {
-			data.CustomParams.Add(strings.ToLower(strings.TrimSpace(key)), val)
+			data.CustomQueryParams.Add(strings.ToLower(strings.TrimSpace(key)), val)
 			//data.CustomParams[strings.ToLower(strings.TrimSpace(key))] = val
 		}
 	}
@@ -142,13 +143,13 @@ func newHookDataForQueryString(queryStringParameters map[string]string) HookData
 
 func HookDataFromAnyHTTPReq(bodyType MessageBodyType, aReq anyhttp.Request) HookData {
 	return HookData{
-		InputType:    aReq.QueryArgs().GetString(QueryParamInputType),
-		InputBody:    BodyToMessageBytesAnyHTTP(bodyType, aReq),
-		OutputType:   aReq.QueryArgs().GetString(QueryParamOutputType),
-		OutputURL:    aReq.QueryArgs().GetString(QueryParamOutputURL),
-		Token:        aReq.QueryArgs().GetString(QueryParamToken),
-		CustomParams: aReq.QueryArgs().GetURLValues(),
-		OutputNames:  strings.Split(aReq.QueryArgs().GetString(QueryParamOutputAdapters), ",")}
+		InputType:         aReq.QueryArgs().GetString(QueryParamInputType),
+		InputBody:         BodyToMessageBytesAnyHTTP(bodyType, aReq),
+		OutputType:        aReq.QueryArgs().GetString(QueryParamOutputType),
+		OutputURL:         aReq.QueryArgs().GetString(QueryParamOutputURL),
+		Token:             aReq.QueryArgs().GetString(QueryParamToken),
+		CustomQueryParams: aReq.QueryArgs().GetURLValues(),
+		OutputNames:       strings.Split(aReq.QueryArgs().GetString(QueryParamOutputAdapters), ",")}
 }
 
 func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
