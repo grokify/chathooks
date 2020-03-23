@@ -4,6 +4,8 @@ import (
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
 	"github.com/valyala/fasthttp"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -24,6 +26,7 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 		if adapter, ok := set.Adapters[hookData.OutputType]; ok {
 			var msg interface{}
 			req, res, err := adapter.SendWebhook(hookData.OutputURL, hookData.CanonicalMessage, &msg)
+			log.Infof("ADAPTER_API_STATUS_CODE [%s][%v][%s][%s]", hookData.OutputType, res.StatusCode(), hookData.OutputURL, string(res.Body()))
 			errs = set.procResponse(errs, req, res, err)
 		}
 	}
@@ -50,18 +53,3 @@ func (set *AdapterSet) procResponse(errs []models.ErrorInfo, req *fasthttp.Reque
 	fasthttp.ReleaseResponse(res)
 	return errs
 }
-
-/*
-type Adapter interface {
-	SendWebhook(url string, message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
-	SendMessage(message cc.Message, finalMsg interface{}) (*fasthttp.Request, *fasthttp.Response, error)
-	WebhookUID(ctx *fasthttp.RequestCtx) (string, error)
-}
-
-func IntegrationActivitySuffix(displayName string) string {
-	if !ShowDisplayName || len(displayName) < 1 {
-		return ""
-	}
-	return ""
-}
-*/

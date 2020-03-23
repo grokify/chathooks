@@ -13,8 +13,6 @@ import (
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/grokify/gotilla/html/htmlutil"
 	"github.com/pkg/errors"
-
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -52,9 +50,9 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if err != nil {
 		return ccMsg, err
 	}
-	log.Info("WOOTRIC_BODY: " + string(hReq.Body))
 
 	ccMsg.Activity = src.Activity()
+	ccMsg.Title = src.Activity()
 
 	fmtutil.PrintJSON(hReq.QueryParams)
 
@@ -64,18 +62,9 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		if len(tryFormat) > 0 {
 			responseFormat = tryFormat
 		}
-		/*
-			if tryFormat, ok := hReq.Params[WootricFormatVarResponse]; ok {
-				tryFormat = strings.TrimSpace(tryFormat)
-				if len(tryFormat) > 0 {
-					responseFormat = tryFormat
-					log.Info("GOOT_LAYOUT")
-				}
-			}*/
-		fmt.Printf("LAYOUT: [%v]\n", responseFormat)
+
 		attachment := cc.NewAttachment()
 		lines := ParseFields(responseFormat)
-		fmtutil.PrintJSON(lines)
 
 		scoreInt64, err := src.Response.Score.Int64()
 		if err == nil {
@@ -94,18 +83,12 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 				continue
 			}
 			isShort := false
-			if numFields > 0 {
+			if numFields > 1 {
 				isShort = true
 			}
-			/*
-				isShort := true
-				if numFields == 1 {
-					isShort = false
-				}*/
 
 			for _, field := range line.Fields {
 				if field.Property == "score" {
-					fmtutil.PrintJSON(src.Response)
 					val := strings.TrimSpace(src.Response.Score.String())
 					attachment.AddField(cc.Field{
 						Title: field.Display, Short: isShort, Value: val})
@@ -114,12 +97,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 						Title: field.Display, Short: isShort, Value: src.Response.Text})
 				} else if field.Property == "email" {
 					attachment.AddField(cc.Field{
-						Title: field.Display,
-						Value: src.Response.Email})
+						Title: field.Display, Short: isShort, Value: src.Response.Email})
 				} else if field.Property == "survey_id" {
 					attachment.AddField(cc.Field{
-						Title: field.Display,
-						Value: src.Response.SurveyID})
+						Title: field.Display, Short: isShort, Value: src.Response.SurveyID})
 				} else if field.IsCustom {
 					val := ""
 					if src.Response.EndUserProperties != nil {
@@ -129,15 +110,21 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 					}
 					attachment.AddField(cc.Field{
 						Title: field.Display,
+						Short: isShort,
 						Value: val})
 				}
 			}
 		}
 		if len(attachment.Fields) > 0 {
+			for i, f := range attachment.Fields {
+				if len(f.Value) == 0 {
+					f.Value = "[empty]"
+				}
+				attachment.Fields[i] = f
+			}
 			ccMsg.AddAttachment(attachment)
 		}
 	}
-
 	return ccMsg, nil
 }
 
@@ -196,9 +183,10 @@ func ParseFields(fields string) []Line {
 			if len(field.Property) == 0 {
 				fmt.Println(lineVar)
 				fmtutil.PrintJSON(field)
-				panic("Z")
+				//panic("Z")
+			} else {
+				line.Fields = append(line.Fields, field)
 			}
-			line.Fields = append(line.Fields, field)
 		}
 		lines = append(lines, line)
 	}
