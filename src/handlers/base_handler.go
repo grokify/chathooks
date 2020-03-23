@@ -44,8 +44,6 @@ func NewHandlerRequest() HandlerRequest {
 
 type Normalize func(config.Configuration, HandlerRequest) (cc.Message, error)
 
-// type Normalize func(config.Configuration, []byte) (cc.Message, error)
-
 // HandleAwsLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	hookData := models.HookDataFromAwsLambdaEvent(h.MessageBodyType, awsReq)
@@ -53,15 +51,6 @@ func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayPr
 	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
 	return awsRes, err
 }
-
-/* DEPRECATE - REMOVE
-// HandleEawsyLambda is the method to respond to a fasthttp request.
-func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (events.APIGatewayProxyResponse, error) {
-	hookData := models.HookDataFromEawsyLambdaEvent(h.MessageBodyType, event)
-	errs := h.HandleCanonical(hookData)
-	awsRes, err := models.BuildAwsAPIGatewayProxyResponse(hookData, errs...)
-	return awsRes, err
-}*/
 
 // HandleNetHTTP is the method to respond to a fasthttp request.
 func (h Handler) HandleAnyHTTP(aRes anyhttp.Response, aReq anyhttp.Request) {
