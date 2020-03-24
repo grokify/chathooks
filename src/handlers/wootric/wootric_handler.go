@@ -50,10 +50,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if err != nil {
 		return ccMsg, err
 	}
-
-	ccMsg.Activity = src.Activity()
-	ccMsg.Title = src.Activity()
-
+	/*
+		ccMsg.Activity = src.Activity()
+		ccMsg.Title = src.Activity()
+	*/
 	fmtutil.PrintJSON(hReq.QueryParams)
 
 	if src.IsResponse() {
@@ -110,7 +110,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 							val = try
 						}
 					}
-					if field.Property == "brand" {
+					if field.Property == "company_brand" {
 						if val == "rc-glip" {
 							val = "RingCentral"
 						} else if val == "non-rc-glip" {
@@ -126,13 +126,14 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 				}
 			}
 		}
-		if 1 == 0 && len(attachment.Fields) > 0 {
-			for i, f := range attachment.Fields {
-				if len(f.Value) == 0 {
-					f.Value = "[empty]"
-				}
-				attachment.Fields[i] = f
-			}
+		if len(attachment.Fields) > 0 {
+			/*
+				for i, f := range attachment.Fields {
+					if len(f.Value) == 0 {
+						f.Value = "[empty]"
+					}
+					attachment.Fields[i] = f
+				}*/
 			ccMsg.AddAttachment(attachment)
 		}
 	}
