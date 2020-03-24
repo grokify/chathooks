@@ -41,9 +41,11 @@ func (we *WootricEvent) Activity() string {
 	} else if we.IsDecline() {
 		parts = append(parts, "Decline")
 	}
-	evtName := strings.TrimSpace(we.EventName)
-	if len(evtName) > 0 {
-		parts = append(parts, evtName)
+	if 1 == 0 {
+		evtName := strings.TrimSpace(we.EventName)
+		if len(evtName) > 0 {
+			parts = append(parts, evtName)
+		}
 	}
 	return strings.Join(parts, " ")
 }
