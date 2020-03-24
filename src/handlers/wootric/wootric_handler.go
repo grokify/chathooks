@@ -12,6 +12,7 @@ import (
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/grokify/gotilla/html/htmlutil"
+	"github.com/grokify/gotilla/strconv/strconvutil"
 	"github.com/pkg/errors"
 )
 
@@ -21,8 +22,10 @@ const (
 	MessageDirection = "out"
 	MessageBodyType  = models.URLEncodedRails // application/x-www-form-urlencoded
 
-	WootricFormatVarResponse = "wootricFormatResponse"
-	WootricFormatDefault     = `score[NPS Score],text[Why];firstName lastName[User name];email[User email];survey_id[Survey ID]`
+	//WootricFormatVarResponse = "wootricFormatResponse"
+	WootricQryVarFormatResponse = "wootricFormatResponse"
+	WootricQryVarSkipEmptyText  = "wootricSkipEmptyText"
+	WootricFormatDefault        = `score[NPS Score],text[Why];firstName lastName[User name];email[User email];survey_id[Survey ID]`
 )
 
 func NewHandler() handlers.Handler {
@@ -54,11 +57,14 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	ccMsg.Activity = src.Activity()
 	//	ccMsg.Title = src.Activity()
 
-	fmtutil.PrintJSON(hReq.QueryParams)
-
 	if src.IsResponse() {
+		skipEmptyText := strconvutil.MustParseBool(
+			hReq.QueryParams.Get(WootricQryVarSkipEmptyText))
+		if skipEmptyText && len(strings.TrimSpace(src.Response.Text)) == 0 {
+			return ccMsg, errors.New("SKIP_WOOTRIC_RESPONSE_NO_USER_TEXT")
+		}
 		responseFormat := WootricFormatDefault
-		tryFormat := strings.TrimSpace(hReq.QueryParams.Get(WootricFormatVarResponse))
+		tryFormat := strings.TrimSpace(hReq.QueryParams.Get(WootricQryVarFormatResponse))
 		if len(tryFormat) > 0 {
 			responseFormat = tryFormat
 		}
@@ -86,7 +92,6 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 			if numFields > 1 {
 				isShort = true
 			}
-
 			for _, field := range line.Fields {
 				if field.Property == "score" {
 					val := strings.TrimSpace(src.Response.Score.String())
@@ -136,6 +141,9 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 				}*/
 			ccMsg.AddAttachment(attachment)
 		}
+	} else {
+		// Decline not supported yet.
+		return ccMsg, errors.New("SKIP_WOOTRIC_NOT_RESPONSE_IS_DECLINE")
 	}
 	return ccMsg, nil
 }
