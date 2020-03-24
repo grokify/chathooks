@@ -50,10 +50,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if err != nil {
 		return ccMsg, err
 	}
-	/*
-		ccMsg.Activity = src.Activity()
-		ccMsg.Title = src.Activity()
-	*/
+
+	ccMsg.Activity = src.Activity()
+	//	ccMsg.Title = src.Activity()
+
 	fmtutil.PrintJSON(hReq.QueryParams)
 
 	if src.IsResponse() {
