@@ -50,10 +50,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if err != nil {
 		return ccMsg, err
 	}
-	/*
-		ccMsg.Activity = src.Activity()
-		ccMsg.Title = src.Activity()
-	*/
+
+	ccMsg.Activity = src.Activity()
+	ccMsg.Title = src.Activity()
+
 	fmtutil.PrintJSON(hReq.QueryParams)
 
 	if src.IsResponse() {
@@ -94,16 +94,13 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 						attachment.AddField(cc.Field{
 							Title: field.Display, Short: isShort, Value: val})
 					}
-				} else if field.Property == "text" &&
-					len(strings.TrimSpace(src.Response.Text)) > 0 {
+				} else if field.Property == "text" && len(strings.TrimSpace(src.Response.Text)) > 0 {
 					attachment.AddField(cc.Field{
 						Title: field.Display, Short: isShort, Value: src.Response.Text})
-				} else if field.Property == "email" &&
-					len(strings.TrimSpace(src.Response.Email)) > 0 {
+				} else if field.Property == "email" && len(strings.TrimSpace(src.Response.Email)) > 0 {
 					attachment.AddField(cc.Field{
 						Title: field.Display, Short: isShort, Value: src.Response.Email})
-				} else if field.Property == "survey_id" &&
-					len(strings.TrimSpace(src.Response.SurveyID)) > 0 {
+				} else if field.Property == "survey_id" && len(strings.TrimSpace(src.Response.SurveyID)) > 0 {
 					attachment.AddField(cc.Field{
 						Title: field.Display, Short: isShort, Value: src.Response.SurveyID})
 				} else if field.IsCustom {
