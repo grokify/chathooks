@@ -35,7 +35,7 @@ func (we *WootricEvent) IsDecline() bool {
 }
 
 func (we *WootricEvent) Activity() string {
-	parts := []string{DisplayName + " -"}
+	parts := []string{"NPS "}
 	if we.IsResponse() {
 		parts = append(parts, "Response")
 	} else if we.IsDecline() {
