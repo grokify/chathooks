@@ -9,12 +9,12 @@ import (
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
-	//"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/gotilla/net/anyhttp"
 	fhu "github.com/grokify/gotilla/net/fasthttputil"
 	nhu "github.com/grokify/gotilla/net/nethttputil"
 	"github.com/grokify/gotilla/type/stringsutil"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
@@ -77,13 +77,32 @@ type hookDataRequest struct {
 	IsBase64Encoded       bool
 }
 
-func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatewayProxyRequest) HookData {
-	return newHookDataGeneric(hookDataRequest{
+// HookDataFromAwsLambdaEvent converts a Lambda event to
+// generic HookData.
+func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatewayProxyRequest, messageBodyType MessageBodyType) HookData {
+	hookData := newHookDataGeneric(hookDataRequest{
 		BodyType:              bodyType,
 		Headers:               awsReq.Headers,
 		Body:                  awsReq.Body,
 		IsBase64Encoded:       awsReq.IsBase64Encoded,
 		QueryStringParameters: awsReq.QueryStringParameters})
+	// `application/x-www-form-urlencoded` is currently not supported
+	// with AWS Lambda because Lambda cannot support URL Query String
+	// parameterss with this Content-Type.
+	if messageBodyType == URLEncoded ||
+		messageBodyType == URLEncodedJSONPayload ||
+		messageBodyType == URLEncodedRails {
+		jsonData := awsJsonWrapper{}
+		err := json.Unmarshal(hookData.InputMessage, &jsonData)
+		if err == nil {
+			hookData.InputMessage = []byte(jsonData.Body)
+		}
+	}
+	return hookData
+}
+
+type awsJsonWrapper struct {
+	Body string `json:"body,omitempty"`
 }
 
 /*
@@ -173,6 +192,7 @@ func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestC
 }
 
 func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]string, body string, isBase64Encoded bool) []byte {
+	bodyConverted := []byte("")
 	if isBase64Encoded {
 		decoded, err := base64.StdEncoding.DecodeString(body)
 		if err != nil {
@@ -186,7 +206,7 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 		if err != nil {
 			return []byte("")
 		}
-		return []byte(v.Get("payload"))
+		bodyConverted = []byte(v.Get("payload"))
 	case URLEncodedJSONPayloadOrJSON:
 		if ct, ok := headers["content-type"]; ok {
 			ct = strings.TrimSpace(strings.ToLower(ct))
@@ -198,10 +218,12 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 		if err != nil {
 			return []byte("")
 		}
-		return []byte(v.Get("payload"))
+		bodyConverted = []byte(v.Get("payload"))
 	default:
-		return []byte(body)
+		bodyConverted = []byte(body)
 	}
+	log.Infof("REQUEST_BODY [%v]", string(bodyConverted))
+	return bodyConverted
 }
 
 func BodyToMessageBytesAnyHTTP(bodyType MessageBodyType, aReq anyhttp.Request) []byte {
