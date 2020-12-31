@@ -282,6 +282,28 @@ func (svc *Service) HandleHomeFastHTTP(ctx *fasthttp.RequestCtx) {
 	svc.HandleHomeAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
 
+func (svc Service) PortInt() int {
+	return svc.Config.Port
+}
+
+func (svc Service) HttpEngine() string {
+	return svc.Config.Engine
+}
+
+func (svc Service) Router() http.Handler {
+	return getHttpServeMux(svc)
+}
+
+func (svc Service) RouterFast() *fasthttprouter.Router {
+	router := fasthttprouter.New()
+	router.GET("/", svc.HandleHomeFastHTTP)
+	router.POST("/hook", svc.HandleHookFastHTTP)
+	router.POST("/hook/", svc.HandleHookFastHTTP)
+	router.POST("/webhook", svc.HandleHookFastHTTP)
+	router.POST("/webhook/", svc.HandleHookFastHTTP)
+	return router
+}
+
 func getHttpServeMux(svc Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", http.HandlerFunc(svc.HandleHomeNetHTTP))
@@ -299,12 +321,12 @@ func ServeNetHttp(svc Service) {
 
 func ServeFastHttp(svc Service) {
 	log.Info(fmt.Sprintf("STARTING_FAST_HTTP [%v]", svc.Config.Port))
-	router := fasthttprouter.New()
-	router.GET("/", svc.HandleHomeFastHTTP)
+	router := svc.RouterFast()
+	/*router.GET("/", svc.HandleHomeFastHTTP)
 	router.POST("/hook", svc.HandleHookFastHTTP)
 	router.POST("/hook/", svc.HandleHookFastHTTP)
 	router.POST("/webhook", svc.HandleHookFastHTTP)
-	router.POST("/webhook/", svc.HandleHookFastHTTP)
+	router.POST("/webhook/", svc.HandleHookFastHTTP)*/
 	log.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
 }
 

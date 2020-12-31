@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	cfg "github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/net/http/httpsimple"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/grokify/chathooks/src/service"
@@ -36,16 +37,19 @@ func main() {
 		log.SetFormatter(&log.TextFormatter{})
 	}
 
-	engine := svc.Config.Engine
-
-	switch engine {
-	case "awslambda":
-		service.ServeAwsLambda(svc)
-	case "nethttp":
-		service.ServeNetHttp(svc)
-	case "fasthttp":
-		service.ServeFastHttp(svc)
-	default:
-		log.Fatal(fmt.Sprintf("Engine Not Supported [%v]", engine))
+	if 1 == 0 {
+		engine := svc.Config.Engine
+		switch engine {
+		case "awslambda":
+			service.ServeAwsLambda(svc)
+		case "nethttp":
+			service.ServeNetHttp(svc)
+		case "fasthttp":
+			service.ServeFastHttp(svc)
+		default:
+			log.Fatal(fmt.Sprintf("Engine Not Supported [%v]", engine))
+		}
 	}
+
+	httpsimple.Serve(svc)
 }
