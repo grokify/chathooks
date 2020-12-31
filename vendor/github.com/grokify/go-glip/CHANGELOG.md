@@ -1,9 +1,0 @@
-- 2017-01-24
-  - Add `PostMessageFast` using `fasthttp` client request
-  - Add `PostWebhookFast` and `PostWebhookGUIDFast` for ability to reuse client for different URLs and GUIDs
-  - Bugfix for struct name
-- 2017-01-19
-  - Add response model structs
-  - Bugfix for struct name
-- 2017-01-15
-  - Initial commit
