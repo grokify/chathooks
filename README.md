@@ -1,11 +1,11 @@
 Chathooks - A webhook formatter for chat
 ========================================
 
-[![Build Status][build-status-svg]][build-status-link]
-[![Go Report Card][goreport-svg]][goreport-link]
-[![Docs][docs-godoc-svg]][docs-godoc-link]
-[![License][license-svg]][license-link]
-[![Heroku][heroku-svg]][heroku-link]
+[![Build Status][build-status-svg]][build-status-url]
+[![Go Report Card][goreport-svg]][goreport-url]
+[![Docs][docs-godoc-svg]][docs-godoc-url]
+[![License][license-svg]][license-url]
+[![Heroku][heroku-svg]][heroku-url]
 
 ![](docs/logos/logo_chathooks_long_600x150.png "")
 
@@ -307,17 +307,17 @@ Chathooks is built using:
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [sirupsen/logrus](https://github.com/sirupsen/logrus)
 
- [build-status-svg]: https://api.travis-ci.org/grokify/chathooks.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/chathooks
+ [build-status-svg]: https://github.com/grokify/chathooks/workflows/build/badge.svg
+ [build-status-url]: https://github.com/grokify/chathooks/actions
  [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
- [coverage-status-link]: https://coveralls.io/r/grokify/chathooks?branch=master
+ [coverage-status-url]: https://coveralls.io/r/grokify/chathooks?branch=master
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/chathooks
+ [goreport-url]: https://goreportcard.com/report/github.com/grokify/chathooks
  [codeclimate-status-svg]: https://codeclimate.com/github/grokify/chathooks/badges/gpa.svg
- [codeclimate-status-link]: https://codeclimate.com/github/grokify/chathooks
- [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/chathooks
+ [codeclimate-status-url]: https://codeclimate.com/github/grokify/chathooks
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/chathooks
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/chathooks
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/chathooks/blob/master/LICENSE.md
+ [license-url]: https://github.com/grokify/chathooks/blob/master/LICENSE.md
  [heroku-svg]: https://img.shields.io/badge/%E2%86%91_deploy-Heroku-7056bf.svg?style=flat
- [heroku-link]: https://heroku.com/deploy
+ [heroku-url]: https://heroku.com/deploy
