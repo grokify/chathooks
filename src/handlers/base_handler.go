@@ -12,7 +12,7 @@ import (
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/net/anyhttp"
+	"github.com/grokify/simplego/net/anyhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )

@@ -8,7 +8,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/type/stringsutil"
+	"github.com/grokify/simplego/type/stringsutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -47,7 +47,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if len(src.Model.State) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "State",
-			Value: stringsutil.ToUpperFirst(src.Model.State)})
+			Value: stringsutil.ToUpperFirst(src.Model.State, false)})
 	}
 	ccMsg.AddAttachment(attachment)
 	return ccMsg, nil

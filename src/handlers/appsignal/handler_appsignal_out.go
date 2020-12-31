@@ -8,7 +8,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/time/timeutil"
+	"github.com/grokify/simplego/time/timeutil"
 )
 
 const (

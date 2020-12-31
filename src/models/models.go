@@ -10,10 +10,10 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/net/anyhttp"
-	fhu "github.com/grokify/gotilla/net/fasthttputil"
-	nhu "github.com/grokify/gotilla/net/nethttputil"
-	"github.com/grokify/gotilla/type/stringsutil"
+	"github.com/grokify/simplego/net/anyhttp"
+	fhu "github.com/grokify/simplego/net/fasthttputil"
+	nhu "github.com/grokify/simplego/net/nethttputil"
+	"github.com/grokify/simplego/type/stringsutil"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )

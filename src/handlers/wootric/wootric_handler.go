@@ -10,9 +10,9 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/fmt/fmtutil"
-	"github.com/grokify/gotilla/html/htmlutil"
-	"github.com/grokify/gotilla/strconv/strconvutil"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/html/htmlutil"
+	"github.com/grokify/simplego/strconv/strconvutil"
 	"github.com/pkg/errors"
 )
 

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/grokify/gotilla/io/ioutilmore"
+	"github.com/grokify/simplego/io/ioutilmore"
 )
 
 const (
@@ -33,8 +33,8 @@ func DocsHandlersDirInfo() ([]string, []string, error) {
 	for _, sdir := range sdirs {
 		fmt.Printf("SDIR: %v\n", sdir.Name())
 		absSubDir := filepath.Join(dirname, sdir.Name())
-		files, err := ioutilmore.DirEntriesReNotEmpty(absSubDir,
-			regexp.MustCompile(`^event-example_.+\.(json|txt)$`))
+		files, _, err := ioutilmore.ReadDirRx(absSubDir,
+			regexp.MustCompile(`^event-example_.+\.(json|txt)$`), true)
 		if err != nil {
 			return dirs, exampleFiles, err
 		}

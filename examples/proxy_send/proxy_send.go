@@ -10,10 +10,10 @@ import (
 	"strings"
 
 	"github.com/google/go-querystring/query"
-	"github.com/grokify/gotilla/fmt/fmtutil"
-	"github.com/grokify/gotilla/io/ioutilmore"
-	"github.com/grokify/gotilla/net/httputilmore"
-	"github.com/grokify/gotilla/type/stringsutil"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/io/ioutilmore"
+	"github.com/grokify/simplego/net/httputilmore"
+	"github.com/grokify/simplego/type/stringsutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
@@ -49,7 +49,7 @@ type ExampleWebhookSender struct {
 func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error {
 	rx := regexp.MustCompile(`^event-example_.+\.(json|txt)$`)
 	inputTypeDir := path.Join(s.DocHandlersDir, inputType)
-	files, err := ioutilmore.DirEntriesReNotEmpty(inputTypeDir, rx)
+	files, _, err := ioutilmore.ReadDirRx(inputTypeDir, rx, true)
 	if err != nil {
 		return err
 	}

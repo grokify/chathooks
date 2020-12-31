@@ -10,7 +10,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/type/stringsutil"
+	"github.com/grokify/simplego/type/stringsutil"
 )
 
 const (
@@ -65,7 +65,7 @@ func NormalizeSemaphoreciBuildOutMessage(cfg config.Configuration, src Semaphore
 	ccMsg.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
 
 	ccMsg.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
-		stringsutil.ToUpperFirst(src.Event),
+		stringsutil.ToUpperFirst(src.Event, false),
 		src.BuildNumber,
 		src.BuildURL,
 		src.ProjectName,
@@ -123,7 +123,7 @@ func NormalizeSemaphoreciDeployOutMessage(cfg config.Configuration, src Semaphor
 	ccMsg.Activity = fmt.Sprintf("%v %v %v", src.ProjectName, src.Event, src.Result)
 
 	ccMsg.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
-		stringsutil.ToUpperFirst(src.Event),
+		stringsutil.ToUpperFirst(src.Event, false),
 		src.Number, src.HtmlURL,
 		src.ProjectName,
 		src.BranchName,

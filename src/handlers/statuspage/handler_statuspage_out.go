@@ -9,7 +9,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/gotilla/type/stringsutil"
+	"github.com/grokify/simplego/type/stringsutil"
 )
 
 const (
@@ -88,14 +88,14 @@ func NormalizeIncidentUpdate(cfg config.Configuration, src StatuspageOutMessage)
 		ccMsg.Title = fmt.Sprintf("[%s](%s) incident created with status **%s**",
 			src.Page.StatusDescription,
 			src.Incident.Shortlink,
-			stringsutil.ToUpperFirst(thisUpdate.Status))
+			stringsutil.ToUpperFirst(thisUpdate.Status, false))
 	} else if len(src.Incident.IncidentUpdates) > 1 {
 		prevUpdate := src.Incident.IncidentUpdates[1]
 		ccMsg.Title = fmt.Sprintf("[%s](%s) incident updated from **%s** to **%s**",
 			src.Page.StatusDescription,
 			src.Incident.Shortlink,
-			stringsutil.ToUpperFirst(prevUpdate.Status),
-			stringsutil.ToUpperFirst(thisUpdate.Status))
+			stringsutil.ToUpperFirst(prevUpdate.Status, false),
+			stringsutil.ToUpperFirst(thisUpdate.Status, false))
 	}
 
 	attachment := cc.NewAttachment()

@@ -13,8 +13,8 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
-	"github.com/grokify/gotilla/net/anyhttp"
-	hum "github.com/grokify/gotilla/net/httputilmore"
+	"github.com/grokify/simplego/net/anyhttp"
+	hum "github.com/grokify/simplego/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
