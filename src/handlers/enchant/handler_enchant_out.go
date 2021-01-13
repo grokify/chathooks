@@ -2,14 +2,13 @@ package enchant
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/grokify/chathooks/src/config"
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/simplego/type/stringsutil"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -88,17 +87,19 @@ type EnchantModel struct {
 }
 
 func EnchantOutMessageFromBytes(bytes []byte) (EnchantOutMessage, error) {
-	log.WithFields(log.Fields{
-		"type":    "message.raw",
-		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v message.", DisplayName))
+	log.Debug().
+		Str("type", "message.raw").
+		Str("request_body", string(bytes)).
+		Msg("handler_enchant_parse_message")
+
 	msg := EnchantOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"type":  "message.json.unmarshal",
-			"error": fmt.Sprintf("%v\n", err),
-		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DisplayName))
+		log.Warn().
+			Err(err).
+			Str("type", "message.json.unmarshal").
+			Str("handler", DisplayName).
+			Msg("FAIL - request_json_unmarshal_failure")
 	}
 	return msg, err
 }

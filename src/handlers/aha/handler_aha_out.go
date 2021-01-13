@@ -12,7 +12,7 @@ import (
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
 	"github.com/microcosm-cc/bluemonday"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -74,12 +74,21 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 func AhaOutMessageFromBytes(bytes []byte) (AhaOutMessage, error) {
-	log.WithFields(log.Fields{
-		"type":    "message.raw",
-		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v", string(bytes)))
+	log.Debug().
+		Str("type", "message.raw").
+		Str("inbound_body", string(bytes)).
+		Str("handler", HandlerKey).
+		Msg(config.InfoInputMessageParseBegin)
+
 	resp := AhaOutMessage{}
 	err := json.Unmarshal(bytes, &resp)
+	if err != nil {
+		log.Warn().
+			Err(err).
+			Str("handler", HandlerKey).
+			Str("request_body", string(bytes)).
+			Msg(config.ErrorInputMessageParseFailed)
+	}
 	return resp, err
 }
 

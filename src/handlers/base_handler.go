@@ -13,7 +13,7 @@ import (
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/simplego/net/anyhttp"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 )
 
@@ -61,18 +61,20 @@ func (h Handler) HandleAnyHTTP(aRes anyhttp.Response, aReq anyhttp.Request) {
 
 	if err != nil {
 		aRes.SetStatusCode(http.StatusInternalServerError)
-		log.WithFields(log.Fields{
-			"event":   "outgoing.webhook.error",
-			"handler": err.Error()}).Info("ERROR")
+		log.Info().
+			Err(err).
+			Str("event", "outgoing.webhook.error").
+			Msg("ERROR")
 	} else {
 		if bytes, err := json.Marshal(awsRes.Body); err != nil {
 			aRes.SetStatusCode(http.StatusInternalServerError)
 		} else {
 			_, err := aRes.SetBodyBytes(bytes)
 			if err != nil {
-				log.WithFields(log.Fields{
-					"event":   "outgoing.webhook.error",
-					"handler": err.Error()}).Info("ERROR")
+				log.Info().
+					Err(err).
+					Str("event", "outgoing.webhook.error").
+					Msg("ERROR")
 				aRes.SetStatusCode(http.StatusInternalServerError)
 			} else {
 				aRes.SetStatusCode(awsRes.StatusCode)
@@ -90,9 +92,10 @@ func (h Handler) HandleNetHTTP(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		log.WithFields(log.Fields{
-			"event":   "outgoing.webhook.error",
-			"handler": err.Error()}).Info("ERROR")
+		log.Info().
+			Err(err).
+			Str("event", "outgoing.webhook.error").
+			Msg("ERROR")
 	} else {
 		res.WriteHeader(awsRes.StatusCode)
 		fmt.Fprint(res, awsRes.Body)
@@ -108,9 +111,10 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		ctx.SetStatusCode(http.StatusInternalServerError)
-		log.WithFields(log.Fields{
-			"event":   "outgoing.webhook.error",
-			"handler": err.Error()}).Info("ERROR")
+		log.Info().
+			Err(err).
+			Str("event", "outgoing.webhook.error").
+			Msg("ERROR")
 	} else {
 		ctx.SetStatusCode(awsRes.StatusCode)
 		fmt.Fprint(ctx, awsRes.Body)
@@ -119,12 +123,11 @@ func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
 
 // HandleCanonical is the method to handle a processed request.
 func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
-	log.WithFields(log.Fields{
-		"event":   "incoming.webhook",
-		"handler": DisplayName}).Info("HANDLE_CANONICAL")
-	log.WithFields(log.Fields{
-		"event":   "incoming.webhook",
-		"handler": DisplayName}).Info(string(hookData.InputBody))
+	log.Debug().
+		Str("event", "incoming.webhook").
+		Str("handler", DisplayName).
+		Str("input_body", string(hookData.InputBody)).
+		Msg("HANDLE_CANONICAL")
 
 	ccMsg, err := h.Normalize(h.Config,
 		HandlerRequest{
@@ -132,11 +135,13 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 			Body:        hookData.InputBody})
 
 	if err != nil {
-		log.WithFields(log.Fields{
-			"type":         "http.response",
-			"status":       fasthttp.StatusNotAcceptable,
-			"errorMessage": err.Error(),
-		}).Info(fmt.Sprintf("%v request conversion failed.", DisplayName))
+		log.Info().
+			Err(err).
+			Str("type", "http.response").
+			Int("http_status", fasthttp.StatusNotAcceptable).
+			Str("handler", DisplayName).
+			Msg("request conversion failed")
+
 		return []models.ErrorInfo{{StatusCode: 500, Body: []byte(err.Error())}}
 	}
 	hookData.CanonicalMessage = ccMsg

@@ -9,13 +9,16 @@ import (
 	"path"
 
 	"github.com/caarlos0/env"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
 )
 
 const (
 	DocsHandlersSrcDir = "github.com/grokify/chathooks/docs/handlers"
 	IconBaseURL        = "http://grokify.github.io/chathooks/icons/"
 	EmojiURLFormat     = "https://grokify.github.io/emoji/assets/images/%s.png"
+
+	InfoInputMessageParseBegin   = "INFO - Input Message Parse Begin"
+	ErrorInputMessageParseFailed = "FAIL - Input Message Parse Failed"
 )
 
 func DocsHandlersDir() string {
@@ -32,7 +35,7 @@ type Configuration struct {
 	LogFormat      string   `env:"CHATHOOKS_LOG_FORMAT"`
 	EmojiURLFormat string
 	IconBaseURL    string
-	LogrusLogLevel log.Level
+	LogLevel       zerolog.Level
 }
 
 func NewConfigurationEnv() (Configuration, error) {
@@ -42,7 +45,7 @@ func NewConfigurationEnv() (Configuration, error) {
 	}
 	cfg.EmojiURLFormat = EmojiURLFormat
 	cfg.IconBaseURL = IconBaseURL
-	cfg.LogrusLogLevel = 5
+	cfg.LogLevel = 1
 	return cfg, nil
 }
 

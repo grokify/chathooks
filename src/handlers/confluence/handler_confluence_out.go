@@ -8,7 +8,7 @@ import (
 	"github.com/grokify/chathooks/src/handlers"
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -80,17 +80,20 @@ type ConfluenceOutMessage struct {
 }
 
 func ConfluenceOutMessageFromBytes(bytes []byte) (ConfluenceOutMessage, error) {
-	log.WithFields(log.Fields{
-		"type":    "message.raw",
-		"message": string(bytes),
-	}).Debug(fmt.Sprintf("%v message.", DisplayName))
+	log.Debug().
+		Str("type", "message.raw").
+		Str("handler", HandlerKey).
+		Str("request_body", string(bytes)).
+		Msg(config.InfoInputMessageParseBegin)
+
 	msg := ConfluenceOutMessage{}
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"type":  "message.json.unmarshal",
-			"error": fmt.Sprintf("%v\n", err),
-		}).Warn(fmt.Sprintf("%v request unmarshal failure.", DisplayName))
+		log.Warn().
+			Err(err).
+			Str("type", "message.json.unmarshal").
+			Str("handler", HandlerKey).
+			Msg(config.ErrorInputMessageParseFailed)
 	}
 	if msg.IsComment() {
 		msg.Page = msg.Comment.Parent

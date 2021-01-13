@@ -3,9 +3,8 @@ package adapters
 import (
 	"github.com/grokify/chathooks/src/models"
 	cc "github.com/grokify/commonchat"
+	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -26,7 +25,12 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 		if adapter, ok := set.Adapters[hookData.OutputType]; ok {
 			var msg interface{}
 			req, res, err := adapter.SendWebhook(hookData.OutputURL, hookData.CanonicalMessage, &msg)
-			log.Infof("ADAPTER_API_STATUS_CODE [%s][%v][%s][%s]", hookData.OutputType, res.StatusCode(), hookData.OutputURL, string(res.Body()))
+			log.Debug().
+				Str("output_type", hookData.OutputType).
+				Int("status_code", res.StatusCode()).
+				Str("output_url", hookData.OutputURL).
+				Str("body", string(res.Body())).
+				Msg("ADAPTER_API_REQ_RES_INFO")
 			errs = set.procResponse(errs, req, res, err)
 		}
 	}

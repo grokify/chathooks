@@ -14,7 +14,7 @@ import (
 	fhu "github.com/grokify/simplego/net/fasthttputil"
 	nhu "github.com/grokify/simplego/net/nethttputil"
 	"github.com/grokify/simplego/type/stringsutil"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 )
 
@@ -222,7 +222,9 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 	default:
 		bodyConverted = []byte(body)
 	}
-	log.Infof("REQUEST_BODY [%v]", string(bodyConverted))
+	log.Debug().
+		Str("body", string(bodyConverted)).
+		Msg("REQUEST_BODY")
 	return bodyConverted
 }
 

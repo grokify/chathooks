@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	clog "log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ import (
 	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/simplego/net/anyhttp"
 	hum "github.com/grokify/simplego/net/httputilmore"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/adapters"
@@ -118,18 +119,18 @@ func (hf *HandlerFactory) InflateHandler(handler handlers.Handler) handlers.Hand
 func NewService() Service {
 	cfgData, err := config.NewConfigurationEnv()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	adapterSet := adapters.NewAdapterSet()
 	glipAdapter, err := ccglip.NewGlipAdapter("")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 	adapterSet.Adapters["glip"] = glipAdapter
 	slackAdapter, err := ccslack.NewSlackAdapter("")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 	adapterSet.Adapters["slack"] = slackAdapter
 
@@ -183,7 +184,7 @@ func NewService() Service {
 }
 
 func (svc *Service) HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Info("FUNC_HandleAwsLambda__BEGIN")
+	log.Info().Msg("FUNC_HandleAwsLambda__BEGIN")
 	if len(svc.Tokens) > 0 {
 		token, ok := req.QueryStringParameters[ParamNameToken]
 		if !ok {
@@ -215,11 +216,11 @@ func (svc *Service) HandleAwsLambda(ctx context.Context, req events.APIGatewayPr
 }
 
 func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
-	log.Info("FUNC_HandleAnyRequest__BEGIN")
+	log.Info().Msg("FUNC_HandleAnyRequest__BEGIN")
 
 	if err := aReq.ParseForm(); err != nil {
 		aRes.SetStatusCode(http.StatusInternalServerError)
-		log.Warn("E_CANNOT_PARSE_FORM")
+		log.Warn().Msg("E_CANNOT_PARSE_FORM")
 		return
 	}
 
@@ -228,12 +229,12 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 
 		if len(token) == 0 {
 			aRes.SetStatusCode(http.StatusUnauthorized)
-			log.Warn("E_NO_TOKEN")
+			log.Warn().Msg("E_NO_TOKEN")
 			return
 		}
 		if _, ok := svc.Tokens[token]; !ok {
 			aRes.SetStatusCode(http.StatusUnauthorized)
-			log.Warn("E_INCORRECT_TOKEN")
+			log.Warn().Msg("E_INCORRECT_TOKEN")
 			return
 		}
 	}
@@ -241,7 +242,9 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 	inputType := aReq.QueryArgs().GetString(ParamNameInputType)
 
 	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
-		log.Info(fmt.Sprintf("Input_Handler_Found_Processing [%v]", inputType))
+		log.Info().
+			Str("handler_input_type", inputType).
+			Msg("Input_Handler_Found_Processing")
 		handler.HandleAnyHTTP(aRes, aReq)
 	} else {
 		fmt.Printf("Input_Handler_Not_Found [%v]\n", inputType)
@@ -249,17 +252,17 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 }
 
 func (svc *Service) HandleHookNetHTTP(res http.ResponseWriter, req *http.Request) {
-	log.Info("FUNC_HandleNetHTTP__BEGIN")
+	log.Info().Msg("FUNC_HandleNetHTTP__BEGIN")
 	svc.HandleAnyRequest(anyhttp.NewResReqNetHttp(res, req))
 }
 
 func (svc *Service) HandleHookFastHTTP(ctx *fasthttp.RequestCtx) {
-	log.Info("HANDLE_FastHTTP")
+	log.Info().Msg("HANDLE_FastHTTP")
 	svc.HandleAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
 
 func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
-	log.Info("HANDLE_HOME_AnyHTTP")
+	log.Info().Msg("HANDLE_HOME_AnyHTTP")
 	fmt.Println(svc.Config.WebhookUrl)
 	data := templates.HomeData{
 		HomeUrl:    svc.Config.HomeUrl,
@@ -273,12 +276,12 @@ func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Req
 }
 
 func (svc *Service) HandleHomeNetHTTP(res http.ResponseWriter, req *http.Request) {
-	log.Info("HANDLE_NetHTTP")
+	log.Debug().Msg("HANDLE_NetHTTP")
 	svc.HandleHomeAnyRequest(anyhttp.NewResReqNetHttp(res, req))
 }
 
 func (svc *Service) HandleHomeFastHTTP(ctx *fasthttp.RequestCtx) {
-	log.Info("HANDLE_FastHTTP")
+	log.Debug().Msg("HANDLE_FastHTTP")
 	svc.HandleHomeAnyRequest(anyhttp.NewResReqFastHttp(ctx))
 }
 
@@ -315,23 +318,22 @@ func getHttpServeMux(svc Service) *http.ServeMux {
 }
 
 func ServeNetHttp(svc Service) {
-	log.Info(fmt.Sprintf("STARTING_NET_HTTP [%v]", svc.Config.Port))
+	log.Info().
+		Int("port", svc.Config.Port).
+		Msg("STARTING_NET_HTTP")
 	http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc))
 }
 
 func ServeFastHttp(svc Service) {
-	log.Info(fmt.Sprintf("STARTING_FAST_HTTP [%v]", svc.Config.Port))
+	log.Info().
+		Int("port", svc.Config.Port).
+		Msg("STARTING_FAST_HTTP")
 	router := svc.RouterFast()
-	/*router.GET("/", svc.HandleHomeFastHTTP)
-	router.POST("/hook", svc.HandleHookFastHTTP)
-	router.POST("/hook/", svc.HandleHookFastHTTP)
-	router.POST("/webhook", svc.HandleHookFastHTTP)
-	router.POST("/webhook/", svc.HandleHookFastHTTP)*/
-	log.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
+	clog.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
 }
 
 func ServeAwsLambda(svc Service) {
-	log.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
+	clog.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
 }
 
 func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
