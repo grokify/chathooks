@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"regexp"
@@ -16,7 +17,6 @@ import (
 	"github.com/grokify/simplego/type/stringsutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
-	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/src/config"

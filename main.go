@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
-	cfg "github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/net/http/httpsimple"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/grokify/chathooks/src/service"
 )
@@ -25,31 +23,13 @@ tokens as a comma delimited string.
 func portAddress(port int) string { return ":" + strconv.Itoa(port) }
 
 func main() {
-	if err := cfg.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env"); err != nil {
+	if err := config.LoadDotEnvSkipEmpty(
+		os.Getenv("ENV_PATH"), "./.env"); err != nil {
 		panic(err)
 	}
 
 	svc := service.NewService()
-
-	if strings.ToLower(strings.TrimSpace(svc.Config.LogFormat)) == "json" {
-		log.SetFormatter(&log.JSONFormatter{})
-	} else {
-		log.SetFormatter(&log.TextFormatter{})
-	}
-
-	if 1 == 0 {
-		engine := svc.Config.Engine
-		switch engine {
-		case "awslambda":
-			service.ServeAwsLambda(svc)
-		case "nethttp":
-			service.ServeNetHttp(svc)
-		case "fasthttp":
-			service.ServeFastHttp(svc)
-		default:
-			log.Fatal(fmt.Sprintf("Engine Not Supported [%v]", engine))
-		}
-	}
-
+	fmt.Printf("Starting on port [%d] with engine [%s].\n",
+		svc.PortInt(), svc.HttpEngine())
 	httpsimple.Serve(svc)
 }

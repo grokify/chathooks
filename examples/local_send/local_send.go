@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -16,7 +17,6 @@ import (
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
 	errs "github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/examples"
@@ -102,8 +102,6 @@ func main() {
 }
 
 func run(opts cliOptions) {
-	log.SetLevel(log.DebugLevel)
-
 	fmt.Printf("LENGUID[%v]\n", len(opts.GuidOrWebhook))
 	fmt.Printf("GUID [%v]\n", opts.GuidOrWebhook)
 	fmt.Printf("EXAMPLE [%v]\n", opts.Service)
@@ -113,8 +111,7 @@ func run(opts cliOptions) {
 	}
 
 	cfg := config.Configuration{
-		IconBaseURL:    config.IconBaseURL,
-		LogrusLogLevel: log.DebugLevel}
+		IconBaseURL: config.IconBaseURL}
 
 	err := SendMessageAdapterHandler(cfg, opts)
 	if err != nil {
