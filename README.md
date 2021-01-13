@@ -305,7 +305,7 @@ Chathooks is built using:
 * [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
 
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
-* [sirupsen/logrus](https://github.com/sirupsen/logrus)
+* [rs/zerolog](https://github.com/rs/zerolog)
 
  [build-status-svg]: https://github.com/grokify/chathooks/workflows/build/badge.svg
  [build-status-url]: https://github.com/grokify/chathooks/actions
