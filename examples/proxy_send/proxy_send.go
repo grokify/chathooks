@@ -49,7 +49,7 @@ type ExampleWebhookSender struct {
 func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error {
 	rx := regexp.MustCompile(`^event-example_.+\.(json|txt)$`)
 	inputTypeDir := path.Join(s.DocHandlersDir, inputType)
-	files, _, err := ioutilmore.ReadDirRx(inputTypeDir, rx, true)
+	files, _, err := ioutilmore.ReadDirMore(inputTypeDir, rx, true, true)
 	if err != nil {
 		return err
 	}
