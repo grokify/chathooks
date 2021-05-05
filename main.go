@@ -8,7 +8,7 @@ import (
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/net/http/httpsimple"
 
-	"github.com/grokify/chathooks/src/service"
+	"github.com/grokify/chathooks/pkg/service"
 )
 
 /*

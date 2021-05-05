@@ -19,8 +19,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 
-	"github.com/grokify/chathooks/src/config"
-	"github.com/grokify/chathooks/src/models"
+	"github.com/grokify/chathooks/pkg/config"
+	"github.com/grokify/chathooks/pkg/models"
 )
 
 const (

@@ -1,0 +1,16 @@
+package gosquared2
+
+import (
+	"github.com/grokify/chathooks/pkg/config"
+	"github.com/grokify/chathooks/pkg/handlers"
+	"github.com/grokify/chathooks/pkg/util"
+	cc "github.com/grokify/commonchat"
+)
+
+func ExampleMessage(cfg config.Configuration, data util.ExampleData, eventSlug string) (cc.Message, error) {
+	bytes, err := data.ExampleMessageBytes(HandlerKey, eventSlug)
+	if err != nil {
+		return cc.Message{}, err
+	}
+	return Normalize(cfg, handlers.HandlerRequest{Body: bytes})
+}
