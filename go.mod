@@ -10,16 +10,14 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.2-0.20190109152524-979d6e516ec3
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.0.2
-	github.com/grokify/go-glip v0.0.2 // indirect
-	github.com/grokify/simplego v0.26.6
+	github.com/grokify/commonchat v0.1.0
+	github.com/grokify/simplego v0.26.8
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.3.1-0.20190204044109-5c0e6c6ab1a0
 	github.com/klauspost/compress v1.13.0 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.9
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.22.0
-	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/tidwall/gjson v1.8.0
 	github.com/tidwall/pretty v1.1.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.1-0.20180905182247-cdfbe9377474 // indirect
