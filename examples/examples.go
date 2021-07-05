@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/grokify/simplego/io/ioutilmore"
+	"github.com/grokify/simplego/os/osutil"
 )
 
 const (
@@ -19,12 +19,13 @@ func AbsDirGopath(dir string) string {
 }
 
 func DocsHandlersDirInfo() ([]string, []string, error) {
-	dirname := AbsDirGopath(HandlersDir)
-	fmt.Println(dirname)
+	handlersDir := AbsDirGopath(HandlersDir)
+	fmt.Println(handlersDir)
 
 	dirs := []string{}
 	exampleFiles := []string{}
-	sdirs, _, err := ioutilmore.ReadDirSplit(dirname, true)
+	//sdirs, _, err := ioutilmore.ReadDirSplit(handlersDir, true)
+	sdirs, err := osutil.ReadDirMore(handlersDir, nil, true, false, false)
 
 	if err != nil {
 		return dirs, exampleFiles, err
@@ -32,15 +33,15 @@ func DocsHandlersDirInfo() ([]string, []string, error) {
 
 	for _, sdir := range sdirs {
 		fmt.Printf("SDIR: %v\n", sdir.Name())
-		absSubDir := filepath.Join(dirname, sdir.Name())
-		files, _, err := ioutilmore.ReadDirMore(absSubDir,
-			regexp.MustCompile(`^event-example_.+\.(json|txt)$`), true, true)
+		absSubDir := filepath.Join(handlersDir, sdir.Name())
+		exEntries, err := osutil.ReadDirMore(absSubDir,
+			regexp.MustCompile(`^event-example_.+\.(json|txt)$`), false, true, false)
 		if err != nil {
 			return dirs, exampleFiles, err
 		}
-		if len(files) > 0 {
+		if len(exEntries) > 0 {
 			dirs = append(dirs, sdir.Name())
-			for _, f := range files {
+			for _, f := range exEntries {
 				fmt.Printf("FILE: %v\n", f.Name())
 				exFilepath := filepath.Join(absSubDir, f.Name())
 				exampleFiles = append(exampleFiles, exFilepath)

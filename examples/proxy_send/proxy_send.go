@@ -12,8 +12,8 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/io/ioutilmore"
 	"github.com/grokify/simplego/net/httputilmore"
+	"github.com/grokify/simplego/os/osutil"
 	"github.com/grokify/simplego/type/stringsutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
@@ -49,15 +49,15 @@ type ExampleWebhookSender struct {
 func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error {
 	rx := regexp.MustCompile(`^event-example_.+\.(json|txt)$`)
 	inputTypeDir := path.Join(s.DocHandlersDir, inputType)
-	files, _, err := ioutilmore.ReadDirMore(inputTypeDir, rx, true, true)
+	entries, err := osutil.ReadDirMore(inputTypeDir, rx, false, true, false)
 	if err != nil {
 		return err
 	}
-	if len(files) == 0 {
+	if len(entries) == 0 {
 		return errors.New(fmt.Sprintf("no ^event-example_ files found for %v", inputTypeDir))
 	}
-	for _, file := range files {
-		filepath := path.Join(inputTypeDir, file.Name())
+	for _, entry := range entries {
+		filepath := path.Join(inputTypeDir, entry.Name())
 		err := s.SendExampleForFilepath(filepath, inputType)
 		if err != nil {
 			return err

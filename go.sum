@@ -288,8 +288,9 @@ github.com/grokify/simplego v0.0.21/go.mod h1:8BYycDukEZvM7jyu8mfG9On4/pG6fEhPYl
 github.com/grokify/simplego v0.0.22/go.mod h1:8BYycDukEZvM7jyu8mfG9On4/pG6fEhPYlE3TBsB/Xw=
 github.com/grokify/simplego v0.26.5/go.mod h1:B24I7pmy89MLOQ2ySaigcsrNEe+DXK7opD2LMK2LJeg=
 github.com/grokify/simplego v0.26.7/go.mod h1:UKobvO2/X3aFy5fwNUxaW6YFK8A3IKCoIRqtVNhsdZU=
-github.com/grokify/simplego v0.26.8 h1:8G95snvmRYNECVZJFxJdnaov/VxN3eO3EMcrk+BrxPM=
 github.com/grokify/simplego v0.26.8/go.mod h1:UKobvO2/X3aFy5fwNUxaW6YFK8A3IKCoIRqtVNhsdZU=
+github.com/grokify/simplego v0.27.1 h1:ciKPcUWPb8f2kH8t+DAqvsKndd/cUUZB5XMRI0hS39s=
+github.com/grokify/simplego v0.27.1/go.mod h1:UKobvO2/X3aFy5fwNUxaW6YFK8A3IKCoIRqtVNhsdZU=
 github.com/grokify/spectrum v1.7.0/go.mod h1:WiRunZJgN9eY+jliDX7cbBYcpzeZnwQ/tdAy1F8mrTM=
 github.com/grokify/swaggman v1.1.3/go.mod h1:1QlLBAASZ/a7eOSJDlbzNDJ/nH/4Z4PlfNerzCeL6f0=
 github.com/grpc-ecosystem/go-grpc-middleware v1.0.0/go.mod h1:FiyG127CGDf3tlThmgyCl78X/SZQqEOJBCDaAfeWzPs=

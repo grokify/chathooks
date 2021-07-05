@@ -11,7 +11,7 @@ require (
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.1.0
-	github.com/grokify/simplego v0.26.8
+	github.com/grokify/simplego v0.27.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.3.1-0.20190204044109-5c0e6c6ab1a0
 	github.com/klauspost/compress v1.13.0 // indirect
