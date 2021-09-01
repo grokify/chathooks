@@ -1,0 +1,23 @@
+{
+  "username":"updown.io",
+  "attachments":[
+    {
+      "text":"Up since *23:29:36 (UTC)*, after being down for *4 minutes* because: *Bad Gateway*",
+      "fallback":"RECOVERY: Chathooks Up since 23:29:36 (UTC), after being down for 4 minutes because: Bad Gateway",
+      "mrkdwn_in":[
+        "text",
+        "pretext",
+        "fields"
+      ],
+      "pretext":"RECOVERY: :sunny:",
+      "author_name":"Chathooks",
+      "author_icon":"https://updown.io/checks/wgsw/favicon",
+      "author_link":"https://chathooks.ngrok.io/about",
+      "color":"#5c4",
+      "fields":[
+        
+      ]
+    }
+  ],
+  "icon_url":"https://updown.io/square-logo.png"
+}

@@ -1,0 +1,30 @@
+{
+  "username":"updown.io",
+  "attachments":[
+    {
+      "text":"Down since *23:25:37 (UTC)*, reason: *Bad Gateway*",
+      "fallback":"ALERT: DOWN Chathooks Down since 23:25:37 (UTC), reason: Bad Gateway",
+      "mrkdwn_in":[
+        "text",
+        "pretext",
+        "fields"
+      ],
+      "pretext":"ALERT: DOWN :exclamation:",
+      "author_name":"Chathooks",
+      "author_icon":"https://updown.io/checks/wgsw/favicon",
+      "author_link":"https://chathooks.ngrok.io/about",
+      "color":"#e43",
+      "fields":[
+        {
+          "title":"🔇 Mute alerts:",
+          "value":"<https://updown.io/checks/wgsw/mute#1h|For 1 hour>, <https://updown.io/checks/wgsw/mute#1d|for 1 day>, <https://updown.io/checks/wgsw/mute#1w|for 1 week>, <https://updown.io/checks/wgsw/mute#recovery|until recovery> or <https://updown.io/checks/wgsw/mute#forever|forever>"
+        },
+        {
+          "title":"↻ Reproduce request:",
+          "value":"```curl -gkvLI -b '' -H 'User-Agent: updown.io daemon 2.6' -H 'Accept: */*' -H 'Connection: Close' -H 'Accept-Language: en' -m 30 --connect-timeout 10 <https://chathooks.ngrok.io/about|https://chathooks.ngrok.io/about>```"
+        }
+      ]
+    }
+  ],
+  "icon_url":"https://updown.io/square-logo.png"
+}
