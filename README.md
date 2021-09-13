@@ -124,7 +124,7 @@ Chathooks uses two environment variables:
 ## Using the `net/http` and `fasthttp` Engines
 
 1. To adjust supported handlers, edit server.go to add and remove handlers.
-1. TSt the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp`.
+1. Set the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp`.
 1. Start the service in `main.go`.
 
 For testing purposes, use:
@@ -200,7 +200,7 @@ Make sure to set your AWS credentials file.
 
 * Configure AWS Lambda Function
   1. Create AWS Lambda function
-  2. Set `CHATHOOKS_ENGINE` to `aws`
+  2. Set `CHATHOOKS_ENGINE` to `awslambda`
   3. Set `CHATHOOKS_TOKEN` as desired
   4. Set Handler to `main`
 * Configure API Gateway
