@@ -16,7 +16,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.15
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.25.0
-	github.com/tidwall/gjson v1.9.0
+	github.com/tidwall/gjson v1.9.1
 	github.com/valyala/fasthttp v1.30.0
-	github.com/valyala/quicktemplate v1.6.3
+	github.com/valyala/quicktemplate v1.7.0
 )
