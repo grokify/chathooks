@@ -13,10 +13,10 @@ require (
 	github.com/grokify/simplego v0.30.13
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
-	github.com/microcosm-cc/bluemonday v1.0.15
+	github.com/microcosm-cc/bluemonday v1.0.16
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.25.0
-	github.com/tidwall/gjson v1.9.4
+	github.com/tidwall/gjson v1.10.0
 	github.com/valyala/fasthttp v1.31.0
 	github.com/valyala/quicktemplate v1.7.0
 )
