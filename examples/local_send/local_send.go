@@ -21,6 +21,7 @@ import (
 
 	"github.com/grokify/chathooks/examples"
 
+	"github.com/grokify/chathooks/pkg/adapters"
 	"github.com/grokify/chathooks/pkg/handlers/aha"
 	"github.com/grokify/chathooks/pkg/handlers/appsignal"
 	"github.com/grokify/chathooks/pkg/handlers/apteligent"
@@ -130,7 +131,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
 			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID)
+		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID, adapters.GlipConfig())
 		if err != nil {
 			return errs.Wrap(err, "Incorrect Webhook GUID or URL")
 		}

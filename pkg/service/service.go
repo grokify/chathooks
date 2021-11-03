@@ -123,7 +123,7 @@ func NewService() Service {
 	}
 
 	adapterSet := adapters.NewAdapterSet()
-	glipAdapter, err := ccglip.NewGlipAdapter("")
+	glipAdapter, err := ccglip.NewGlipAdapter("", adapters.GlipConfig())
 	if err != nil {
 		log.Fatal().Err(err)
 	}
