@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/simplego/net/anyhttp"
+	"github.com/grokify/simplego/net/urlutil"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 
@@ -134,6 +136,18 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 		HandlerRequest{
 			QueryParams: hookData.CustomQueryParams,
 			Body:        hookData.InputBody})
+	activityUrl := strings.TrimSpace(hookData.CustomQueryParams.Get("activity"))
+	if len(activityUrl) > 0 {
+		ccMsg.Activity = activityUrl
+	}
+	iconQry := strings.TrimSpace(hookData.CustomQueryParams.Get("icon"))
+	if len(iconQry) > 0 {
+		if urlutil.IsHttp(iconQry, true, true) {
+			ccMsg.IconURL = iconQry
+		} else {
+			ccMsg.IconEmoji = iconQry
+		}
+	}
 
 	if err != nil {
 		log.Info().
