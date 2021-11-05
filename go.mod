@@ -9,7 +9,7 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.1.4
+	github.com/grokify/commonchat v0.1.5
 	github.com/grokify/simplego v0.30.15
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0

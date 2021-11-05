@@ -33,7 +33,7 @@ func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 }
 
 func Normalize(config config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
-	slMsg, err := ccslack.NewMessageFromBytes(hReq.Body)
+	slMsg, err := ccslack.ParseMessageHttpBody(hReq.Body)
 	if err != nil {
 		return cc.Message{}, err
 	}
