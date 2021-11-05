@@ -65,6 +65,8 @@ tokens as a comma delimited string.
 // CHATHOOKS_URL=http://localhost:8080/hook CHATHOOKS_HOME_URL=http://localhost:8080 go run main.go
 
 const (
+	ParamNameActivity        = "activity"
+	ParamNameIcon            = "icon"
 	ParamNameInputType       = "inputType"
 	ParamNameOutputType      = "outputType"
 	ParamNameURL             = "url"
