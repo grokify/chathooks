@@ -26,19 +26,16 @@ func NewHandler() handlers.Handler {
 func BuildInboundMessageBytes(ctx *fasthttp.RequestCtx) []byte {
 	ct := string(ctx.Request.Header.Peek("Content-Type"))
 	ct = strings.TrimSpace(strings.ToLower(ct))
-	if ct == "application/json" {
+	if strings.Contains(ct, "application/json") {
 		return ctx.PostBody()
 	}
 	return ctx.FormValue("payload")
 }
 
 func Normalize(config config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
-	slMsg, err := ccslack.ParseMessageHttpBody(hReq.Body)
+	slMsg, err := ccslack.ParseMessageAny(hReq.Body)
 	if err != nil {
 		return cc.Message{}, err
 	}
-
-	ccMsg := ccslack.WebhookInBodySlackToCc(slMsg)
-
-	return ccMsg, nil
+	return ccslack.WebhookInBodySlackToCc(slMsg), nil
 }
