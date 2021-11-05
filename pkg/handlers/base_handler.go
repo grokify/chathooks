@@ -136,19 +136,25 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 		HandlerRequest{
 			QueryParams: hookData.CustomQueryParams,
 			Body:        hookData.InputBody})
-	activityUrl := strings.TrimSpace(hookData.CustomQueryParams.Get("activity"))
-	if len(activityUrl) > 0 {
-		ccMsg.Activity = activityUrl
-	}
-	iconQry := strings.TrimSpace(hookData.CustomQueryParams.Get("icon"))
-	if len(iconQry) > 0 {
-		if urlutil.IsHttp(iconQry, true, true) {
-			ccMsg.IconURL = iconQry
-		} else {
-			ccMsg.IconEmoji = iconQry
+	ccMsg.Activity = strings.TrimSpace(ccMsg.Activity)
+	if len(ccMsg.Activity) == 0 {
+		activityUrl := strings.TrimSpace(hookData.CustomQueryParams.Get(QueryParamDefaultActivity))
+		if len(activityUrl) > 0 {
+			ccMsg.Activity = activityUrl
 		}
 	}
-
+	ccMsg.IconURL = strings.TrimSpace(ccMsg.IconURL)
+	ccMsg.IconEmoji = strings.TrimSpace(ccMsg.IconEmoji)
+	if len(ccMsg.IconURL) == 0 && len(ccMsg.IconEmoji) == 0 {
+		iconQry := strings.TrimSpace(hookData.CustomQueryParams.Get(QueryParamDefaultIcon))
+		if len(iconQry) > 0 {
+			if urlutil.IsHttp(iconQry, true, true) {
+				ccMsg.IconURL = iconQry
+			} else {
+				ccMsg.IconEmoji = iconQry
+			}
+		}
+	}
 	if err != nil {
 		log.Info().
 			Err(err).
