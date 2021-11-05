@@ -296,8 +296,8 @@ github.com/grokify/base36 v1.0.2/go.mod h1:A0Pzze8AN96L1APGKrZu4Qtuyvcf3tf4oQZfG
 github.com/grokify/bitcoinmath v0.0.0-20171208015713-6ef5b53bef73/go.mod h1:FrFkuJ9mhcBuUZBBN5m3J5ihG6cvRsiBHwSXO15kOPc=
 github.com/grokify/bitcoinmath v0.1.0 h1:NySFRW09cYQlTXrUw6QpjNgtrudC5QlgsqgXWWNN+50=
 github.com/grokify/bitcoinmath v0.1.0/go.mod h1:Y8OyDefB55NHGzi+uJshYmE4Hn5juIQqJahsQJN5o2k=
-github.com/grokify/commonchat v0.1.7 h1:tPnvXtTNYInkYi4sbDn9BtqS7oxh6eUgYmbbJSbkPOY=
-github.com/grokify/commonchat v0.1.7/go.mod h1:ipCEseo3NT4mOYTZ+RiJA6nNuPrMCXnKxkXxMd2V2wE=
+github.com/grokify/commonchat v0.1.8 h1:rDJOP9G5wX7uMVxVkeHhY+q2qxTbIZm71y403bfI33M=
+github.com/grokify/commonchat v0.1.8/go.mod h1:ipCEseo3NT4mOYTZ+RiJA6nNuPrMCXnKxkXxMd2V2wE=
 github.com/grokify/elastirad-go v0.0.1/go.mod h1:aOLXJ4wcCMegyN6miRYoNCVXzUePE010nS2lFgn5p6Y=
 github.com/grokify/elastirad-go v0.1.2/go.mod h1:EKkozVVN3RkQ7neSu974z4BNSeuhRqPy9ZSGD13+P3A=
 github.com/grokify/go-glip v0.3.3 h1:qtMX+jczAgcLvGT0HxKC4n2NsK/gFv/OH6h0iZNQ+r0=
