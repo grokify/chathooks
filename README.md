@@ -4,6 +4,7 @@ Chathooks - A webhook formatter for chat
 [![Build Status][build-status-svg]][build-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
+[![LOC][loc-svg]][repo-url]
 [![License][license-svg]][license-url]
 [![Heroku][heroku-svg]][heroku-url]
 
@@ -317,6 +318,8 @@ Chathooks is built using:
  [codeclimate-status-url]: https://codeclimate.com/github/grokify/chathooks
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/chathooks
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/chathooks
+ [loc-svg]: https://tokei.rs/b1/github/grokify/chathooks
+ [repo-url]: https://github.com/grokify/chathooks
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/chathooks/blob/master/LICENSE
  [heroku-svg]: https://img.shields.io/badge/%E2%86%91_deploy-Heroku-7056bf.svg?style=flat
