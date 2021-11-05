@@ -14,14 +14,14 @@ var SlackWebhookMessageFromBytesTests = []struct {
 
 func TestSlackWebhookMessageFromBytes(t *testing.T) {
 	for _, tt := range SlackWebhookMessageFromBytesTests {
-		msg, err := ccslack.NewMessageFromBytes(tt.v)
+		msg, err := ccslack.ParseMessageJSON(tt.v)
 
 		if err != nil {
-			t.Errorf("NewMessageFromBytes(%v): want %v, err %v", tt.v, tt.want, err)
+			t.Errorf("ParseMessageJSON(%v): want %v, err %v", tt.v, tt.want, err)
 		}
 
 		if tt.want.Username != msg.Username {
-			t.Errorf("NewMessageFromBytes(%v): want %v, got %v", tt.v, tt.want, msg.Username)
+			t.Errorf("ParseMessageJSON(%v): want %v, got %v", tt.v, tt.want, msg.Username)
 		}
 	}
 }
