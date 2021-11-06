@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	cc "github.com/grokify/commonchat"
+	"github.com/grokify/commonchat"
 	"github.com/tidwall/gjson"
 
 	"github.com/grokify/chathooks/pkg/config"
@@ -18,9 +18,9 @@ func NewTemplatedHandler(tmpl string) Handler {
 	}
 }
 
-func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq HandlerRequest) (cc.Message, error) {
-	return func(cfg config.Configuration, hReq HandlerRequest) (cc.Message, error) {
-		ccMsg := cc.NewMessage()
+func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq HandlerRequest) (commonchat.Message, error) {
+	return func(cfg config.Configuration, hReq HandlerRequest) (commonchat.Message, error) {
+		ccMsg := commonchat.NewMessage()
 		src := string(hReq.Body)
 
 		tokenPattern := regexp.MustCompile(`\${.+?}`)

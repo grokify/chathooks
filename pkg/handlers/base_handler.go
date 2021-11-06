@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
-	cc "github.com/grokify/commonchat"
+	"github.com/grokify/commonchat"
 	"github.com/grokify/simplego/net/anyhttp"
 	"github.com/grokify/simplego/net/urlutil"
 	"github.com/rs/zerolog/log"
@@ -45,7 +45,7 @@ func NewHandlerRequest() HandlerRequest {
 		Body:        []byte("")}
 }
 
-type Normalize func(config.Configuration, HandlerRequest) (cc.Message, error)
+type Normalize func(config.Configuration, HandlerRequest) (commonchat.Message, error)
 
 // HandleAwsLambda is the method to respond to a fasthttp request.
 func (h Handler) HandleAwsLambda(ctx context.Context, awsReq events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

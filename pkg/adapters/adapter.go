@@ -1,7 +1,7 @@
 package adapters
 
 import (
-	cc "github.com/grokify/commonchat"
+	"github.com/grokify/commonchat"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 
@@ -13,11 +13,11 @@ var (
 )
 
 type AdapterSet struct {
-	Adapters map[string]cc.Adapter
+	Adapters map[string]commonchat.Adapter
 }
 
 func NewAdapterSet() AdapterSet {
-	return AdapterSet{Adapters: map[string]cc.Adapter{}}
+	return AdapterSet{Adapters: map[string]commonchat.Adapter{}}
 }
 
 func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo {
