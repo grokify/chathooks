@@ -64,22 +64,6 @@ tokens as a comma delimited string.
 
 // CHATHOOKS_URL=http://localhost:8080/hook CHATHOOKS_HOME_URL=http://localhost:8080 go run main.go
 
-const (
-	ParamNameActivity        = "activity"
-	ParamNameIcon            = "icon"
-	ParamNameInputType       = "inputType"
-	ParamNameOutputType      = "outputType"
-	ParamNameURL             = "url"
-	ParamNameToken           = "token"
-	EnvPath                  = "ENV_PATH"
-	EnvEngine                = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
-	EnvTokens                = "CHATHOOKS_TOKENS"
-	EnvWebhookUrl            = "CHATHOOKS_URL"
-	EnvHomeUrl               = "CHATHOOKS_HOME_URL"
-	ErrRequiredTokenNotFound = "401.01 Required Token Not Found"
-	ErrRequiredTokenNotValid = "401.02 Required Token Not Valid"
-)
-
 type HandlerSet struct {
 	Handlers map[string]Handler
 }
@@ -188,16 +172,16 @@ func NewService() Service {
 func (svc *Service) HandleAwsLambda(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.Info().Msg("FUNC_HandleAwsLambda__BEGIN")
 	if len(svc.Tokens) > 0 {
-		token, ok := req.QueryStringParameters[ParamNameToken]
+		token, ok := req.QueryStringParameters[config.ParamNameToken]
 		if !ok {
 			return events.APIGatewayProxyResponse{
 				StatusCode: http.StatusUnauthorized,
-				Body:       ErrRequiredTokenNotFound}, nil
+				Body:       config.ErrRequiredTokenNotFound}, nil
 		}
 		if _, ok := svc.Tokens[token]; !ok {
 			return events.APIGatewayProxyResponse{
 				StatusCode: http.StatusUnauthorized,
-				Body:       ErrRequiredTokenNotValid}, nil
+				Body:       config.ErrRequiredTokenNotValid}, nil
 		}
 	}
 	inputType, ok := req.QueryStringParameters[models.QueryParamInputType]
@@ -227,7 +211,7 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 	}
 
 	if len(svc.Tokens) > 0 {
-		token := strings.TrimSpace(aReq.QueryArgs().GetString(ParamNameToken))
+		token := strings.TrimSpace(aReq.QueryArgs().GetString(config.ParamNameToken))
 
 		if len(token) == 0 {
 			aRes.SetStatusCode(http.StatusUnauthorized)
@@ -241,7 +225,7 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 		}
 	}
 
-	inputType := aReq.QueryArgs().GetString(ParamNameInputType)
+	inputType := aReq.QueryArgs().GetString(config.ParamNameInputType)
 
 	if handler, ok := svc.HandlerSet.Handlers[inputType]; ok {
 		log.Info().

@@ -10,13 +10,14 @@ import (
 )
 
 const (
-	QueryParamNamedOutputs    = "adapters"
-	QueryParamInputType       = "inputType"
-	QueryParamOutputType      = "outputType"
-	QueryParamToken           = "token"
-	QueryParamOutputURL       = "url"
-	QueryParamDefaultActivity = "defaultActivity"
-	QueryParamDefaultIcon     = "defaultIcon"
+	QueryParamNamedOutputs    = config.ParamNameAdapters
+	QueryParamInputType       = config.ParamNameInputType
+	QueryParamOutputType      = config.ParamNameOutputType
+	QueryParamOutputURL       = config.ParamNameOutputURL
+	QueryParamURL             = config.ParamNameURL
+	QueryParamToken           = config.ParamNameToken
+	QueryParamDefaultActivity = config.ParamNameActivityDefault
+	QueryParamDefaultIcon     = config.ParamNameIconDefault
 )
 
 var (
