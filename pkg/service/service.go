@@ -15,7 +15,7 @@ import (
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/simplego/net/anyhttp"
-	hum "github.com/grokify/simplego/net/httputilmore"
+	"github.com/grokify/simplego/net/httputilmore"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 
@@ -257,7 +257,7 @@ func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Req
 		aRes.SetStatusCode(http.StatusInternalServerError)
 	} else {
 		aRes.SetStatusCode(http.StatusOK)
-		aRes.SetContentType(hum.ContentTypeTextHtmlUtf8)
+		aRes.SetContentType(httputilmore.ContentTypeTextHtmlUtf8)
 	}
 }
 

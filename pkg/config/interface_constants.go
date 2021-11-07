@@ -10,7 +10,6 @@ const (
 	ParamNameOutputType      = "outputType"
 	ParamNameOutputFormat    = "outputFormat" // `card`, `adaptivecard`, `nocard`. Default is `card`.
 	ParamNameOutputURL       = "outputURL"
-	// ParamNameURL             = "url" // legacy. deprecated.
 	ParamNameToken           = "token"
 	EnvPath                  = "ENV_PATH"
 	EnvEngine                = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
@@ -19,6 +18,7 @@ const (
 	EnvHomeUrl               = "CHATHOOKS_HOME_URL"
 	ErrRequiredTokenNotFound = "401.01 Required Token Not Found"
 	ErrRequiredTokenNotValid = "401.02 Required Token Not Valid"
+	// ParamNameURL             = "url" // legacy. deprecated.
 
 	ParamNameOutputFormatNocard       = "nocard"
 	ParamNameOutputFormatCard         = "card"
