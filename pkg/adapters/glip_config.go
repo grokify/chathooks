@@ -6,7 +6,7 @@ import (
 
 func GlipConfig() *config.ConverterConfig {
 	return &config.ConverterConfig{
-		UseAttachments:        false,
+		UseAttachments:        true,
 		UseFieldExtraSpacing:  true,
 		ConvertTripleBacktick: true,
 	}

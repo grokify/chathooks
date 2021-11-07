@@ -25,7 +25,8 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 	if len(hookData.OutputType) > 0 && len(hookData.OutputURL) > 0 {
 		if adapter, ok := set.Adapters[hookData.OutputType]; ok {
 			var msg interface{}
-			req, res, err := adapter.SendWebhook(hookData.OutputURL, hookData.CanonicalMessage, &msg)
+			req, res, err := adapter.SendWebhook(
+				hookData.OutputURL, hookData.CanonicalMessage, &msg, map[string]interface{}{})
 			log.Debug().
 				Str("output_type", hookData.OutputType).
 				Int("status_code", res.StatusCode()).
@@ -38,7 +39,8 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 	for _, namedAdapter := range hookData.OutputNames {
 		if adapter, ok := set.Adapters[namedAdapter]; ok {
 			var msg interface{}
-			req, res, err := adapter.SendMessage(hookData.CanonicalMessage, &msg)
+			req, res, err := adapter.SendMessage(
+				hookData.CanonicalMessage, &msg, map[string]interface{}{})
 			errs = set.procResponse(errs, req, res, err)
 		}
 	}

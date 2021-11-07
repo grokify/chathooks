@@ -14,10 +14,10 @@ const (
 	QueryParamInputType       = config.ParamNameInputType
 	QueryParamOutputType      = config.ParamNameOutputType
 	QueryParamOutputURL       = config.ParamNameOutputURL
-	QueryParamURL             = config.ParamNameURL
 	QueryParamToken           = config.ParamNameToken
 	QueryParamDefaultActivity = config.ParamNameActivityDefault
 	QueryParamDefaultIcon     = config.ParamNameIconDefault
+	//QueryParamURL             = config.ParamNameURL
 )
 
 var (
