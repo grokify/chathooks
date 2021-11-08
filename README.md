@@ -222,7 +222,7 @@ Make sure to set your AWS credentials file.
 
 ### Troubleshooting
 
-401 Unauthorized Error. If you can run a test on API Gateway and have deployed your API but are running into a 401 Unauthorized error, check to see if you havea configured the `CHATHOOKS_TOKEN` environment variable but not entered a `token` query string parameter.
+* 401 Unauthorized Error: If you can run a test on API Gateway and have deployed your API but are running into a HTTP Status 401 Unauthorized error, check to see if you have configured the `CHATHOOKS_TOKEN` environment variable but not entered a `token` query string parameter.
 
 # Usage
 
