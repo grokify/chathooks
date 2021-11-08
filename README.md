@@ -207,18 +207,22 @@ Make sure to set your AWS credentials file.
 * Configure API Gateway
   1. Create "REST" API
   2. Select "New API"
-  3. Select "Actions" > "Create Resource"
+  1. Enter "API name"
+  1. Click "Create API"
+  3. Select "Actions" > "Create Resource" on "/"
   4. Click "Configure as proxy resource"
   5. Use Resource Path `{proxy+}`
   6. Click "Enable API Gateway CORS"
   7. Click "Create Resource"
   8. Leave "Integration Type" as "Lambda Function Proxy"
   8. In "Lambda Function", paste in your Lamda ARN
-  10. Click "Deploy API" and create stage if necessary.
+  9. Click "Save"
+  10. Click "Actions" > "Deploy API" and create stage if necessary.
+  11. Copy "Invoke URL" which should end in `{stageName}`
 
 ### Troubleshooting
 
-401 Unauthorized Error. If you can run a test on API Gateway and have deployed your API but are running into a 401 Unauthorized error.....
+401 Unauthorized Error. If you can run a test on API Gateway and have deployed your API but are running into a 401 Unauthorized error, check to see if you havea configured the `CHATHOOKS_TOKEN` environment variable but not entered a `token` query string parameter.
 
 # Usage
 
@@ -232,7 +236,8 @@ Make sure to set your AWS credentials file.
 |-----------------|-----------|-----|
 | `inputType` | required | An handler service like `marketo` |
 | `outputType` | required | An adapter service like `glip` |
-| `url` | required | A webhook URL or UID, e.g. `11112222-3333-4444-5555-666677778888` |
+| `outputURL` | required | A webhook URL or UID, e.g. `11112222-3333-4444-5555-666677778888` |
+| `outputFormat` | optional | one of [`nocard`,`card`] |
 | `token` | optional | Must be included if service is configured to use auth tokens |
 
 The webhook proxy URLs support both inbound and outbound formats. When available, these should be represented in the handler key.
