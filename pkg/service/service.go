@@ -14,8 +14,8 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
-	"github.com/grokify/simplego/net/anyhttp"
-	"github.com/grokify/simplego/net/httputilmore"
+	"github.com/grokify/mogo/net/anyhttp"
+	"github.com/grokify/mogo/net/httputilmore"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 

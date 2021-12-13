@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/html/htmlutil"
-	"github.com/grokify/simplego/strconv/strconvutil"
+	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/html/htmlutil"
+	"github.com/grokify/mogo/strconv/strconvutil"
 	"github.com/pkg/errors"
 
 	"github.com/grokify/chathooks/pkg/config"

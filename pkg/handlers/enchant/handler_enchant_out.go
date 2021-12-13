@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/simplego/type/stringsutil"
+	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog/log"
 
 	"github.com/grokify/chathooks/pkg/config"

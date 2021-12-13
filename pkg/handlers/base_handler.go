@@ -10,8 +10,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/grokify/commonchat"
-	"github.com/grokify/simplego/net/anyhttp"
-	"github.com/grokify/simplego/net/urlutil"
+	"github.com/grokify/mogo/net/anyhttp"
+	"github.com/grokify/mogo/net/urlutil"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 

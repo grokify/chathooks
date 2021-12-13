@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/simplego/type/stringsutil"
+	"github.com/grokify/mogo/type/stringsutil"
 
 	"github.com/grokify/chathooks/pkg/config"
 	"github.com/grokify/chathooks/pkg/handlers"

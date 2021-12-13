@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/simplego/time/timeutil"
+	"github.com/grokify/mogo/time/timeutil"
 
 	"github.com/grokify/chathooks/pkg/config"
 	"github.com/grokify/chathooks/pkg/handlers"
