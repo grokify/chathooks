@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/config"
-	"github.com/grokify/mogo/net/http/httpsimple"
 
 	"github.com/grokify/chathooks/pkg/service"
 )

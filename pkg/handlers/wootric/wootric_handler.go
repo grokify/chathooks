@@ -1,16 +1,17 @@
 package wootric
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"regexp"
 	"strings"
 
 	cc "github.com/grokify/commonchat"
+	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/html/htmlutil"
 	"github.com/grokify/mogo/strconv/strconvutil"
-	"github.com/pkg/errors"
 
 	"github.com/grokify/chathooks/pkg/config"
 	"github.com/grokify/chathooks/pkg/handlers"
@@ -48,7 +49,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 
 	body, err := url.QueryUnescape(string(hReq.Body))
 	if err != nil {
-		return ccMsg, errors.Wrap(err, "wootric.Normalize")
+		return ccMsg, errorsutil.Wrap(err, "wootric.Normalize")
 	}
 	src, err := ParseQueryString(body)
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
 
@@ -16,7 +17,6 @@ import (
 	cc "github.com/grokify/commonchat"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
-	errs "github.com/pkg/errors"
 	"github.com/valyala/fasthttp"
 
 	"github.com/grokify/chathooks/examples"
@@ -133,7 +133,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		}
 		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID, adapters.GlipConfig())
 		if err != nil {
-			return errs.Wrap(err, "Incorrect Webhook GUID or URL")
+			return errorsutil.Wrap(err, "Incorrect Webhook GUID or URL")
 		}
 		sender.Adapter = adapter
 	} else if adapterType == "slack" {
@@ -143,7 +143,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		}
 		adapter, err := ccslack.NewSlackAdapter(webhookURLOrUID)
 		if err != nil {
-			return errs.Wrap(err, "Incorrect Webhook GUID or URL")
+			return errorsutil.Wrap(err, "Incorrect Webhook GUID or URL")
 		}
 		sender.Adapter = adapter
 	} else {
@@ -152,7 +152,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 
 	exampleData, err := util.NewExampleData()
 	if err != nil {
-		return errs.Wrap(err, fmt.Sprintf("Invalid Example Data: %v\n", err))
+		return errorsutil.Wrap(err, fmt.Sprintf("Invalid Example Data: %v\n", err))
 	}
 	fmtutil.PrintJSON(exampleData)
 
