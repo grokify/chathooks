@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grokify/mogo/net/urlutil"
+	"github.com/grokify/gonet/urlutil"
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/maputil"
 )
