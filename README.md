@@ -31,7 +31,6 @@ Chathooks supports multiple HTTP engines including the following:
 * [net/http](https://golang.org/pkg/net/http/)
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
-* ~~[eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim)~~
 
 ## Supported Webhook Formats
 
