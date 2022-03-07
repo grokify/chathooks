@@ -79,7 +79,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 type PingdomOutMessage struct {
-	CheckId               int64                 `json:"check_id,omitempty"`
+	CheckID               int64                 `json:"check_id,omitempty"`
 	CheckName             string                `json:"check_name,omitempty"`
 	CheckType             string                `json:"check_type,omitempty"`
 	CheckParams           PingdomOutCheckParams `json:"check_params,omitempty"`
@@ -101,7 +101,7 @@ func PingdomOutMessageFromBytes(bytes []byte) (PingdomOutMessage, error) {
 }
 
 func (msg *PingdomOutMessage) CheckURL() string {
-	return fmt.Sprintf("https://my.pingdom.com/newchecks/checks#check=%v", msg.CheckId)
+	return fmt.Sprintf("https://my.pingdom.com/newchecks/checks#check=%v", msg.CheckID)
 }
 
 type PingdomOutCheckParams struct {

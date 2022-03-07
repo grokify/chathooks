@@ -72,7 +72,7 @@ func NormalizeSemaphoreciBuildOutMessage(cfg config.Configuration, src Semaphore
 		src.ProjectName,
 		src.BranchName,
 		src.Result,
-		src.Commit.Id[:7],
+		src.Commit.ID[:7],
 		src.Commit.URL)
 
 	attachment := cc.NewAttachment()
@@ -125,11 +125,11 @@ func NormalizeSemaphoreciDeployOutMessage(cfg config.Configuration, src Semaphor
 
 	ccMsg.Title = fmt.Sprintf("[%v #%v](%v) for **%v/%v** %v ([%v](%v))",
 		stringsutil.ToUpperFirst(src.Event, false),
-		src.Number, src.HtmlURL,
+		src.Number, src.HTMLURL,
 		src.ProjectName,
 		src.BranchName,
 		src.Result,
-		src.Commit.Id[:7],
+		src.Commit.ID[:7],
 		src.Commit.URL)
 
 	attachment := cc.NewAttachment()
@@ -184,7 +184,7 @@ type SemaphoreciBuildOutMessage struct {
 	BranchName    string            `json:"branch_name,omitempty"`
 	BranchURL     string            `json:"branch_url,omitempty"`
 	ProjectName   string            `json:"project_name,omitempty"`
-	ProjectHashId string            `json:"project_hash_id,omitempty"`
+	ProjectHashID string            `json:"project_hash_id,omitempty"`
 	BuildURL      string            `json:"build_url,omitempty"`
 	BuildNumber   int64             `json:"build_number,omitempty"`
 	Result        string            `json:"result,omitempty"`
@@ -195,7 +195,7 @@ type SemaphoreciBuildOutMessage struct {
 }
 
 type SemaphoreciCommit struct {
-	Id          string `json:"id,omitempty"`
+	ID          string `json:"id,omitempty"`
 	URL         string `json:"url,omitempty"`
 	AuthorName  string `json:"author_name,omitempty"`
 	AuthorEmail string `json:"author_email,omitempty"`
@@ -214,7 +214,7 @@ func SemaphoreciBuildOutMessageFromBytes(bytes []byte) (SemaphoreciBuildOutMessa
 
 type SemaphoreciDeployOutMessage struct {
 	ProjectName   string            `json:"project_name,omitempty"`
-	ProjectHashId string            `json:"project_hash_id,omitempty"`
+	ProjectHashID string            `json:"project_hash_id,omitempty"`
 	Result        string            `json:"result,omitempty"`
 	Event         string            `json:"event,omitempty"`
 	ServerName    string            `json:"server_name,omitempty"`
@@ -223,11 +223,11 @@ type SemaphoreciDeployOutMessage struct {
 	UpdatedAt     string            `json:"updated_at,omitempty"`
 	StartedAt     string            `json:"started_at,omitempty"`
 	FinishedAt    string            `json:"finished_at,omitempty"`
-	HtmlURL       string            `json:"html_url,omitempty"`
+	HTMLURL       string            `json:"html_url,omitempty"`
 	BuildNumber   int64             `json:"build_number,omitempty"`
 	BranchName    string            `json:"branch_name,omitempty"`
-	BranchHtmlURL string            `json:"branch_html_url,omitempty"`
-	BuildHtmlURL  string            `json:"bulid_html_url,omitempty"`
+	BranchHTMLURL string            `json:"branch_html_url,omitempty"`
+	BuildHTMLURL  string            `json:"bulid_html_url,omitempty"`
 	Commit        SemaphoreciCommit `json:"commit,omitempty"`
 }
 

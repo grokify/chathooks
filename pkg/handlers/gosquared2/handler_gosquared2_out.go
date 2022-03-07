@@ -29,7 +29,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		return cc.NewMessage(), err
 	}
 
-	if len(src.Person.Id) > 0 {
+	if len(src.Person.ID) > 0 {
 		return NormalizeSmartGroup(cfg, bytes)
 	}
 	return NormalizeSiteTraffic(cfg, bytes)
@@ -135,13 +135,13 @@ func GosquaredOutMessageSmartGroupFromBytes(bytes []byte) (GosquaredOutMessageSm
 
 type GosquaredOutGroup struct {
 	Name string `json:"name,omitempty"`
-	Id   string `json:"id,omitempty"`
+	ID   string `json:"id,omitempty"`
 }
 
 func (msg *GosquaredOutMessageSmartGroup) GroupURL() string {
 	// https://www.gosquared.com/people/GSN-466237-B/last-seen-1-day
 	return fmt.Sprintf("https://www.gosquared.com/people/%s/%s",
-		msg.SiteToken, msg.Group.Id)
+		msg.SiteToken, msg.Group.ID)
 }
 
 type GosquaredOutPerson struct {
@@ -152,7 +152,7 @@ type GosquaredOutPerson struct {
 	Username    string `json:"username,omitempty"`
 	Email       string `json:"email,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Id          string `json:"id,omitempty"`
+	ID          string `json:"id,omitempty"`
 }
 
 type GosquaredOutMessageConcurrent struct {
@@ -162,14 +162,14 @@ type GosquaredOutMessageConcurrent struct {
 }
 
 type GosquaredOutTriggeredAlert struct {
-	Id       int64  `json:"id,omitempty"`
+	ID       int64  `json:"id,omitempty"`
 	Boundary string `json:"boundary,omitempty"`
 	Value    string `json:"value,omitempty"`
 	Type     string `json:"type,omitempty"`
 }
 
 type GosquaredOutSiteDetails struct {
-	UserId    int64  `json:"user_id,omitempty"`
+	UserID    int64  `json:"user_id,omitempty"`
 	Acct      string `json:"acct,omitempty"`
 	Email     string `json:"email,omitempty"`
 	FirstName string `json:"first_name,omitempty"`
