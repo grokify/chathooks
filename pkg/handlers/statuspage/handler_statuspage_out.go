@@ -129,7 +129,7 @@ func (msg *StatuspageOutMessage) PageURL() (string, error) {
 }
 
 func (msg *StatuspageOutMessage) IncidentURL() string {
-	return fmt.Sprintf("")
+	return ""
 }
 
 type StatuspageOutMeta struct {

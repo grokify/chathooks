@@ -2,14 +2,12 @@ package wootric
 
 import (
 	"errors"
-	"fmt"
 	"net/url"
 	"regexp"
 	"strings"
 
 	cc "github.com/grokify/commonchat"
 	"github.com/grokify/mogo/errors/errorsutil"
-	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/html/htmlutil"
 	"github.com/grokify/mogo/strconv/strconvutil"
 
@@ -202,11 +200,14 @@ func ParseFields(fields string) []Line {
 					field.Property = propertyNameRaw
 				}
 			}
-			if len(field.Property) == 0 {
-				fmt.Println(lineVar)
-				fmtutil.PrintJSON(field)
-				//panic("Z")
-			} else {
+			/*
+				if len(field.Property) == 0 {
+					fmt.Println(lineVar)
+					fmtutil.PrintJSON(field)
+					//panic("Z")
+				}
+			*/
+			if len(strings.TrimSpace(field.Property)) > 0 {
 				line.Fields = append(line.Fields, field)
 			}
 		}

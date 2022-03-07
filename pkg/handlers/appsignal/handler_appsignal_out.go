@@ -19,76 +19,9 @@ const (
 	MessageBodyType  = models.JSON
 )
 
-/*
-// FastHttp request handler for outbound webhook
-type Handler struct {
-	Config          config.Configuration
-	AdapterSet      adapters.AdapterSet
-	MessageBodyType models.MessageBodyType
-}
-
-// FastHttp request handler constructor for outbound webhook
-func NewHandler(cfg config.Configuration, adapterSet adapters.AdapterSet) Handler {
-	return Handler{Config: cfg, AdapterSet: adapterSet}
-}
-*/
 func NewHandler() handlers.Handler {
 	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
-
-/*
-
-func (h Handler) HandlerKey() string {
-	return HandlerKey
-}
-
-func (h Handler) MessageDirection() string {
-	return MessageDirection
-}
-
-// HandleEawsyLambda is the method to respond to a fasthttp request.
-func (h Handler) HandleEawsyLambda(event *apigatewayproxyevt.Event, ctx *runtime.Context) (models.AwsAPIGatewayProxyOutput, error) {
-	hookData := models.HookDataFromEawsyLambdaEvent(models.JSON, event)
-	errs := h.HandleCanonical(hookData)
-	return models.ErrorInfosToAwsAPIGatewayProxyOutput(errs...), nil
-}
-
-// HandleFastHTTP is the method to respond to a fasthttp request.
-func (h Handler) HandleFastHTTP(ctx *fasthttp.RequestCtx) {
-	hookData := models.HookDataFromFastHTTPReqCtx(models.JSON, ctx)
-	errs := h.HandleCanonical(hookData)
-
-	proxyOutput := models.ErrorInfosToAwsAPIGatewayProxyOutput(errs...)
-	ctx.SetStatusCode(proxyOutput.StatusCode)
-	if proxyOutput.StatusCode > 399 {
-		fmt.Fprintf(ctx, "%s", proxyOutput.Body)
-	}
-}
-
-// HandleCanonical is the method to handle a processed request.
-func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
-	log.WithFields(log.Fields{
-		"event":   "incoming.webhook",
-		"handler": DisplayName}).Info("HANDLE_FASTHTTP")
-	log.WithFields(log.Fields{
-		"event":   "incoming.webhook",
-		"handler": DisplayName}).Info(string(hookData.InputBody))
-
-	ccMsg, err := Normalize(h.Config, hookData.InputBody)
-
-	if err != nil {
-		//ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		log.WithFields(log.Fields{
-			"type":         "http.response",
-			"status":       fasthttp.StatusNotAcceptable,
-			"errorMessage": err.Error(),
-		}).Info(fmt.Sprintf("%v request conversion failed.", DisplayName))
-		return []models.ErrorInfo{{StatusCode: 500, Body: []byte(err.Error())}}
-	}
-	hookData.OutputMessage = ccMsg
-	return h.AdapterSet.SendWebhooks(hookData)
-}
-*/
 
 func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	ccMsg := cc.NewMessage()
@@ -135,7 +68,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		}
 		ccMsg.AddAttachment(attachment)
 	} else if len(src.Exception.URL) > 0 {
-		ccMsg.Activity = fmt.Sprintf("Exception incident")
+		ccMsg.Activity = "Exception incident"
 
 		exceptionString := ""
 		if len(src.Exception.URL) > 0 {

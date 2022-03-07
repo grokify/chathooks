@@ -92,7 +92,7 @@ func BuildViolationAttachment(src LibratoOutMessage, violation LibratoOutViolati
 
 	if errNoCondition == nil {
 		conditionComparison := "above"
-		if float64(violation.Value) < condition.Threshold {
+		if violation.Value < condition.Threshold {
 			conditionComparison = "below"
 		}
 
