@@ -133,8 +133,8 @@ type ApteligentOutMessage struct {
 	IncidentTime     string `json:"incident_time,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Metric           string `json:"metric,omitempty"`
-	CrittercismAppId string `json:"crittercism_app_id,omitempty"`
-	TriggerId        string `json:"trigger_id,omitempty"`
+	CrittercismAppID string `json:"crittercism_app_id,omitempty"`
+	TriggerID        string `json:"trigger_id,omitempty"`
 	State            string `json:"state,omitempty"`
 	AlertURL         string `json:"alert_url,omitempty"`
 	Filters          string `json:"filters,omitempty"`
@@ -168,7 +168,6 @@ type ApteligentOutMessage struct {
 }
 */
 func ApteligentOutMessageFromBytes(bytes []byte) (ApteligentOutMessage, error) {
-	msg := ApteligentOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg ApteligentOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }

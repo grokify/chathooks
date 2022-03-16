@@ -60,7 +60,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		return NormalizeChatWidget(cfg, srcMsg), nil
 	}
 
-	return cc.Message{}, errors.New("Type Not Supported")
+	return cc.Message{}, errors.New("type not supported")
 }
 
 func GlipActivityForChat(event string, feedback string) string {

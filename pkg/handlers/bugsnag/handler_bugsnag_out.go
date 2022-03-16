@@ -98,8 +98,8 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 			}
 		}
 
-		if len(src.Error.Url) > 0 {
-			status = fmt.Sprintf("[%s](%s)", status, src.Error.Url)
+		if len(src.Error.URL) > 0 {
+			status = fmt.Sprintf("[%s](%s)", status, src.Error.URL)
 		}
 
 		fields = append(fields, cc.Field{
@@ -140,8 +140,8 @@ func buildTextMessage(src BugsnagOutMessage) string {
 		parts = append(parts, fmt.Sprintf("in %s", src.Error.Context))
 	}
 
-	if len(src.Error.Url) > 0 {
-		details := fmt.Sprintf("([details](%s))", src.Error.Url)
+	if len(src.Error.URL) > 0 {
+		details := fmt.Sprintf("([details](%s))", src.Error.URL)
 		parts = append(parts, details)
 	}
 
@@ -155,7 +155,7 @@ func BugsnagOutMessageFromBytes(bytes []byte) (BugsnagOutMessage, error) {
 		Str("request_body", string(bytes)).
 		Msg(config.InfoInputMessageParseBegin)
 
-	msg := BugsnagOutMessage{}
+	var msg BugsnagOutMessage
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.Warn().
@@ -187,13 +187,13 @@ func (msg *BugsnagOutMessage) ReleaseStage() string {
 }
 
 type BugsnagAccount struct {
-	Id   string `json:"id,omitempty"`
+	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
 
 type BugsnagProject struct {
-	Id   string `json:"id,omitempty"`
+	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
@@ -223,13 +223,13 @@ type BugsnagSnoozeRule struct {
 type BugsnagComment struct{}
 
 type BugsnagUser struct {
-	Id    string `json:"id,omitempty"`
+	ID    string `json:"id,omitempty"`
 	Name  string `json:"name,omitempty"`
 	Email string `json:"email,omitempty"`
 }
 
 type BugsnagRelease struct {
-	Id            string               `json:"id,omitempty"`
+	ID            string               `json:"id,omitempty"`
 	Version       string               `json:"version,omitempty"`
 	VersionCode   string               `json:"versionCode,omitempty"`
 	BundleVersion string               `json:"bundleVersion,omitempty"`
@@ -249,16 +249,16 @@ type BugsnagSourceControl struct {
 }
 
 type BugsnagError struct {
-	Id             string                   `json:"id,omitempty"`
-	ErrorId        string                   `json:"errorId,omitempty"`
+	ID             string                   `json:"id,omitempty"`
+	ErrorID        string                   `json:"errorId,omitempty"`
 	ExceptionClass string                   `json:"exceptionClass,omitempty"`
 	Message        string                   `json:"message,omitempty"`
 	Context        string                   `json:"context,omitempty"`
 	FirstReceived  time.Time                `json:"firstReceived,omitempty"`
 	ReceivedAt     time.Time                `json:"receivedAt,omitempty"`
-	RequestUrl     string                   `json:"requestUrl,omitempty"`
-	AssignedUserId string                   `json:"assignedUserId,omitempty"`
-	Url            string                   `json:"url,omitempty"`
+	RequestURL     string                   `json:"requestUrl,omitempty"`
+	AssignedUserID string                   `json:"assignedUserId,omitempty"`
+	URL            string                   `json:"url,omitempty"`
 	Severity       string                   `json:"severity,omitempty"`
 	Status         string                   `json:"status,omitempty"`
 	Unhandled      bool                     `json:"unhandled,omitempty"`
@@ -270,18 +270,18 @@ type BugsnagError struct {
 }
 
 type BugsnagErrorIssue struct {
-	Id     string `json:"id,omitempty"`
-	Number int    `json:"name,omitempty"`
-	Type   string `json:"type,omitempty"`
-	URL    string `json:"url,omitempty"`
+	TriggerID string `json:"id,omitempty"`
+	Number    int    `json:"name,omitempty"`
+	Type      string `json:"type,omitempty"`
+	URL       string `json:"url,omitempty"`
 }
 
 type BugsnaggErrorApp struct {
-	Id                   string   `json:"id,omitempty"`
+	ID                   string   `json:"id,omitempty"`
 	Version              string   `json:"version,omitempty"`
 	VersionCode          string   `json:"versionCode,omitempty"`
 	BundleVersion        string   `json:"bundleVersion,omitempty"`
-	CodeBundleId         string   `json:"codeBundleId,omitempty"`
+	CodeBundleID         string   `json:"codeBundleId,omitempty"`
 	BuildUUID            string   `json:"buildUUID,omitempty"`
 	ReleaseStage         string   `json:"releaseStage,omitempty"`
 	Type                 string   `json:"type,omitempty"`
@@ -292,7 +292,7 @@ type BugsnaggErrorApp struct {
 }
 
 type BugsnagErrorDevice struct {
-	Id             string    `json:"id,omitempty"`
+	ID             string    `json:"id,omitempty"`
 	Manufacturer   string    `json:"manufacturer,omitempty"`
 	Model          string    `json:"model,omitempty"`
 	ModelNumber    string    `json:"modelNumber,omitempty"`
