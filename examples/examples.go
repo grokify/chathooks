@@ -22,9 +22,8 @@ func DocsHandlersDirInfo() ([]string, []string, error) {
 	handlersDir := AbsDirGopath(HandlersDir)
 	fmt.Println(handlersDir)
 
-	dirs := []string{}
-	exampleFiles := []string{}
-	//sdirs, _, err := ioutilmore.ReadDirSplit(handlersDir, true)
+	var dirs []string
+	var exampleFiles []string
 	sdirs, err := osutil.ReadDirMore(handlersDir, nil, true, false, false)
 
 	if err != nil {
