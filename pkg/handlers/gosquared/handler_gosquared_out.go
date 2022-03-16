@@ -164,9 +164,8 @@ type GosquaredOutMessageSiteTraffic struct {
 }
 
 func GosquaredOutMessageSiteTrafficFromBytes(bytes []byte) (GosquaredOutMessageSiteTraffic, error) {
-	msg := GosquaredOutMessageSiteTraffic{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg GosquaredOutMessageSiteTraffic
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type GosquaredOutLiveMessage struct {
@@ -329,14 +328,14 @@ type GosquaredOutMessageConcurrent struct {
 }
 
 type GosquaredOutTriggeredAlert struct {
-	Id       int64  `json:"id,omitempty"`
+	ID       int64  `json:"id,omitempty"`
 	Boundary string `json:"boundary,omitempty"`
 	Value    string `json:"value,omitempty"`
 	Type     string `json:"type,omitempty"`
 }
 
 type GosquaredOutSiteDetails struct {
-	UserId    int64  `json:"user_id,omitempty"`
+	UserID    int64  `json:"user_id,omitempty"`
 	Acct      string `json:"acct,omitempty"`
 	Email     string `json:"email,omitempty"`
 	FirstName string `json:"first_name,omitempty"`

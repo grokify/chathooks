@@ -89,8 +89,8 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 type MagnumciOutMessage struct {
-	Id             int64  `json:"id,omitempty"`
-	ProjectId      int64  `json:"project_id,omitempty"`
+	ID             int64  `json:"id,omitempty"`
+	ProjectID      int64  `json:"project_id,omitempty"`
 	Title          string `json:"title,omitempty"`
 	Number         int64  `json:"number,omitempty"`
 	Commit         string `json:"commit,omitempty"`
@@ -111,7 +111,6 @@ type MagnumciOutMessage struct {
 }
 
 func MagnumciOutMessageFromBytes(bytes []byte) (MagnumciOutMessage, error) {
-	msg := MagnumciOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg MagnumciOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }

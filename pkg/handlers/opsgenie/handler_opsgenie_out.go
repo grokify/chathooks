@@ -71,7 +71,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	ccMsg.Title = fmt.Sprintf("%s %s ([%s](%s))",
 		src.IntegrationName,
 		alertType,
-		src.Alert.AlertId[:8],
+		src.Alert.AlertID[:8],
 		src.Alert.AlertURL())
 
 	attachment := cc.NewAttachment()
@@ -81,7 +81,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 			Title: "Message",
 			Value: src.Alert.Message})
 	}
-	if len(src.EscalationNotify.Id) > 0 {
+	if len(src.EscalationNotify.ID) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Esclated To",
 			Value: fmt.Sprintf("[%s](%s)",
@@ -157,7 +157,7 @@ type OpsgenieOutMessage struct {
 	Source           OpsgenieOutSource           `json:"source,omitempty"`
 	Alert            OpsgenieOutAlert            `json:"alert,omitempty"`
 	Action           string                      `json:"action,omitempty"`
-	IntegrationId    string                      `json:"integrationId,omitempty"`
+	IntegrationID    string                      `json:"integrationId,omitempty"`
 	IntegrationName  string                      `json:"integrationName,omitempty"`
 	EscalationNotify OpsgenieOutEscalationNotify `json:"escalationNotify,omitempty"`
 }
@@ -175,10 +175,10 @@ type OpsgenieOutAlert struct {
 	Recipients  []string `json:"recipients,omitempty"`
 	Message     string   `json:"message,omitempty"`
 	Username    string   `json:"username,omitempty"`
-	AlertId     string   `json:"alertId,omitempty"`
+	AlertID     string   `json:"alertId,omitempty"`
 	Source      string   `json:"source,omitempty"`
 	Alias       string   `json:"alias,omitempty"`
-	TinyId      string   `json:"tinyId,omitempty"`
+	TinyID      string   `json:"tinyId,omitempty"`
 	CreatedAt   int64    `json:"createdAt,omitempty"`
 	UserId      string   `json:"userId,omitempty"`
 	Entity      string   `json:"entity,omitempty"`
@@ -209,11 +209,11 @@ type OpsgenieOutSource struct {
 
 type OpsgenieOutEscalationNotify struct {
 	Name   string `json:"name,omitempty"`
-	Id     string `json:"id,omitempty"`
+	ID     string `json:"id,omitempty"`
 	Type   string `json:"type,omitempty"`
 	Entity string `json:"entity,omitempty"`
 }
 
 func (alert *OpsgenieOutEscalationNotify) URL() string {
-	return fmt.Sprintf(UserProfileURLFormat, alert.Id)
+	return fmt.Sprintf(UserProfileURLFormat, alert.ID)
 }
