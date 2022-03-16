@@ -10,7 +10,6 @@ import (
 
 	"github.com/apex/gateway"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/buaazp/fasthttprouter"
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
@@ -304,7 +303,7 @@ func ServeNetHttp(svc Service) {
 	log.Info().
 		Int("port", svc.Config.Port).
 		Msg("STARTING_NET_HTTP")
-	http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc))
+	clog.Fatal(http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
 }
 
 func ServeFastHttp(svc Service) {
@@ -319,5 +318,5 @@ func ServeAwsLambda(svc Service) {
 	clog.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
 }
 
-func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
-func portAddress(port int) string      { return ":" + strconv.Itoa(port) }
+// func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }
+func portAddress(port int) string { return ":" + strconv.Itoa(port) }

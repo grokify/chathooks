@@ -103,10 +103,7 @@ func ConfluenceOutMessageFromBytes(bytes []byte) (ConfluenceOutMessage, error) {
 }
 
 func (msg *ConfluenceOutMessage) IsComment() bool {
-	if msg.Comment.ModificationDate > 0 {
-		return true
-	}
-	return false
+	return msg.Comment.ModificationDate > 0
 }
 
 type ConfluencePage struct {
@@ -117,24 +114,18 @@ type ConfluencePage struct {
 	LastModifierKey  string `json:"lastModifierKey,omitempty"`
 	Self             string `json:"self,omitempty"`
 	LastModifierName string `json:"lastModifierName,omitempty"`
-	Id               int64  `json:"id,omitempty"`
+	ID               int64  `json:"id,omitempty"`
 	Title            string `json:"title,omitempty"`
 	CreationDate     int64  `json:"creationDate,omitempty"`
 	Version          int64  `json:"version,omitempty"`
 }
 
 func (page *ConfluencePage) IsCreated() bool {
-	if page.ModificationDate > 0 && page.ModificationDate == page.CreationDate {
-		return true
-	}
-	return false
+	return page.ModificationDate > 0 && page.ModificationDate == page.CreationDate
 }
 
 func (page *ConfluencePage) IsUpdated() bool {
-	if page.IsCreated() {
-		return false
-	}
-	return true
+	return !page.IsCreated()
 }
 
 type ConfluenceComment struct {
@@ -152,15 +143,9 @@ type ConfluenceComment struct {
 }
 
 func (comment *ConfluenceComment) IsCreated() bool {
-	if comment.ModificationDate > 0 && comment.ModificationDate == comment.CreationDate {
-		return true
-	}
-	return false
+	return comment.ModificationDate > 0 && comment.ModificationDate == comment.CreationDate
 }
 
 func (comment *ConfluenceComment) IsUpdated() bool {
-	if comment.IsCreated() {
-		return false
-	}
-	return true
+	return !comment.IsCreated()
 }

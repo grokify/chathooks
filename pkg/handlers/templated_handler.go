@@ -13,9 +13,7 @@ import (
 )
 
 func NewTemplatedHandler(tmpl string) Handler {
-	return Handler{
-		Normalize: getTemplatedNormalizer(tmpl),
-	}
+	return Handler{Normalize: getTemplatedNormalizer(tmpl)}
 }
 
 func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq HandlerRequest) (commonchat.Message, error) {
@@ -40,7 +38,6 @@ func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq Han
 			}
 		})
 
-		err := json.Unmarshal([]byte(formattedJson), &ccMsg)
-		return ccMsg, err
+		return ccMsg, json.Unmarshal([]byte(formattedJson), &ccMsg)
 	}
 }

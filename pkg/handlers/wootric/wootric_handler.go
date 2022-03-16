@@ -160,10 +160,10 @@ type Field struct {
 }
 
 var (
-	rxParens    = regexp.MustCompile(`^\((.*)\)$`)
-	rxBrackets  = regexp.MustCompile(`^(.*)\[(.*)\]$`)
-	rxCustom    = regexp.MustCompile(`^_(.*)$`)
-	rxCustomOld = regexp.MustCompile(`^(.*)__c$`)
+	rxParens   = regexp.MustCompile(`^\((.*)\)$`)
+	rxBrackets = regexp.MustCompile(`^(.*)\[(.*)\]$`)
+	rxCustom   = regexp.MustCompile(`^_(.*)$`)
+	// rxCustomOld = regexp.MustCompile(`^(.*)__c$`)
 )
 
 func ParseFields(fields string) []Line {

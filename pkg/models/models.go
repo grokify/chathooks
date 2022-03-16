@@ -58,12 +58,14 @@ const (
 	URLEncodedRails
 )
 
+/*
 var intervals = [...]string{
 	"json",
 	"url_encoded",
 	"url_encoded_json_payload",
 	"url_encoded_or_json",
 }
+*/
 
 type HookData struct {
 	InputType         string             `json:"inputType,omitempty"`

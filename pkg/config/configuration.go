@@ -2,10 +2,10 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
 	"os"
 	"path"
+	"strconv"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/rs/zerolog"
@@ -60,7 +60,7 @@ func ReadConfigurationFile(filepath string) (Configuration, error) {
 
 // Address returns the port address as a string with a `:` prefix
 func (c *Configuration) Address() string {
-	return fmt.Sprintf(":%d", c.Port)
+	return ":" + strconv.Itoa(c.Port)
 }
 
 func (c *Configuration) GetAppIconURL(appSlug string) (*url.URL, error) {

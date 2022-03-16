@@ -118,7 +118,7 @@ type AhaOutAudit struct {
 	Interesting   bool           `json:"interesting,omitempty"`
 	AuditableType string         `json:"auditable_type,omitempty"`
 	AuditableId   string         `json:"auditable_id,omitempty"`
-	User          *AhaOutUser    `json:"user,omitmpty"`
+	User          *AhaOutUser    `json:"user,omitempty"`
 	Description   string         `json:"description,omitempty"`
 	AuditableURL  string         `json:"auditable_url,omitempty"`
 	Changes       []AhaOutChange `json:"changes,omitempty"`
