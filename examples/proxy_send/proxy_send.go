@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -77,7 +76,7 @@ func BuildURLQueryString(baseURL string, qry interface{}) string {
 }
 
 func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType string) error {
-	bytes, err := ioutil.ReadFile(filepath)
+	bytes, err := os.ReadFile(filepath)
 	if err != nil {
 		return err
 	}

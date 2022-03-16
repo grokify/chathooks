@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path"
@@ -51,7 +50,7 @@ func NewConfigurationEnv() (Configuration, error) {
 
 func ReadConfigurationFile(filepath string) (Configuration, error) {
 	var configuration Configuration
-	bytes, err := ioutil.ReadFile(filepath)
+	bytes, err := os.ReadFile(filepath)
 	if err != nil {
 		return configuration, err
 	}
