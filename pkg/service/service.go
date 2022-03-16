@@ -271,12 +271,12 @@ func (svc Service) PortInt() int {
 	return svc.Config.Port
 }
 
-func (svc Service) HttpEngine() string {
+func (svc Service) HTTPEngine() string {
 	return svc.Config.Engine
 }
 
 func (svc Service) Router() http.Handler {
-	return getHttpServeMux(svc)
+	return getHTTPServeMux(svc)
 }
 
 func (svc Service) RouterFast() *fasthttprouter.Router {
@@ -289,7 +289,7 @@ func (svc Service) RouterFast() *fasthttprouter.Router {
 	return router
 }
 
-func getHttpServeMux(svc Service) *http.ServeMux {
+func getHTTPServeMux(svc Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", http.HandlerFunc(svc.HandleHomeNetHTTP))
 	mux.HandleFunc("/hook", http.HandlerFunc(svc.HandleHookNetHTTP))
@@ -299,14 +299,14 @@ func getHttpServeMux(svc Service) *http.ServeMux {
 	return mux
 }
 
-func ServeNetHttp(svc Service) {
+func ServeNetHTTP(svc Service) {
 	log.Info().
 		Int("port", svc.Config.Port).
 		Msg("STARTING_NET_HTTP")
-	clog.Fatal(http.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
+	clog.Fatal(http.ListenAndServe(portAddress(svc.Config.Port), getHTTPServeMux(svc)))
 }
 
-func ServeFastHttp(svc Service) {
+func ServeFastHTTP(svc Service) {
 	log.Info().
 		Int("port", svc.Config.Port).
 		Msg("STARTING_FAST_HTTP")
@@ -314,8 +314,8 @@ func ServeFastHttp(svc Service) {
 	clog.Fatal(fasthttp.ListenAndServe(portAddress(svc.Config.Port), router.Handler))
 }
 
-func ServeAwsLambda(svc Service) {
-	clog.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHttpServeMux(svc)))
+func ServeAWSLambda(svc Service) {
+	clog.Fatal(gateway.ListenAndServe(portAddress(svc.Config.Port), getHTTPServeMux(svc)))
 }
 
 // func serveAwsLambdaSimple(svc Service) { lambda.Start(svc.HandleAwsLambda) }

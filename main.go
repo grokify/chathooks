@@ -27,6 +27,6 @@ func main() {
 
 	svc := service.NewService()
 	fmt.Printf("Starting on port [%d] with engine [%s].\n",
-		svc.PortInt(), svc.HttpEngine())
+		svc.PortInt(), svc.HTTPEngine())
 	httpsimple.Serve(svc)
 }
