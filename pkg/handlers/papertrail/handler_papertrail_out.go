@@ -44,8 +44,8 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 
 	eventCount := len(src.Events)
 	searchName := src.SavedSearch.Name
-	if len(src.SavedSearch.HtmlSearchURL) > 0 {
-		searchName = fmt.Sprintf("[%s](%s)", src.SavedSearch.Name, src.SavedSearch.HtmlSearchURL)
+	if len(src.SavedSearch.HTMLSearchURL) > 0 {
+		searchName = fmt.Sprintf("[%s](%s)", src.SavedSearch.Name, src.SavedSearch.HTMLSearchURL)
 	}
 
 	if eventCount == 1 {
@@ -123,23 +123,22 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 type PapertrailOutMessage struct {
 	Events      []PapertrailOutEvent     `json:"events,omitempty"`
 	SavedSearch PapertrailOutSavedSearch `json:"saved_search,omitempty"`
-	MaxId       int64                    `json:"max_id,omitempty"`
-	MinId       int64                    `json:"min_id,omitempty"`
+	MaxID       int64                    `json:"max_id,omitempty"`
+	MinID       int64                    `json:"min_id,omitempty"`
 }
 
 func PapertrailOutMessageFromBytes(bytes []byte) (PapertrailOutMessage, error) {
-	msg := PapertrailOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg PapertrailOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type PapertrailOutEvent struct {
-	Id                int64
+	ID                int64
 	ReceivedAt        string
 	DisplayReceivedAt string
 	SourceIP          string
 	SourceName        string
-	SourceId          int64
+	SourceID          int64
 	Hostname          string
 	Program           string
 	Severity          string
@@ -148,9 +147,9 @@ type PapertrailOutEvent struct {
 }
 
 type PapertrailOutSavedSearch struct {
-	Id            int64  `json:"id,omitempty"`
+	ID            int64  `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`
 	Query         string `json:"query,omitempty"`
-	HtmlEditURL   string `json:"html_edit_url,omitempty"`
-	HtmlSearchURL string `json:"html_search_url,omitempty"`
+	HTMLEditURL   string `json:"html_edit_url,omitempty"`
+	HTMLSearchURL string `json:"html_search_url,omitempty"`
 }

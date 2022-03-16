@@ -41,7 +41,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		src.TestName,
 		src.TestURL,
 		src.Result,
-		src.TestId[:8],
+		src.TestID[:8],
 		src.TestRunURL)
 
 	attachment := cc.NewAttachment()
@@ -64,7 +64,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if len(src.TeamName) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Team",
-			Value: fmt.Sprintf("%v (%v)", src.TeamName, src.TeamId[:8])})
+			Value: fmt.Sprintf("%v (%v)", src.TeamName, src.TeamID[:8])})
 	}
 
 	ccMsg.AddAttachment(attachment)
@@ -73,10 +73,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 
 type RunscopeOutMessage struct {
 	Variables       interface{}          `json:"variables,omitempty"`
-	TestId          string               `json:"test_id,omitempty"`
+	TestID          string               `json:"test_id,omitempty"`
 	TestName        string               `json:"test_name,omitempty"`
-	TestRunId       string               `json:"test_run_id,omitempty"`
-	TeamId          string               `json:"team_id,omitempty"`
+	TestRunID       string               `json:"test_run_id,omitempty"`
+	TeamID          string               `json:"team_id,omitempty"`
 	TeamName        string               `json:"team_name,omitempty"`
 	EnvironmentUUID string               `json:"environment_uuid,omitempty"`
 	EnvironmentName string               `json:"environment_name,omitempty"`
@@ -103,9 +103,8 @@ func (msg *RunscopeOutMessage) EnvironmentsURL() string {
 }
 
 func RunscopeOutMessageFromBytes(bytes []byte) (RunscopeOutMessage, error) {
-	msg := RunscopeOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg RunscopeOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type RunscopeOutRequest struct {

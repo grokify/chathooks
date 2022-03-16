@@ -180,7 +180,7 @@ type OpsgenieOutAlert struct {
 	Alias       string   `json:"alias,omitempty"`
 	TinyID      string   `json:"tinyId,omitempty"`
 	CreatedAt   int64    `json:"createdAt,omitempty"`
-	UserId      string   `json:"userId,omitempty"`
+	UserID      string   `json:"userId,omitempty"`
 	Entity      string   `json:"entity,omitempty"`
 	Owner       string   `json:"owner,omitempty"`
 	AddedTags   string   `json:"addedTags,omitempty"`
@@ -191,11 +191,11 @@ type OpsgenieOutAlert struct {
 }
 
 func (alert *OpsgenieOutAlert) UserURL() string {
-	return fmt.Sprintf(UserProfileURLFormat, alert.UserId)
+	return fmt.Sprintf(UserProfileURLFormat, alert.UserID)
 }
 
 func (alert *OpsgenieOutAlert) AlertURL() string {
-	return fmt.Sprintf(AlertURLFormat, alert.UserId)
+	return fmt.Sprintf(AlertURLFormat, alert.UserID)
 }
 
 func (alert *OpsgenieOutAlert) TagsFormatted() string {
