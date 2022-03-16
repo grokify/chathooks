@@ -14,7 +14,7 @@
 
 // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window-using-javascript
 function buildWebhookUrl() {
-  var proxyUrl = '{%s data.WebhookUrl %}';
+  var proxyUrl = '{%s data.WebhookURL %}';
   var webhookUrl = encodeURIComponent(document.getElementById('webhookUrlOrGuid').value);
   var input = encodeURIComponent(document.getElementById('input').value);
   var token = encodeURIComponent(document.getElementById('token').value);
@@ -37,7 +37,7 @@ function buildAndShowRedirectUrl() {
   </script>
   <body>
     <img src="https://raw.githubusercontent.com/grokify/chathooks/master/docs/logos/logo_chathooks_long_600x150.png" />
-    <p><a href="{%s data.HomeUrl %}">{%s data.HomeUrl %}</a></p>
+    <p><a href="{%s data.HomeURL %}">{%s data.HomeURL %}</a></p>
 
     <p>Easily connect your webhooks to <a href="https://glip.com">Glip</a>!</p>
 

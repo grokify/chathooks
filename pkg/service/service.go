@@ -248,8 +248,8 @@ func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Req
 	log.Info().Msg("HANDLE_HOME_AnyHTTP")
 	fmt.Println(svc.Config.WebhookURL)
 	data := templates.HomeData{
-		HomeUrl:    svc.Config.HomeURL,
-		WebhookUrl: svc.Config.WebhookURL}
+		HomeURL:    svc.Config.HomeURL,
+		WebhookURL: svc.Config.WebhookURL}
 	if _, err := aRes.SetBodyBytes([]byte(templates.HomePage(data))); err != nil {
 		aRes.SetStatusCode(http.StatusInternalServerError)
 	} else {

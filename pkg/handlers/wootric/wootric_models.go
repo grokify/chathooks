@@ -21,17 +21,11 @@ type WootricEvent struct {
 }
 
 func (we *WootricEvent) IsResponse() bool {
-	if len(strings.TrimSpace(we.Response.Email)) > 0 {
-		return true
-	}
-	return false
+	return len(strings.TrimSpace(we.Response.Email)) > 0
 }
 
 func (we *WootricEvent) IsDecline() bool {
-	if len(strings.TrimSpace(we.Decline.Email)) > 0 {
-		return true
-	}
-	return false
+	return len(strings.TrimSpace(we.Decline.Email)) > 0
 }
 
 func (we *WootricEvent) Activity() string {
