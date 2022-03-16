@@ -63,15 +63,15 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	attachment.Text = fmt.Sprintf(
 		"[Build #%v](%s) for **%s/%s** %s",
 		src.Number,
-		src.BuildUrl,
+		src.BuildURL,
 		src.Repository.Name,
 		src.Branch,
 		statusMessageSuffix)
 
 	if len(src.Message) > 0 {
 		field := cc.Field{Title: "Message"}
-		if len(src.CompareUrl) > 0 {
-			field.Value = fmt.Sprintf("[%s](%s)", src.Message, src.CompareUrl)
+		if len(src.CompareURL) > 0 {
+			field.Value = fmt.Sprintf("[%s](%s)", src.Message, src.CompareURL)
 		} else {
 			field.Value = src.Message
 		}
@@ -95,16 +95,16 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 type TravisciOutMessage struct {
-	Id                int                   `json:"id,omitempty"`
+	ID                int                   `json:"id,omitempty"`
 	AuthorEmail       string                `json:"author_email,omitempty"`
 	AuthorName        string                `json:"author_name,omitempty"`
 	Branch            string                `json:"branch,omitempty"`
-	BuildUrl          string                `json:"build_url,omitempty"`
+	BuildURL          string                `json:"build_url,omitempty"`
 	Commit            string                `json:"commit,omitempty"`
 	CommitedAt        string                `json:"committed_at,omitempty"`
 	CommitterName     string                `json:"committer_name,omitempty"`
 	CommitterEmail    string                `json:"committer_email,omitempty"`
-	CompareUrl        string                `json:"compare_url,omitempty"`
+	CompareURL        string                `json:"compare_url,omitempty"`
 	Config            TravisciOutConfig     `json:"config,omitempty"`
 	Duration          int                   `json:"duration,omitempty"`
 	FinishedAt        string                `json:"finished_at,omitempty"`
@@ -128,7 +128,7 @@ func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 		Str("request_body", string(bytes)).
 		Msg(config.InfoInputMessageParseBegin)
 
-	msg := TravisciOutMessage{}
+	var msg TravisciOutMessage
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.Warn().
@@ -141,10 +141,10 @@ func TravisciOutMessageFromBytes(bytes []byte) (TravisciOutMessage, error) {
 }
 
 type TravisciOutRepository struct {
-	Id        int    `json:"id,omitempty"`
+	ID        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"owner_name,omitempty"`
-	Url       string `json:"url,omitempty"`
+	URL       string `json:"url,omitempty"`
 }
 
 type TravisciOutConfig struct {
@@ -158,7 +158,7 @@ type TravisciOutNotifications struct {
 }
 
 type TravisciOutBuild struct {
-	Id     int `json:"id,omitempty"`
+	ID     int `json:"id,omitempty"`
 	Result int `json:"result,omitempty"`
 	Status int `json:"status,omitempty"`
 }
@@ -166,11 +166,11 @@ type TravisciOutBuild struct {
 // Default template for Push Builds: "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
 
 func (msg *TravisciOutMessage) PushBuildsAsMarkdown() string {
-	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
+	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v by %v %v in %v", msg.Number, msg.BuildURL, msg.ShortCommit(), msg.CompareURL, msg.Repository.Name, msg.Branch, msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
 }
 
 func (msg *TravisciOutMessage) PullRequestBuildsAsMarkdown() string {
-	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v in PR [#%v](%v) by %v %v in %v", msg.Number, msg.BuildUrl, msg.ShortCommit(), msg.CompareUrl, msg.Repository.Name, msg.Branch, msg.PullRequestNumber, msg.PullRequestURL(), msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
+	return fmt.Sprintf("Build [#%v](%v) ([%v](%v)) of %v@%v in PR [#%v](%v) by %v %v in %v", msg.Number, msg.BuildURL, msg.ShortCommit(), msg.CompareURL, msg.Repository.Name, msg.Branch, msg.PullRequestNumber, msg.PullRequestURL(), msg.AuthorName, strings.ToLower(msg.StatusMessage), msg.DurationDisplay())
 }
 
 func (msg *TravisciOutMessage) AsMarkdown() string {
@@ -200,5 +200,5 @@ func (msg *TravisciOutMessage) DurationDisplay() string {
 }
 
 func (msg *TravisciOutMessage) PullRequestURL() string {
-	return fmt.Sprintf("%v/pull/%v", msg.Repository.Url, msg.PullRequestNumber)
+	return fmt.Sprintf("%v/pull/%v", msg.Repository.URL, msg.PullRequestNumber)
 }

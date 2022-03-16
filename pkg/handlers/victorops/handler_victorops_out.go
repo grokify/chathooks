@@ -36,7 +36,6 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 func CcMessageFromBytes(bytes []byte) (cc.Message, error) {
-	msg := cc.Message{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg cc.Message
+	return msg, json.Unmarshal(bytes, &msg)
 }

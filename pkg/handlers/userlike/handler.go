@@ -123,20 +123,20 @@ func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMes
 
 	attachment := cc.NewAttachment()
 
-	displayedUrl := false
+	displayedURL := false
 
 	if src.Event == "rating" || src.Event == "survey" { // includes feedback
 		if len(src.FeedbackMessage) > 0 {
-			url, linked := LinkifyURL(src.FeedbackMessage, src.URL, displayedUrl)
-			displayedUrl = linked
+			url, linked := LinkifyURL(src.FeedbackMessage, src.URL, displayedURL)
+			displayedURL = linked
 			attachment.AddField(cc.Field{
 				Title: "Feedback",
 				Value: url,
 				Short: false})
 		}
 		if len(src.PostSurveyOption) > 0 {
-			url, linked := LinkifyURL(src.PostSurveyOption, src.URL, displayedUrl)
-			displayedUrl = linked
+			url, linked := LinkifyURL(src.PostSurveyOption, src.URL, displayedURL)
+			displayedURL = linked
 			attachment.AddField(cc.Field{
 				Title: "Rating",
 				Value: url,
@@ -144,13 +144,13 @@ func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMes
 		}
 	}
 	if len(src.ClientName) > 0 {
-		url, _ := LinkifyURL(src.ClientName, src.URL, displayedUrl)
+		url, _ := LinkifyURL(src.ClientName, src.URL, displayedURL)
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
 			Value: url,
 			Short: true})
 	} else {
-		url, _ := LinkifyURL("Unknown", src.URL, displayedUrl)
+		url, _ := LinkifyURL("Unknown", src.URL, displayedURL)
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
 			Value: url,
@@ -163,18 +163,18 @@ func NormalizeChatMeta(cfg config.Configuration, src UserlikeChatMetaStartOutMes
 	return ccMsg
 }
 
-func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
-	if len(innerHtml) == 0 && len(url) > 0 {
-		innerHtml = url
+func LinkifyURL(innerHTML string, url string, skipLinking bool) (string, bool) {
+	if len(innerHTML) == 0 && len(url) > 0 {
+		innerHTML = url
 	}
 	if skipLinking {
-		return innerHtml, skipLinking
+		return innerHTML, skipLinking
 	}
 	if len(url) < 1 {
-		return innerHtml, false
+		return innerHTML, false
 	}
-	if len(innerHtml) > 0 {
-		return fmt.Sprintf("[%s](%s)", innerHtml, url), true
+	if len(innerHTML) > 0 {
+		return fmt.Sprintf("[%s](%s)", innerHTML, url), true
 	}
 	return fmt.Sprintf("[%s](%s)", url, url), true
 }
@@ -189,11 +189,11 @@ func NormalizeChatWidget(cfg config.Configuration, src UserlikeChatWidgetOutMess
 	ccMsg.Activity = fmt.Sprintf("Chat widget configuration updated%s", handlers.IntegrationActivitySuffix(DisplayName))
 
 	titleParts := []string{}
-	if len(src.StatusUrl) > 0 {
-		titleParts = append(titleParts, fmt.Sprintf("[Check status](%s)", src.StatusUrl))
+	if len(src.StatusURL) > 0 {
+		titleParts = append(titleParts, fmt.Sprintf("[Check status](%s)", src.StatusURL))
 	}
-	if len(src.TestUrl) > 0 {
-		titleParts = append(titleParts, fmt.Sprintf("[test widget](%s)", src.TestUrl))
+	if len(src.TestURL) > 0 {
+		titleParts = append(titleParts, fmt.Sprintf("[test widget](%s)", src.TestURL))
 	}
 	if len(titleParts) > 0 {
 		ccMsg.Title = strings.Join(titleParts, " and ")
@@ -204,7 +204,7 @@ func NormalizeChatWidget(cfg config.Configuration, src UserlikeChatWidgetOutMess
 	if len(src.Name) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Widget Name",
-			Value: fmt.Sprintf("[%s](%s)", src.Name, src.CustomUrl),
+			Value: fmt.Sprintf("[%s](%s)", src.Name, src.CustomURL),
 			Short: true})
 	}
 	attachment.AddField(cc.Field{
@@ -234,10 +234,10 @@ func NormalizeOperator(cfg config.Configuration, src UserlikeOperatorOutMessage)
 
 	attachment := cc.NewAttachment()
 
-	if len(src.DashboardUrl) > 0 {
+	if len(src.DashboardURL) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Operator",
-			Value: fmt.Sprintf("[%s](%s)", src.Name, src.DashboardUrl)})
+			Value: fmt.Sprintf("[%s](%s)", src.Name, src.DashboardURL)})
 	}
 
 	ccMsg.AddAttachment(attachment)

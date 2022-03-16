@@ -26,7 +26,7 @@ type UserlikeOfflineMessageOutMessage struct {
 	CreatedAt       string             `json:"created_at,omitempty"`
 	Custom          interface{}        `json:"custom,omitempty"`
 	DataPrivacy     interface{}        `json:"data_privacy,omitempty"`
-	Id              int64              `json:"id,omitempty"`
+	ID              int64              `json:"id,omitempty"`
 	LocCity         string             `json:"loc_city,omitempty"`
 	LocCountry      string             `json:"loc_country,omitempty"`
 	LocLat          float64            `json:"loc_lat,omitempty"`
@@ -43,13 +43,12 @@ type UserlikeOfflineMessageOutMessage struct {
 }
 
 func UserlikeOfflineMessageOutMessageFromBytes(bytes []byte) (UserlikeOfflineMessageOutMessage, error) {
-	msg := UserlikeOfflineMessageOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg UserlikeOfflineMessageOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type UserlikeChatWidget struct {
-	Id   int64  `json:"id,omitempty"`
+	ID   int64  `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 
@@ -67,14 +66,14 @@ type UserlikeChatMetaStartOutMessage struct {
 	Duration          string             `json:"duration,omitempty"`
 	EndedAt           string             `json:"ended_at,omitempty"`
 	FeedbackMessage   string             `json:"feedback_message,omitempty"`
-	Id                int64              `json:"id,omitempty"`
+	ID                int64              `json:"id,omitempty"`
 	InitialURL        string             `json:"initial_url,omitempty"`
 	LocCity           string             `json:"loc_city,omitempty"`
 	LocCountry        string             `json:"loc_country,omitempty"`
 	LocLat            float64            `json:"loc_lat,omitempty"`
 	LocLon            float64            `json:"loc_lon,omitempty"`
 	MarkedRead        bool               `json:"marked_read,omitempty"`
-	OperatorCurrentId int64              `json:"operator_current_id,omitempty"`
+	OperatorCurrentID int64              `json:"operator_current_id,omitempty"`
 	PageImpressions   int64              `json:"page_impressions,omitempty"`
 	PostSurveyOption  string             `json:"post_survey_option,omitempty"`
 	Rate              int64              `json:"rate,omitempty"`
@@ -87,17 +86,16 @@ type UserlikeChatMetaStartOutMessage struct {
 }
 
 func UserlikeChatMetaStartOutMessageFromBytes(bytes []byte) (UserlikeChatMetaStartOutMessage, error) {
-	msg := UserlikeChatMetaStartOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg UserlikeChatMetaStartOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type UserlikeOperatorOutMessage struct {
 	UserlikeBaseOutMessage
-	DashboardUrl    string        `json:"dashboard_url,omitempty"`
+	DashboardURL    string        `json:"dashboard_url,omitempty"`
 	Email           string        `json:"email,omitempty"`
 	FirstName       string        `json:"first_name,omitempty"`
-	Id              int64         `json:"id,omitempty"`
+	ID              int64         `json:"id,omitempty"`
 	IsActive        bool          `json:"is_active,omitempty"`
 	JID             string        `json:"jid,omitempty"`
 	Lang            string        `json:"lang,omitempty"`
@@ -105,7 +103,7 @@ type UserlikeOperatorOutMessage struct {
 	Locale          string        `json:"locale,omitempty"`
 	Name            string        `json:"name,omitempty"`
 	OperatorGroup   OperatorGroup `json:"operator_group,omitempty"`
-	OperatorGroupId int64         `json:"operator_group_id,omitempty"`
+	OperatorGroupID int64         `json:"operator_group_id,omitempty"`
 	Role            string        `json:"role,omitempty"`
 	RoleName        string        `json:"role_name,omitempty"`
 	Timezone        string        `json:"timezone,omitempty"`
@@ -114,29 +112,27 @@ type UserlikeOperatorOutMessage struct {
 }
 
 func UserlikeOperatorOutMessageFromBytes(bytes []byte) (UserlikeOperatorOutMessage, error) {
-	msg := UserlikeOperatorOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg UserlikeOperatorOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type OperatorGroup struct {
-	Id   int64  `json:"id,omitempty"`
+	ID   int64  `json:"id,omitempty"`
 	Name string `json:"string,omitempty"`
 }
 
 type UserlikeChatWidgetOutMessage struct {
 	UserlikeBaseOutMessage
-	CustomUrl          string `json:"custom_url,omitempty"`
+	CustomURL          string `json:"custom_url,omitempty"`
 	Name               string `json:"name,omitempty"`
 	TransitionDuration int64  `json:"transition_duration,omitempty"`
-	StatusUrl          string `json:"status_url,omitempty"`
-	TestUrl            string `json:"test_url,omitempty"`
+	StatusURL          string `json:"status_url,omitempty"`
+	TestURL            string `json:"test_url,omitempty"`
 	WidgetExternalType string `json:"widget_external_type,omitempty"`
 	WidgetVersion      int64  `json:"widget_version,omitempty"`
 }
 
 func UserlikeChatWidgetOutMessageFromBytes(bytes []byte) (UserlikeChatWidgetOutMessage, error) {
-	msg := UserlikeChatWidgetOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg UserlikeChatWidgetOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }

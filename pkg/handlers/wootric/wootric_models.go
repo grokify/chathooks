@@ -45,7 +45,7 @@ func (we *WootricEvent) Activity() string {
 }
 
 func ParseQueryString(raw string) (WootricEvent, error) {
-	evt := WootricEvent{}
+	var evt WootricEvent
 	err := urlutil.UnmarshalRailsQS(raw, &evt)
 	if err != nil {
 		return evt, err
