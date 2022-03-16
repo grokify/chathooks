@@ -103,7 +103,7 @@ func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatew
 	if messageBodyType == URLEncoded ||
 		messageBodyType == URLEncodedJSONPayload ||
 		messageBodyType == URLEncodedRails {
-		jsonData := awsJsonWrapper{}
+		var jsonData awsJSONWrapper
 		err := json.Unmarshal(hookData.InputMessage, &jsonData)
 		if err == nil {
 			hookData.InputMessage = []byte(jsonData.Body)
@@ -112,7 +112,7 @@ func HookDataFromAwsLambdaEvent(bodyType MessageBodyType, awsReq events.APIGatew
 	return hookData
 }
 
-type awsJsonWrapper struct {
+type awsJSONWrapper struct {
 	Body string `json:"body,omitempty"`
 }
 

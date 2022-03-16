@@ -138,9 +138,9 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 			Body:        hookData.InputBody})
 	ccMsg.Activity = strings.TrimSpace(ccMsg.Activity)
 	if len(ccMsg.Activity) == 0 {
-		activityUrl := strings.TrimSpace(hookData.CustomQueryParams.Get(QueryParamDefaultActivity))
-		if len(activityUrl) > 0 {
-			ccMsg.Activity = activityUrl
+		activityURL := strings.TrimSpace(hookData.CustomQueryParams.Get(QueryParamDefaultActivity))
+		if len(activityURL) > 0 {
+			ccMsg.Activity = activityURL
 		}
 	}
 	ccMsg.IconURL = strings.TrimSpace(ccMsg.IconURL)

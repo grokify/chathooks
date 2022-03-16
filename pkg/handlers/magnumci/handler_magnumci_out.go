@@ -81,7 +81,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	}
 
 	if len(src.Title) < 1 && len(attachment.Fields) == 0 {
-		return ccMsg, errors.New("Content not found")
+		return ccMsg, errors.New("content not found")
 	}
 
 	ccMsg.AddAttachment(attachment)

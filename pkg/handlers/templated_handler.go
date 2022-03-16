@@ -23,7 +23,7 @@ func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq Han
 
 		tokenPattern := regexp.MustCompile(`\${.+?}`)
 		keyPattern := regexp.MustCompile(`\${(.+?)}`)
-		formattedJson := tokenPattern.ReplaceAllStringFunc(tmpl, func(match string) string {
+		formattedJSON := tokenPattern.ReplaceAllStringFunc(tmpl, func(match string) string {
 			matches := keyPattern.FindStringSubmatch(match)
 			result := gjson.Get(src, strings.TrimSpace(matches[1]))
 			switch result.Type {
@@ -38,6 +38,6 @@ func getTemplatedNormalizer(tmpl string) func(cfg config.Configuration, hReq Han
 			}
 		})
 
-		return ccMsg, json.Unmarshal([]byte(formattedJson), &ccMsg)
+		return ccMsg, json.Unmarshal([]byte(formattedJSON), &ccMsg)
 	}
 }

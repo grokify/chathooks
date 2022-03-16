@@ -76,7 +76,7 @@ func NormalizeIncidentUpdate(cfg config.Configuration, src StatuspageOutMessage)
 	}
 
 	if len(src.Incident.IncidentUpdates) == 0 {
-		return ccMsg, errors.New("No incident update found")
+		return ccMsg, errors.New("no incident update found")
 	} else if len(src.Incident.IncidentUpdates) == 1 {
 		ccMsg.Activity = "New incident created"
 	} else {
@@ -122,10 +122,10 @@ type StatuspageOutMessage struct {
 
 func (msg *StatuspageOutMessage) PageURL() (string, error) {
 	// http://manage.statuspage.io/pages/{$page.id}/components
-	if len(msg.Page.Id) < 1 {
-		return "", errors.New("Page Id Not Found")
+	if len(msg.Page.ID) < 1 {
+		return "", errors.New("page.ID not found")
 	}
-	return fmt.Sprintf(ComponentURLFormat, msg.Page.Id), nil
+	return fmt.Sprintf(ComponentURLFormat, msg.Page.ID), nil
 }
 
 func (msg *StatuspageOutMessage) IncidentURL() string {
@@ -138,27 +138,28 @@ type StatuspageOutMeta struct {
 }
 
 type StatuspageOutPage struct {
-	Id                string `json:"id,omitempty"`
+	ID                string `json:"id,omitempty"`
 	StatusIndicator   string `json:"status_indicator,omitempty"`
 	StatusDescription string `json:"status_description,omitempty"`
 }
 
 type StatuspageOutComponentUpdate struct {
+	ID          string `json:"id,omitempty"`
 	CreatedAt   string `json:"created_at,omitempty"`
 	NewStatus   string `json:"new_status,omitempty"`
 	OldStatus   string `json:"old_status,omitempty"`
-	Id          string `json:"id,omitempty"`
-	ComponentId string `json:"component_id,omitempty"`
+	ComponentID string `json:"component_id,omitempty"`
 }
 
 type StatuspageOutComponent struct {
+	ID        string `json:"id,omitempty"`
 	CreatedAt string `json:"created_at,omitempty"`
-	Id        string `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Status    string `json:"status,omitempty"`
 }
 
 type StatuspageOutIncident struct {
+	ID                            string                        `json:"id,omitempty"`
 	Backfilled                    bool                          `json:"backfilled,omitempty"`
 	Impact                        string                        `json:"impact,omitempty"`
 	ImpactOverride                interface{}                   `json:"impact_override,omitempty"`
@@ -178,13 +179,13 @@ type StatuspageOutIncident struct {
 	Shortlink                     string                        `json:"shortlink,omitempty"`
 	Status                        string                        `json:"status,omitempty"`
 	UpdatedAt                     string                        `json:"updated_at,omitempty"`
-	Id                            string                        `json:"id,omitempty"`
-	OrganizationId                string                        `json:"organization_id,omitempty"`
+	OrganizationID                string                        `json:"organization_id,omitempty"`
 	IncidentUpdates               []StatuspageOutIncidentUpdate `json:"incident_updates,omitempty"`
 	Name                          string                        `json:"name,omitempty"`
 }
 
 type StatuspageOutIncidentUpdate struct {
+	ID                 string `json:"id,omitempty"`
 	Body               string `json:"body,omitempty"`
 	CreatedAt          string `json:"created_at,omitempty"`
 	DisplayAt          string `json:"display_at,omitempty"`
@@ -192,12 +193,10 @@ type StatuspageOutIncidentUpdate struct {
 	TwitterUpdatedAt   string `json:"twitter_updated_at,omitempty"`
 	UpdatedAt          string `json:"updated_at,omitempty"`
 	WantsTwitterUpdate bool   `json:"wants_twitter_update,omitempty"`
-	Id                 string `json:"id,omitempty"`
-	IncidentId         string `json:"incident_id,omitempty"`
+	IncidentID         string `json:"incident_id,omitempty"`
 }
 
 func StatuspageOutMessageFromBytes(bytes []byte) (StatuspageOutMessage, error) {
 	msg := StatuspageOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	return msg, json.Unmarshal(bytes, &msg)
 }

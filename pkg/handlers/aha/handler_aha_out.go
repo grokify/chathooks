@@ -112,12 +112,12 @@ func (aom *AhaOutMessage) Title() string {
 }
 
 type AhaOutAudit struct {
-	Id            string         `json:"id,omitempty"`
+	ID            string         `json:"id,omitempty"`
 	AuditAction   string         `json:"audit_action,omitempty"`
 	CreatedAt     time.Time      `json:"created_at,omitempty"`
 	Interesting   bool           `json:"interesting,omitempty"`
 	AuditableType string         `json:"auditable_type,omitempty"`
-	AuditableId   string         `json:"auditable_id,omitempty"`
+	AuditableID   string         `json:"auditable_id,omitempty"`
 	User          *AhaOutUser    `json:"user,omitempty"`
 	Description   string         `json:"description,omitempty"`
 	AuditableURL  string         `json:"auditable_url,omitempty"`
@@ -131,12 +131,12 @@ func (aoa *AhaOutAudit) Activity() string {
 func (aoa *AhaOutAudit) Title() string {
 	username := strings.TrimSpace(aoa.User.Name)
 	description := strings.TrimSpace(aoa.Description)
-	itemUrl := strings.TrimSpace(aoa.AuditableURL)
+	itemURL := strings.TrimSpace(aoa.AuditableURL)
 	title := ""
-	if len(description) > 0 && len(itemUrl) > 0 {
-		title = fmt.Sprintf("[%v](%v)", description, itemUrl)
-	} else if len(itemUrl) > 0 {
-		title = fmt.Sprintf("[%v](%v)", itemUrl, itemUrl)
+	if len(description) > 0 && len(itemURL) > 0 {
+		title = fmt.Sprintf("[%v](%v)", description, itemURL)
+	} else if len(itemURL) > 0 {
+		title = fmt.Sprintf("[%v](%v)", itemURL, itemURL)
 	} else if len(description) > 0 {
 		title = description
 	}

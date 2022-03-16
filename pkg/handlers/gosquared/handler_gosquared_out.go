@@ -32,9 +32,9 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 	if err != nil {
 		return cc.NewMessage(), err
 	}
-	if len(src.Message.Id) > 0 {
+	if len(src.Message.ID) > 0 {
 		return NormalizeLiveMessage(cfg, bytes)
-	} else if len(src.Person.Id) > 0 {
+	} else if len(src.Person.ID) > 0 {
 		return NormalizeSmartGroup(cfg, bytes)
 	}
 	return NormalizeSiteTraffic(cfg, bytes)
@@ -153,9 +153,8 @@ type GosquaredOutBaseMessage struct {
 }
 
 func GosquaredOutBaseMessageFromBytes(bytes []byte) (GosquaredOutBaseMessage, error) {
-	msg := GosquaredOutBaseMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg GosquaredOutBaseMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type GosquaredOutMessageSiteTraffic struct {
@@ -179,14 +178,14 @@ type GosquaredOutLiveMessage struct {
 }
 
 func (msg *GosquaredOutLiveMessage) PersonInboxURL() (string, error) {
-	if len(strings.TrimSpace(msg.SiteToken)) == 0 || len(strings.TrimSpace(msg.Person.Id)) == 0 {
-		return "", errors.New("Information missing for PersonInboxURL")
+	if len(strings.TrimSpace(msg.SiteToken)) == 0 || len(strings.TrimSpace(msg.Person.ID)) == 0 {
+		return "", errors.New("missing information for PersonInboxURL")
 	}
-	personIdEsc := url.QueryEscape(strings.TrimSpace(msg.Person.Id))
+	personIDEsc := url.QueryEscape(strings.TrimSpace(msg.Person.ID))
 	personInboxURL := fmt.Sprintf(
 		"https://www.gosquared.com/inbox/%v/inbox/%v",
 		strings.TrimSpace(msg.SiteToken),
-		personIdEsc)
+		personIDEsc)
 	return personInboxURL, nil
 }
 
@@ -198,9 +197,8 @@ https://www.gosquared.com/inbox/<site_token>/inbox/<person id encoded>.
 */
 
 func GosquaredOutLiveMessageFromBytes(bytes []byte) (GosquaredOutLiveMessage, error) {
-	msg := GosquaredOutLiveMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg GosquaredOutLiveMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 /*
@@ -230,8 +228,8 @@ func GosquaredOutLiveMessageFromBytes(bytes []byte) (GosquaredOutLiveMessage, er
 */
 
 type GosquaredOutLiveMessageMessage struct {
+	ID        string                         `json:"id,omitempty"`
 	Type      string                         `json:"message,omitempty"`
-	Id        string                         `json:"id,omitempty"`
 	Content   string                         `json:"content,omitempty"`
 	Timestamp int64                          `json:"timestamp,omitempty"`
 	From      string                         `json:"from,omitempty"`
@@ -278,23 +276,23 @@ type GosquaredOutMessageSmartGroup struct {
 }
 
 func GosquaredOutMessageSmartGroupFromBytes(bytes []byte) (GosquaredOutMessageSmartGroup, error) {
-	msg := GosquaredOutMessageSmartGroup{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg GosquaredOutMessageSmartGroup
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 type GosquaredOutGroup struct {
+	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
-	Id   string `json:"id,omitempty"`
 }
 
 func (msg *GosquaredOutMessageSmartGroup) GroupURL() string {
 	// https://www.gosquared.com/people/GSN-466237-B/last-seen-1-day
 	return fmt.Sprintf("https://www.gosquared.com/people/%s/%s",
-		msg.SiteToken, msg.Group.Id)
+		msg.SiteToken, msg.Group.ID)
 }
 
 type GosquaredOutPerson struct {
+	ID          string `json:"id,omitempty"`
 	CreatedAt   string `json:"created_at,omitempty"`
 	Phone       string `json:"phone,omitempty"`
 	Avatar      string `json:"avatar,omitempty"`
@@ -302,7 +300,6 @@ type GosquaredOutPerson struct {
 	Username    string `json:"username,omitempty"`
 	Email       string `json:"email,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Id          string `json:"id,omitempty"`
 }
 
 func (person *GosquaredOutPerson) DisplayName(extraEmail bool, anonymous bool) string {
