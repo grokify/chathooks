@@ -54,34 +54,34 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 type EnchantOutMessage struct {
-	Id         string       `json:"id,omitempty"`
-	AccountId  string       `json:"account_id,omitempty"`
+	ID         string       `json:"id,omitempty"`
+	AccountID  string       `json:"account_id,omitempty"`
 	AccountURL string       `json:"account_url,omitempty"`
 	CreatedAt  string       `json:"created_at,omitempty"`
 	Type       string       `json:"type,omitempty"`
 	Data       EnchantData  `json:"data,omitempty"`
 	ActorType  string       `json:"actor_type,omitempty"`
-	ActorId    string       `json:"actor_id,omitempty"`
+	ActorID    string       `json:"actor_id,omitempty"`
 	ActorName  string       `json:"actor_name,omitempty"`
 	ModelType  string       `json:"model_type,omitempty"`
-	ModelId    string       `json:"model_id,omitempty"`
+	ModelID    string       `json:"model_id,omitempty"`
 	Model      EnchantModel `json:"model,omitempty"`
 }
 
 type EnchantData struct {
-	LabelId    string `json:"label_id,omitempty"`
+	LabelID    string `json:"label_id,omitempty"`
 	LabelName  string `json:"label_name,omitempty"`
 	LabelColor string `json:"label_color,omitempty"`
 }
 
 type EnchantModel struct {
-	Id         string   `json:"id,omitempty"`
+	ID         string   `json:"id,omitempty"`
 	Number     int64    `json:"number,omitempty"`
-	UserId     string   `json:"user_id,omitempty"`
+	UserID     string   `json:"user_id,omitempty"`
 	State      string   `json:"state,omitempty"`
 	Subject    string   `json:"subject,omitempty"`
-	LabelIds   []string `json:"label_ids,omitempty"`
-	CustomerId string   `json:"customer_id,omitempty"`
+	LabelIDs   []string `json:"label_ids,omitempty"`
+	CustomerID string   `json:"customer_id,omitempty"`
 	Type       string   `json:"type,omitempty"`
 	ReplyTo    string   `json:"reply_to,omitempty"`
 	CreatedAt  string   `json:"created_at,omitempty"`
@@ -93,7 +93,7 @@ func EnchantOutMessageFromBytes(bytes []byte) (EnchantOutMessage, error) {
 		Str("request_body", string(bytes)).
 		Msg("handler_enchant_parse_message")
 
-	msg := EnchantOutMessage{}
+	var msg EnchantOutMessage
 	err := json.Unmarshal(bytes, &msg)
 	if err != nil {
 		log.Warn().

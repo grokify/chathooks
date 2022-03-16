@@ -44,11 +44,11 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 
 	ccMsg.Activity = fmt.Sprintf("Build %v", status)
 	ccMsg.Title = fmt.Sprintf("[Build #%v](%s) for **%s** %s ([%s](%s))",
-		build.BuildId,
+		build.BuildID,
 		build.BuildURL,
 		build.ProjectName,
 		status,
-		build.ShortCommitId,
+		build.ShortCommitID,
 		build.CommitURL)
 
 	attachment := cc.NewAttachment()
@@ -88,22 +88,21 @@ type CodeshipOutMessage struct {
 type CodeshipOutBuild struct {
 	BuildURL        string `json:"build_url,omitempty"`
 	CommitURL       string `json:"commit_url,omitempty"`
-	ProjectId       int64  `json:"project_id,omitempty"`
-	BuildId         int64  `json:"build_id,omitempty"`
+	ProjectID       int64  `json:"project_id,omitempty"`
+	BuildID         int64  `json:"build_id,omitempty"`
 	Status          string `json:"status,omitempty"`
 	ProjectFullName string `json:"project_full_name,omitempty"`
 	ProjectName     string `json:"project_name,omitempty"`
-	CommitId        string `json:"commit_id,omitempty"`
-	ShortCommitId   string `json:"short_commit_id,omitempty"`
+	CommitID        string `json:"commit_id,omitempty"`
+	ShortCommitID   string `json:"short_commit_id,omitempty"`
 	Message         string `json:"message,omitempty"`
 	Committer       string `json:"committer,omitempty"`
 	Branch          string `json:"branch,omitempty"`
 }
 
 func CodeshipOutMessageFromBytes(bytes []byte) (CodeshipOutMessage, error) {
-	msg := CodeshipOutMessage{}
-	err := json.Unmarshal(bytes, &msg)
-	return msg, err
+	var msg CodeshipOutMessage
+	return msg, json.Unmarshal(bytes, &msg)
 }
 
 /*
