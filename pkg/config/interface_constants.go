@@ -14,8 +14,8 @@ const (
 	EnvPath                  = "ENV_PATH"
 	EnvEngine                = "CHATHOOKS_ENGINE" // awslambda, nethttp, fasthttp
 	EnvTokens                = "CHATHOOKS_TOKENS"
-	EnvWebhookUrl            = "CHATHOOKS_URL"
-	EnvHomeUrl               = "CHATHOOKS_HOME_URL"
+	EnvWebhookURL            = "CHATHOOKS_URL"
+	EnvHomeURL               = "CHATHOOKS_HOME_URL"
 	ErrRequiredTokenNotFound = "401.01 Required Token Not Found"
 	ErrRequiredTokenNotValid = "401.02 Required Token Not Valid"
 	// ParamNameURL             = "url" // legacy. deprecated.

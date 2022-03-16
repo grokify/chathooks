@@ -78,7 +78,7 @@ func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 		fmt.Printf("ERROR [%v]\n", err)
 	}
 
-	fmt.Println(string(resp.Body()))
+	// fmt.Println(string(resp.Body()))
 
 	fasthttp.ReleaseRequest(req)
 	fasthttp.ReleaseResponse(resp)
@@ -131,11 +131,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
 			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
-		adapter, err := ccglip.NewGlipAdapter(webhookURLOrUID, adapters.GlipConfig())
-		if err != nil {
-			return errorsutil.Wrap(err, "Incorrect Webhook GUID or URL")
-		}
-		sender.Adapter = adapter
+		sender.Adapter = ccglip.NewGlipAdapter(webhookURLOrUID, adapters.GlipConfig())
 	} else if adapterType == "slack" {
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
@@ -143,16 +139,16 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 		}
 		adapter, err := ccslack.NewSlackAdapter(webhookURLOrUID)
 		if err != nil {
-			return errorsutil.Wrap(err, "Incorrect Webhook GUID or URL")
+			return errorsutil.Wrap(err, "incorrect webhook GUID or URL")
 		}
 		sender.Adapter = adapter
 	} else {
-		return errors.New("Invalid Adapter")
+		return errors.New("invalid adapter")
 	}
 
 	exampleData, err := util.NewExampleData()
 	if err != nil {
-		return errorsutil.Wrap(err, fmt.Sprintf("Invalid Example Data: %v\n", err))
+		return errorsutil.Wrap(err, fmt.Sprintf("invalid example data [%v]", err))
 	}
 	fmtutil.PrintJSON(exampleData)
 
@@ -272,7 +268,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 			sender.SendCcMessage(wootric.ExampleMessage(cfg, exampleData, eventSlug))
 		}
 	default:
-		return errors.New(fmt.Sprintf("Unknown webhook source [%s]\n", service))
+		return fmt.Errorf("unknown webhook source [%s]", service)
 	}
 	return nil
 }

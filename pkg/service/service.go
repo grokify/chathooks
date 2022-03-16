@@ -109,11 +109,8 @@ func NewService() Service {
 	}
 
 	adapterSet := adapters.NewAdapterSet()
-	glipAdapter, err := ccglip.NewGlipAdapter("", adapters.GlipConfig())
-	if err != nil {
-		log.Fatal().Err(err)
-	}
-	adapterSet.Adapters["glip"] = glipAdapter
+
+	adapterSet.Adapters["glip"] = ccglip.NewGlipAdapter("", adapters.GlipConfig())
 	slackAdapter, err := ccslack.NewSlackAdapter("")
 	if err != nil {
 		log.Fatal().Err(err)
@@ -239,36 +236,36 @@ func (svc *Service) HandleAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request
 
 func (svc *Service) HandleHookNetHTTP(res http.ResponseWriter, req *http.Request) {
 	log.Info().Msg("FUNC_HandleNetHTTP__BEGIN")
-	svc.HandleAnyRequest(anyhttp.NewResReqNetHttp(res, req))
+	svc.HandleAnyRequest(anyhttp.NewResReqNetHTTP(res, req))
 }
 
 func (svc *Service) HandleHookFastHTTP(ctx *fasthttp.RequestCtx) {
 	log.Info().Msg("HANDLE_FastHTTP")
-	svc.HandleAnyRequest(anyhttp.NewResReqFastHttp(ctx))
+	svc.HandleAnyRequest(anyhttp.NewResReqFastHTTP(ctx))
 }
 
 func (svc *Service) HandleHomeAnyRequest(aRes anyhttp.Response, aReq anyhttp.Request) {
 	log.Info().Msg("HANDLE_HOME_AnyHTTP")
-	fmt.Println(svc.Config.WebhookUrl)
+	fmt.Println(svc.Config.WebhookURL)
 	data := templates.HomeData{
-		HomeUrl:    svc.Config.HomeUrl,
-		WebhookUrl: svc.Config.WebhookUrl}
+		HomeUrl:    svc.Config.HomeURL,
+		WebhookUrl: svc.Config.WebhookURL}
 	if _, err := aRes.SetBodyBytes([]byte(templates.HomePage(data))); err != nil {
 		aRes.SetStatusCode(http.StatusInternalServerError)
 	} else {
 		aRes.SetStatusCode(http.StatusOK)
-		aRes.SetContentType(httputilmore.ContentTypeTextHtmlUtf8)
+		aRes.SetContentType(httputilmore.ContentTypeTextHTMLUtf8)
 	}
 }
 
 func (svc *Service) HandleHomeNetHTTP(res http.ResponseWriter, req *http.Request) {
 	log.Debug().Msg("HANDLE_NetHTTP")
-	svc.HandleHomeAnyRequest(anyhttp.NewResReqNetHttp(res, req))
+	svc.HandleHomeAnyRequest(anyhttp.NewResReqNetHTTP(res, req))
 }
 
 func (svc *Service) HandleHomeFastHTTP(ctx *fasthttp.RequestCtx) {
 	log.Debug().Msg("HANDLE_FastHTTP")
-	svc.HandleHomeAnyRequest(anyhttp.NewResReqFastHttp(ctx))
+	svc.HandleHomeAnyRequest(anyhttp.NewResReqFastHTTP(ctx))
 }
 
 func (svc Service) PortInt() int {

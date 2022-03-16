@@ -148,7 +148,7 @@ func (h Handler) HandleCanonical(hookData models.HookData) []models.ErrorInfo {
 	if len(ccMsg.IconURL) == 0 && len(ccMsg.IconEmoji) == 0 {
 		iconQry := strings.TrimSpace(hookData.CustomQueryParams.Get(QueryParamDefaultIcon))
 		if len(iconQry) > 0 {
-			if urlutil.IsHttp(iconQry, true, true) {
+			if urlutil.IsHTTP(iconQry, true, true) {
 				ccMsg.IconURL = iconQry
 			} else {
 				ccMsg.IconEmoji = iconQry

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"path"
 	"regexp"
@@ -24,16 +24,17 @@ import (
 )
 
 const (
-	EnvWebhookUrlGlip         = "GLIP_WEBHOOK"
-	EnvWebhookUrlSlack        = "SLACK_WEBHOOK"
+	EnvWebhookURLGlip         = "GLIP_WEBHOOK"
+	EnvWebhookURLSlack        = "SLACK_WEBHOOK"
 	EnvChathooksReqInputType  = "CHATHOOKS_REQ_INPUT_TYPE"
 	EnvChathooksReqOutputType = "CHATHOOKS_REQ_OUTPUT_TYPE"
 	EnvChathooksReqToken      = "CHATHOOKS_REQ_TOKEN"
 	EnvChathooksReqURL        = "CHATHOOKS_REQ_URL"
+	EnvPath                   = "ENV_PATH"
 )
 
 type cliOptions struct {
-	UrlOrGuid    string `short:"u" long:"url" description:"Webhook URL or GUID" required:"true"`
+	URLOrGUID    string `short:"u" long:"url" description:"Webhook URL or GUID" required:"true"`
 	Input        string `short:"i" long:"input" description:"Input Service"`
 	Output       string `short:"o" long:"output" description:"Output Adapter" required:"true"`
 	Token        string `short:"t" long:"token" description:"Token"`
@@ -42,7 +43,7 @@ type cliOptions struct {
 
 type ExampleWebhookSender struct {
 	DocHandlersDir string
-	BaseUrl        string
+	BaseURL        string
 	RequestParams  models.RequestParams
 }
 
@@ -54,7 +55,7 @@ func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error 
 		return err
 	}
 	if len(entries) == 0 {
-		return errors.New(fmt.Sprintf("no ^event-example_ files found for %v", inputTypeDir))
+		return fmt.Errorf("no ^event-example_ files found for [%v]", inputTypeDir)
 	}
 	for _, entry := range entries {
 		filepath := path.Join(inputTypeDir, entry.Name())
@@ -66,13 +67,13 @@ func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error 
 	return nil
 }
 
-func BuildURLQueryString(baseUrl string, qry interface{}) string {
+func BuildURLQueryString(baseURL string, qry interface{}) string {
 	v, _ := query.Values(qry)
 	qryString := v.Encode()
 	if len(qryString) > 0 {
-		return baseUrl + "?" + qryString
+		return baseURL + "?" + qryString
 	}
-	return baseUrl
+	return baseURL
 }
 
 func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType string) error {
@@ -87,24 +88,26 @@ func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType
 		Token:      s.RequestParams.Token,
 		URL:        s.RequestParams.URL}
 
-	fullUrl := BuildURLQueryString(s.BaseUrl, qry)
-	fmt.Printf("FULL_URL: %v\n", fullUrl)
+	fullURL := BuildURLQueryString(s.BaseURL, qry)
+	// fmt.Printf("FULL_URL: %v\n", fullURL)
 
 	req := fasthttp.AcquireRequest()
 	resp := fasthttp.AcquireResponse()
 
 	req.SetBody(bytes)
-	req.Header.SetRequestURI(fullUrl)
-	req.Header.SetMethod("POST")
-	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
+	req.Header.SetRequestURI(fullURL)
+	req.Header.SetMethod(http.MethodPost)
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJSONUtf8)
 
 	fastClient := fasthttp.Client{}
 
 	err = fastClient.Do(req, resp)
-	fmt.Printf("RES_STATUS: %v\n", resp.StatusCode())
-	if resp.StatusCode() >= 300 || 1 == 1 {
-		fmt.Printf("RES_BODY: %v\n", string(resp.Body()))
-	}
+	/*
+		fmt.Printf("RES_STATUS: %v\n", resp.StatusCode())
+		if resp.StatusCode() >= 300 || 1 == 1 {
+			fmt.Printf("RES_BODY: %v\n", string(resp.Body()))
+		}
+	*/
 	fasthttp.ReleaseRequest(req)
 	fasthttp.ReleaseResponse(resp)
 	return err
@@ -121,11 +124,11 @@ func main() {
 		InputType:  opts.Input,
 		OutputType: opts.Output,
 		Token:      opts.Token,
-		URL:        opts.UrlOrGuid}
+		URL:        opts.URLOrGUID}
 	fmtutil.PrintJSON(qry)
 
-	if len(os.Getenv("ENV_PATH")) > 0 {
-		err := godotenv.Load(os.Getenv("ENV_PATH"))
+	if len(os.Getenv(EnvPath)) > 0 {
+		err := godotenv.Load(os.Getenv(EnvPath))
 		if err != nil {
 			panic(err)
 		}
@@ -146,18 +149,18 @@ func main() {
 
 	fmtutil.PrintJSON(qry)
 
-	chathooksUrl := "http://localhost:8080/hook"
+	chathooksURL := "http://localhost:8080/hook"
 	if len(strings.TrimSpace(opts.ChathooksURL)) > 0 {
-		chathooksUrl = opts.ChathooksURL
+		chathooksURL = opts.ChathooksURL
 	}
 
 	sender := ExampleWebhookSender{
 		DocHandlersDir: config.DocsHandlersDir(),
-		BaseUrl:        chathooksUrl,
+		BaseURL:        chathooksURL,
 		RequestParams:  qry}
 
 	if len(sender.RequestParams.URL) == 0 {
-		sender.RequestParams.URL = os.Getenv(EnvWebhookUrlGlip)
+		sender.RequestParams.URL = os.Getenv(EnvWebhookURLGlip)
 	}
 
 	examples := stringsutil.SplitCondenseSpace(qry.InputType, ",")

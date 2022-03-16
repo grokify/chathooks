@@ -29,8 +29,8 @@ func DocsHandlersDir() string {
 type Configuration struct {
 	Port           int      `env:"PORT" envDefault:"3000"`
 	Engine         string   `env:"CHATHOOKS_ENGINE" envDefault:"fasthttp"`
-	HomeUrl        string   `env:"CHATHOOKS_HOME_URL"`
-	WebhookUrl     string   `env:"CHATHOOKS_WEBHOOK_URL"`
+	HomeURL        string   `env:"CHATHOOKS_HOME_URL"`
+	WebhookURL     string   `env:"CHATHOOKS_WEBHOOK_URL"`
 	Tokens         []string `env:"CHATHOOKS_TOKENS" envSeparator:","`
 	LogFormat      string   `env:"CHATHOOKS_LOG_FORMAT"`
 	EmojiURLFormat string

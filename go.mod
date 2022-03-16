@@ -9,15 +9,15 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v6 v6.9.1
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.2.4
-	github.com/grokify/gohttp v0.1.0
+	github.com/grokify/commonchat v0.3.0
+	github.com/grokify/gohttp v0.2.0
 	github.com/grokify/gonet v0.1.0
-	github.com/grokify/mogo v0.36.2
+	github.com/grokify/mogo v0.37.6
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/microcosm-cc/bluemonday v1.0.18
 	github.com/rs/zerolog v1.26.1
 	github.com/tidwall/gjson v1.14.0
-	github.com/valyala/fasthttp v1.33.0
+	github.com/valyala/fasthttp v1.34.0
 	github.com/valyala/quicktemplate v1.7.0
 )
