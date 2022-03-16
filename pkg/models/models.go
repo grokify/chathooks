@@ -3,7 +3,7 @@ package models
 import (
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -12,6 +12,7 @@ import (
 	"github.com/grokify/commonchat"
 	"github.com/grokify/gohttp/anyhttp"
 	fhu "github.com/grokify/gohttp/fasthttputil"
+	"github.com/grokify/mogo/net/httputilmore"
 	nhu "github.com/grokify/mogo/net/nethttputil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog/log"
@@ -206,7 +207,7 @@ func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestC
 }
 
 func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]string, body string, isBase64Encoded bool) []byte {
-	bodyConverted := []byte("")
+	var bodyConverted []byte
 	if isBase64Encoded {
 		decoded, err := base64.StdEncoding.DecodeString(body)
 		if err != nil {
@@ -224,7 +225,7 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 	case URLEncodedJSONPayloadOrJSON:
 		if ct, ok := headers["content-type"]; ok {
 			ct = strings.TrimSpace(strings.ToLower(ct))
-			if strings.Index(ct, `application/json`) > -1 {
+			if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
 				return []byte(body)
 			}
 		}
@@ -246,27 +247,27 @@ func BodyToMessageBytesAnyHTTP(bodyType MessageBodyType, aReq anyhttp.Request) [
 	switch bodyType {
 	case URLEncodedJSONPayload:
 		if err := aReq.ParseForm(); err != nil {
-			return []byte("")
+			return []byte{}
 		}
 		return aReq.PostArgs().GetBytes(ParamPayload)
 	case URLEncodedJSONPayloadOrJSON:
-		ct := strings.TrimSpace(strings.ToLower(aReq.HeaderString("Content-Type")))
-		if strings.Index(ct, `application/json`) > -1 {
+		ct := strings.TrimSpace(strings.ToLower(aReq.HeaderString(httputilmore.HeaderContentType)))
+		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
 			bytes, err := aReq.PostBody()
 			if err != nil {
-				return []byte("")
+				return []byte{}
 			}
 			return bytes
 		}
 		if err := aReq.ParseForm(); err != nil {
-			return []byte("")
+			return []byte{}
 		}
 		return aReq.PostArgs().GetBytes(ParamPayload)
 		//return []byte(req.Form.Get(ParamPayload))
 	default:
 		bytes, err := aReq.PostBody()
 		if err != nil {
-			return []byte("")
+			return []byte{}
 		}
 		return bytes
 	}
@@ -277,19 +278,19 @@ func BodyToMessageBytesNetHTTP(bodyType MessageBodyType, req *http.Request) []by
 	case URLEncodedJSONPayload:
 		return []byte(req.Form.Get(ParamPayload))
 	case URLEncodedJSONPayloadOrJSON:
-		ct := strings.TrimSpace(strings.ToLower(req.Header.Get("Content-Type")))
-		if strings.Index(ct, `application/json`) > -1 {
-			bytes, err := ioutil.ReadAll(req.Body)
+		ct := strings.TrimSpace(strings.ToLower(req.Header.Get(httputilmore.HeaderContentType)))
+		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
+			bytes, err := io.ReadAll(req.Body)
 			if err != nil {
-				return []byte("")
+				return []byte{}
 			}
 			return bytes
 		}
 		return []byte(req.Form.Get(ParamPayload))
 	default:
-		bytes, err := ioutil.ReadAll(req.Body)
+		bytes, err := io.ReadAll(req.Body)
 		if err != nil {
-			return []byte("")
+			return []byte{}
 		}
 		return bytes
 	}
@@ -302,8 +303,8 @@ func BodyToMessageBytesFastHTTP(bodyType MessageBodyType, ctx *fasthttp.RequestC
 	case URLEncodedJSONPayloadOrJSON:
 		ct := strings.TrimSpace(
 			strings.ToLower(
-				string(ctx.Request.Header.Peek("Content-Type"))))
-		if strings.Index(ct, `application/json`) > -1 {
+				string(ctx.Request.Header.Peek(httputilmore.HeaderContentType))))
+		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
 			return ctx.PostBody()
 		}
 		return ctx.FormValue(ParamPayload)

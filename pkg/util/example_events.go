@@ -3,7 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/grokify/chathooks/pkg/config"
@@ -103,7 +103,7 @@ func (data *ExampleData) ExampleMessageBytes(handlerKey string, eventSlug string
 		config.DocsHandlersDir(),
 		handlerKey,
 		data.BuildFilename(handlerKey, eventSlug))
-	return ioutil.ReadFile(filepath)
+	return os.ReadFile(filepath)
 }
 
 func (data *ExampleData) BuildFilename(handlerKey string, eventSlug string) string {

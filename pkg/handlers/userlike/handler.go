@@ -102,7 +102,7 @@ func NormalizeOfflineMessage(cfg config.Configuration, src UserlikeOfflineMessag
 	if len(src.ClientName) > 0 {
 		attachment.AddField(cc.Field{
 			Title: "Client Name",
-			Value: fmt.Sprintf("%s", src.ClientName)})
+			Value: src.ClientName})
 	}
 
 	if len(attachment.Fields) > 0 {

@@ -2,7 +2,6 @@ package librato
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -215,27 +214,27 @@ type LibratoOutMessage struct {
 func (msg *LibratoOutMessage) Inflate() {
 	msg.ConditionsMap = map[int64]LibratoOutCondition{}
 	for _, condition := range msg.Conditions {
-		msg.ConditionsMap[condition.Id] = condition
+		msg.ConditionsMap[condition.ID] = condition
 	}
 }
 
-func (msg *LibratoOutMessage) GetCondition(conditionId int64) (LibratoOutCondition, error) {
-	if condition, ok := msg.ConditionsMap[conditionId]; ok {
+func (msg *LibratoOutMessage) GetCondition(conditionID int64) (LibratoOutCondition, error) {
+	if condition, ok := msg.ConditionsMap[conditionID]; ok {
 		return condition, nil
 	}
 	return LibratoOutCondition{},
-		errors.New(fmt.Sprintf("Condition %v not found", conditionId))
+		fmt.Errorf("conditionID not found [%v]", conditionID)
 }
 
 type LibratoOutAlert struct {
-	Id         int64  `json:"id,omitempty"`
+	ID         int64  `json:"id,omitempty"`
 	Name       string `json:"name,omitempty"`
 	RunbookURL string `json:"runbook_url,omitempty"`
 	Version    int64  `json:"version,omitempty"`
 }
 
 type LibratoOutCondition struct {
-	Id        int64   `json:"id,omitempty"`
+	ID        int64   `json:"id,omitempty"`
 	Type      string  `json:"type,omitempty"`
 	Threshold float64 `json:"threshold,omitempty"`
 	Duration  int64   `json:"duration,omitempty"`
