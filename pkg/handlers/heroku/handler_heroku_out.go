@@ -18,8 +18,7 @@ const (
 	HandlerKey       = "heroku"
 	MessageDirection = "out"
 	MessageBodyType  = models.URLEncoded
-
-	WebhookDocsUrl = "https://devcenter.heroku.com/articles/app-webhooks-tutorial"
+	WebhookDocsURL   = "https://devcenter.heroku.com/articles/app-webhooks-tutorial"
 )
 
 func NewHandler() handlers.Handler {

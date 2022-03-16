@@ -107,6 +107,7 @@ func (msg *ConfluenceOutMessage) IsComment() bool {
 }
 
 type ConfluencePage struct {
+	ID               int64  `json:"id,omitempty"`
 	SpaceKey         string `json:"spaceKey,omitempty"`
 	ModificationDate int64  `json:"modificationDate,omitempty"`
 	CreatorKey       string `json:"creatorKey,omitempty"`
@@ -114,7 +115,6 @@ type ConfluencePage struct {
 	LastModifierKey  string `json:"lastModifierKey,omitempty"`
 	Self             string `json:"self,omitempty"`
 	LastModifierName string `json:"lastModifierName,omitempty"`
-	ID               int64  `json:"id,omitempty"`
 	Title            string `json:"title,omitempty"`
 	CreationDate     int64  `json:"creationDate,omitempty"`
 	Version          int64  `json:"version,omitempty"`
@@ -129,6 +129,7 @@ func (page *ConfluencePage) IsUpdated() bool {
 }
 
 type ConfluenceComment struct {
+	ID               int64          `json:"id,omitempty"`
 	SpaceKey         string         `json:"spaceKey,omitempty"`
 	Parent           ConfluencePage `json:"parent,omitempty"`
 	ModificationDate int64          `json:"modificationDate,omitempty"`
@@ -137,7 +138,6 @@ type ConfluenceComment struct {
 	LastModifierKey  string         `json:"lastModifierKey,omitempty"`
 	Self             string         `json:"self,omitempty"`
 	LastModifierName string         `json:"lastModifierName,omitempty"`
-	Id               int64          `json:"id,omitempty"`
 	CreationDate     int64          `json:"creationDate,omitempty"`
 	Version          int64          `json:"version,omitempty"`
 }

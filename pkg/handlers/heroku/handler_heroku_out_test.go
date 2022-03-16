@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	TEST_APP = "secure-woodland-9775"
+	TestAppName = "secure-woodland-9775"
 )
 
 var ConfigurationTests = []struct {
@@ -18,11 +18,11 @@ func TestConfluence(t *testing.T) {
 	for _, tt := range ConfigurationTests {
 		msg, err := HerokuOutMessageFromQuery([]byte(tt.v))
 		if err != nil {
-			t.Errorf("Error %v\n", err)
+			t.Errorf("error %v", err)
 			continue
 		}
-		if msg.App != TEST_APP {
-			t.Errorf("HerokuOutMessageFromQueryString(%v): want %v, got %v", tt.v, "secure-woodland-9775", tt.want.App)
+		if msg.App != TestAppName {
+			t.Errorf("error HerokuOutMessageFromQueryString(%v): want [%v], got [%v]", tt.v, "secure-woodland-9775", tt.want.App)
 		}
 	}
 }

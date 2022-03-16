@@ -107,7 +107,7 @@ type UserlikeOperatorOutMessage struct {
 	Role            string        `json:"role,omitempty"`
 	RoleName        string        `json:"role_name,omitempty"`
 	Timezone        string        `json:"timezone,omitempty"`
-	UrlImage        string        `json:"url_image,omitempty"`
+	URLImage        string        `json:"url_image,omitempty"`
 	Username        string        `json:"username,omitempty"`
 }
 
