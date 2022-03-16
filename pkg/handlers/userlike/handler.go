@@ -167,7 +167,7 @@ func LinkifyURL(innerHtml string, url string, skipLinking bool) (string, bool) {
 	if len(innerHtml) == 0 && len(url) > 0 {
 		innerHtml = url
 	}
-	if skipLinking == true {
+	if skipLinking {
 		return innerHtml, skipLinking
 	}
 	if len(url) < 1 {
