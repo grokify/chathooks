@@ -12,7 +12,7 @@ require (
 	github.com/grokify/commonchat v0.3.0
 	github.com/grokify/gohttp v0.2.1
 	github.com/grokify/gonet v0.1.0
-	github.com/grokify/mogo v0.37.6
+	github.com/grokify/mogo v0.37.15
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/microcosm-cc/bluemonday v1.0.18
