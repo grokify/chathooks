@@ -240,8 +240,8 @@ github.com/grokify/mogo v0.37.3/go.mod h1:rvoGZyuR5f7Xy0UehTpAApQUv+rPpFY/W43LZc
 github.com/grokify/mogo v0.37.4/go.mod h1:rvoGZyuR5f7Xy0UehTpAApQUv+rPpFY/W43LZcTJ+e8=
 github.com/grokify/mogo v0.37.18/go.mod h1:emNx8mwkHHcn3bB/8z8542H/WY6IxrHWBeWnyYHRV9g=
 github.com/grokify/mogo v0.38.7/go.mod h1:0ZjE06N5LaDjnaZKD1zpGriUrmwpaj0L4/F9pznebCk=
-github.com/grokify/mogo v0.39.1 h1:NwCOLvA0lpdaEOAer7yIxhFvXGcAm/tXWGZqTHI1XOI=
-github.com/grokify/mogo v0.39.1/go.mod h1:PePLmFD41Nw+qjF8xrtIi3CCHMzEpacW2DL+VJOOldk=
+github.com/grokify/mogo v0.39.3 h1:b80+tYYh9yc0YE3IcFYM2jBCBbzFn0V34HvYc1CIFjg=
+github.com/grokify/mogo v0.39.3/go.mod h1:SETrLlAB0FQj5XCcFBVmoPpcLkNBWVLfhdtEs7yB8wE=
 github.com/grokify/spectrum v1.12.0/go.mod h1:+W2YIQe170rukVAUEsCq6kize/UPiXkjAR9hcI1Jvhk=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
