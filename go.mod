@@ -16,7 +16,7 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/microcosm-cc/bluemonday v1.0.18
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
 	github.com/tidwall/gjson v1.14.1
 	github.com/valyala/fasthttp v1.37.0
 	github.com/valyala/quicktemplate v1.7.0
