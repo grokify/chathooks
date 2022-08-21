@@ -18,6 +18,6 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.19
 	github.com/rs/zerolog v1.27.0
 	github.com/tidwall/gjson v1.14.2
-	github.com/valyala/fasthttp v1.38.0
+	github.com/valyala/fasthttp v1.39.0
 	github.com/valyala/quicktemplate v1.7.0
 )
