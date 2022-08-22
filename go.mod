@@ -7,7 +7,7 @@ require (
 	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-lambda-go v1.34.1
 	github.com/buaazp/fasthttprouter v0.1.1
-	github.com/caarlos0/env/v6 v6.9.3
+	github.com/caarlos0/env/v6 v6.10.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.2
 	github.com/grokify/gohttp v0.2.1
