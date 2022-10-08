@@ -11,7 +11,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.2
 	github.com/grokify/gohttp v0.2.1
-	github.com/grokify/gonet v0.1.0
+	github.com/grokify/gonet v0.1.1
 	github.com/grokify/mogo v0.40.4
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
