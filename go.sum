@@ -250,8 +250,9 @@ github.com/grokify/go-salesforce v0.2.4/go.mod h1:E0ywAexR+gkvI3spzn+JjVMQZ6bLC0
 github.com/grokify/go-scim-client v0.1.7/go.mod h1:ROd5uXTFOFkSzVeCxCw8LwcklvqtDOvHbHJLKbia9mI=
 github.com/grokify/goauth v0.15.2/go.mod h1:94aGHUIRMy+y2r5f8JGxPL6jgNBQ6sX6xwSQHBLpZkI=
 github.com/grokify/gocharts/v2 v2.7.3/go.mod h1:Z3e+MJxjK04szwBkrilsu73UU7rd0RzGrxpE15PnhUY=
-github.com/grokify/gohttp v0.2.1 h1:9WRHON2OUcQOjbbs12rMSfmepZVzlUxB0etNX/gowCo=
 github.com/grokify/gohttp v0.2.1/go.mod h1:lvWGlBA0PeelznQ5fFlr9GRbNOCsY86q5dmY9FqSlxE=
+github.com/grokify/gohttp v0.2.2 h1:bb+LOffbJdwzazuuwMnS320cId02iFFicLwWIGeMD3o=
+github.com/grokify/gohttp v0.2.2/go.mod h1:665NrVNsW1YlgiFbl8Iyl62gEcGZ6CgE2nCsQO6OLYg=
 github.com/grokify/gonet v0.1.1 h1:GIqIoVIjfCK3Idd81Nyp6rDoGj0B7rQrXu0BaCrPExk=
 github.com/grokify/gonet v0.1.1/go.mod h1:4rfNZn7/Un1W/3iVNsweTfPboYmjusHEByGNFj2B3Po=
 github.com/grokify/gostor v0.2.1/go.mod h1:4a6v+pcFFt4uxHThTcCcarL48EkMPe5Fc/0NvCQAifY=
