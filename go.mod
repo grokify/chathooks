@@ -18,7 +18,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/rs/zerolog v1.28.0
 	github.com/tidwall/gjson v1.14.3
-	github.com/valyala/fasthttp v1.40.0
+	github.com/valyala/fasthttp v1.41.0
 	github.com/valyala/quicktemplate v1.7.0
 )
 
@@ -33,7 +33,7 @@ require (
 	github.com/grokify/go-glip v0.5.2 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
