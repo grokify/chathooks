@@ -251,8 +251,8 @@ github.com/grokify/gostor v0.2.1/go.mod h1:4a6v+pcFFt4uxHThTcCcarL48EkMPe5Fc/0Nv
 github.com/grokify/gowebhooks v0.1.0/go.mod h1:eHFJFyNVXDS5QPoh6XHjxbnPXHsjvILTiH+k2ZeX86U=
 github.com/grokify/mogo v0.39.4/go.mod h1:0YiyOOSD1CRchDlcfVcYntUL0E9i9y/huZSWxgDuJqY=
 github.com/grokify/mogo v0.39.8/go.mod h1:1Rq2cx/iyBjd/5E6uZ4Iv+cYvNxfw4llWCQnZK+NUgg=
-github.com/grokify/mogo v0.40.12 h1:JnjDmtD3B/LL+O83jwJpHuz0A40pCt/EkfPvj8AaLwM=
-github.com/grokify/mogo v0.40.12/go.mod h1:Ct1csXN2fVcWv+Ylvsy95wH4sPs9cWhRK8EXk9Avt8A=
+github.com/grokify/mogo v0.40.13 h1:3ygVsUrnA3PfuwwEWUwW2Iq00OypTjkwDOfil7RKzjg=
+github.com/grokify/mogo v0.40.13/go.mod h1:Ct1csXN2fVcWv+Ylvsy95wH4sPs9cWhRK8EXk9Avt8A=
 github.com/grokify/spectrum v1.12.4/go.mod h1:UdQKhlLUclL0JWtRWzVD16wMmasvKun2VJCvBcCNy/k=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
