@@ -37,7 +37,7 @@ func BuildInboundMessage(ctx *fasthttp.RequestCtx) (HerokuOutMessage, error) {
 		Release:  string(ctx.FormValue("release"))}, nil
 }
 
-//func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
+// func Normalize(src HerokuOutMessage) glipwebhook.GlipWebhookMessage {
 func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	src, err := HerokuOutMessageFromQuery(hReq.Body)
 	if err != nil {

@@ -25,7 +25,7 @@ func NewHandler() handlers.Handler {
 	return handlers.Handler{MessageBodyType: MessageBodyType, Normalize: Normalize}
 }
 
-//func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
+// func NormalizeBytes(bytes []byte) (glipwebhook.GlipWebhookMessage, error) {
 func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Message, error) {
 	bytes := hReq.Body
 	ccMsg := cc.NewMessage()
