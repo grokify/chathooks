@@ -5,20 +5,20 @@ go 1.18
 
 require (
 	github.com/apex/gateway v1.1.2
-	github.com/aws/aws-lambda-go v1.35.0
+	github.com/aws/aws-lambda-go v1.36.1
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.3.3
+	github.com/grokify/commonchat v0.3.4
 	github.com/grokify/gohttp v0.2.2
-	github.com/grokify/gonet v0.1.1
-	github.com/grokify/mogo v0.41.4
+	github.com/grokify/gonet v0.1.2
+	github.com/grokify/mogo v0.44.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/rs/zerolog v1.28.0
 	github.com/tidwall/gjson v1.14.4
-	github.com/valyala/fasthttp v1.42.0
+	github.com/valyala/fasthttp v1.43.0
 	github.com/valyala/quicktemplate v1.7.0
 )
 
@@ -31,9 +31,9 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/grokify/bitcoinmath v0.1.0 // indirect
 	github.com/grokify/go-glip v0.5.4 // indirect
-	github.com/huandu/xstrings v1.3.3 // indirect
+	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -43,9 +43,9 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fastjson v1.6.3 // indirect
-	golang.org/x/exp v0.0.0-20221126150942-6ab00d035af9 // indirect
-	golang.org/x/net v0.2.0 // indirect
-	golang.org/x/sys v0.2.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/exp v0.0.0-20221217163422-3c43f8badb15 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 )
