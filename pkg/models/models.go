@@ -12,8 +12,7 @@ import (
 	"github.com/grokify/commonchat"
 	"github.com/grokify/gohttp/anyhttp"
 	fhu "github.com/grokify/gohttp/fasthttputil"
-	"github.com/grokify/mogo/net/httputilmore"
-	nhu "github.com/grokify/mogo/net/nethttputil"
+	hum "github.com/grokify/mogo/net/http/httputilmore"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
@@ -188,13 +187,13 @@ func HookDataFromAnyHTTPReq(bodyType MessageBodyType, aReq anyhttp.Request) Hook
 
 func HookDataFromNetHTTPReq(bodyType MessageBodyType, req *http.Request) HookData {
 	return HookData{
-		InputType:    nhu.GetReqQueryParam(req, QueryParamInputType),
+		InputType:    hum.GetReqQueryParam(req, QueryParamInputType),
 		InputBody:    BodyToMessageBytesNetHTTP(bodyType, req),
-		OutputFormat: config.MustParseOutputFormat(nhu.GetReqQueryParam(req, QueryParamOutputFormat)),
-		OutputType:   nhu.GetReqQueryParam(req, QueryParamOutputType),
-		OutputURL:    nhu.GetReqQueryParam(req, QueryParamOutputURL),
-		Token:        nhu.GetReqQueryParam(req, QueryParamToken),
-		OutputNames:  nhu.GetSplitReqQueryParam(req, QueryParamOutputAdapters, ",")}
+		OutputFormat: config.MustParseOutputFormat(hum.GetReqQueryParam(req, QueryParamOutputFormat)),
+		OutputType:   hum.GetReqQueryParam(req, QueryParamOutputType),
+		OutputURL:    hum.GetReqQueryParam(req, QueryParamOutputURL),
+		Token:        hum.GetReqQueryParam(req, QueryParamToken),
+		OutputNames:  hum.GetReqQueryParamSplit(req, QueryParamOutputAdapters, ",")}
 }
 
 func HookDataFromFastHTTPReqCtx(bodyType MessageBodyType, ctx *fasthttp.RequestCtx) HookData {
@@ -227,7 +226,7 @@ func bodyToMessageBytesGeneric(bodyType MessageBodyType, headers map[string]stri
 	case URLEncodedJSONPayloadOrJSON:
 		if ct, ok := headers["content-type"]; ok {
 			ct = strings.TrimSpace(strings.ToLower(ct))
-			if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
+			if strings.Contains(ct, hum.ContentTypeAppJSON) {
 				return []byte(body)
 			}
 		}
@@ -253,8 +252,8 @@ func BodyToMessageBytesAnyHTTP(bodyType MessageBodyType, aReq anyhttp.Request) [
 		}
 		return aReq.PostArgs().GetBytes(ParamPayload)
 	case URLEncodedJSONPayloadOrJSON:
-		ct := strings.TrimSpace(strings.ToLower(aReq.HeaderString(httputilmore.HeaderContentType)))
-		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
+		ct := strings.TrimSpace(strings.ToLower(aReq.HeaderString(hum.HeaderContentType)))
+		if strings.Contains(ct, hum.ContentTypeAppJSON) {
 			bytes, err := aReq.PostBody()
 			if err != nil {
 				return []byte{}
@@ -280,8 +279,8 @@ func BodyToMessageBytesNetHTTP(bodyType MessageBodyType, req *http.Request) []by
 	case URLEncodedJSONPayload:
 		return []byte(req.Form.Get(ParamPayload))
 	case URLEncodedJSONPayloadOrJSON:
-		ct := strings.TrimSpace(strings.ToLower(req.Header.Get(httputilmore.HeaderContentType)))
-		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
+		ct := strings.TrimSpace(strings.ToLower(req.Header.Get(hum.HeaderContentType)))
+		if strings.Contains(ct, hum.ContentTypeAppJSON) {
 			bytes, err := io.ReadAll(req.Body)
 			if err != nil {
 				return []byte{}
@@ -305,8 +304,8 @@ func BodyToMessageBytesFastHTTP(bodyType MessageBodyType, ctx *fasthttp.RequestC
 	case URLEncodedJSONPayloadOrJSON:
 		ct := strings.TrimSpace(
 			strings.ToLower(
-				string(ctx.Request.Header.Peek(httputilmore.HeaderContentType))))
-		if strings.Contains(ct, httputilmore.ContentTypeAppJSON) {
+				string(ctx.Request.Header.Peek(hum.HeaderContentType))))
+		if strings.Contains(ct, hum.ContentTypeAppJSON) {
 			return ctx.PostBody()
 		}
 		return ctx.FormValue(ParamPayload)

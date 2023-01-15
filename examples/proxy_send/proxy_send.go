@@ -11,7 +11,7 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/grokify/mogo/fmt/fmtutil"
-	"github.com/grokify/mogo/net/httputilmore"
+	"github.com/grokify/mogo/net/http/httputilmore"
 	"github.com/grokify/mogo/os/osutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/jessevdk/go-flags"
