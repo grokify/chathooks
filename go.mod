@@ -15,7 +15,7 @@ require (
 	github.com/grokify/mogo v0.45.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
-	github.com/microcosm-cc/bluemonday v1.0.21
+	github.com/microcosm-cc/bluemonday v1.0.22
 	github.com/rs/zerolog v1.28.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/valyala/fasthttp v1.44.0
