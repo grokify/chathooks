@@ -14,7 +14,7 @@ require (
 	github.com/grokify/gonet v0.1.2
 	github.com/grokify/mogo v0.45.0
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/joho/godotenv v1.4.0
+	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/rs/zerolog v1.28.0
 	github.com/tidwall/gjson v1.14.4
