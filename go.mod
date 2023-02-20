@@ -10,7 +10,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.5
-	github.com/grokify/gohttp v0.2.2
+	github.com/grokify/gohttp v0.2.3
 	github.com/grokify/gonet v0.1.2
 	github.com/grokify/mogo v0.46.0
 	github.com/jessevdk/go-flags v1.5.0
@@ -23,7 +23,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7 // indirect
