@@ -110,7 +110,7 @@ func (resp *WootricResponse) Property(key string) string {
 	if resp.EndUserProperties == nil {
 		resp.EndUserProperties = map[string]string{}
 	}
-	return maputil.StringValueOrDefault(resp.EndUserProperties, key, "")
+	return maputil.ValueStringOrDefault(resp.EndUserProperties, key, "")
 }
 
 type WootricDecline struct {

@@ -20,8 +20,8 @@ tokens as a comma delimited string.
 // CHATHOOKS_URL=http://localhost:8080/hook CHATHOOKS_HOME_URL=http://localhost:8080 go run main.go
 
 func main() {
-	if err := config.LoadDotEnvSkipEmpty(
-		os.Getenv("ENV_PATH"), "./.env"); err != nil {
+	if _, err := config.LoadDotEnv(
+		[]string{os.Getenv("ENV_PATH"), "./.env"}, 1); err != nil {
 		panic(err)
 	}
 
