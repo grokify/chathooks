@@ -9,10 +9,10 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.3.6
+	github.com/grokify/commonchat v0.3.7
 	github.com/grokify/gohttp v0.2.3
 	github.com/grokify/gonet v0.1.3
-	github.com/grokify/mogo v0.47.0
+	github.com/grokify/mogo v0.48.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.22
@@ -33,7 +33,7 @@ require (
 	github.com/grokify/go-glip v0.5.7 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.15.15 // indirect
+	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -48,4 +48,5 @@ require (
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
+	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect
 )
