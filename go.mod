@@ -5,7 +5,7 @@ go 1.18
 
 require (
 	github.com/apex/gateway v1.1.2
-	github.com/aws/aws-lambda-go v1.37.0
+	github.com/aws/aws-lambda-go v1.39.1
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/google/go-querystring v1.1.0
