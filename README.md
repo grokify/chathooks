@@ -312,8 +312,8 @@ Chathooks is built using:
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [rs/zerolog](https://github.com/rs/zerolog)
 
- [build-status-svg]: https://github.com/grokify/chathooks/workflows/go%20build/badge.svg
- [build-status-url]: https://github.com/grokify/chathooks/actions
+ [build-status-svg]: https://github.com/grokify/chathooks/workflows/build/badge.svg
+ [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/build.yaml
  [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
  [coverage-status-url]: https://coveralls.io/r/grokify/chathooks?branch=master
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
