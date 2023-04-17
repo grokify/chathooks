@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/apex/gateway"
 	"github.com/aws/aws-lambda-go/events"
@@ -303,7 +304,20 @@ func ServeNetHTTP(svc Service) {
 	log.Info().
 		Int("port", svc.Config.Port).
 		Msg("STARTING_NET_HTTP")
-	clog.Fatal(http.ListenAndServe(portAddress(svc.Config.Port), getHTTPServeMux(svc)))
+
+	srv := &http.Server{
+		Addr:              portAddress(svc.Config.Port),
+		ReadTimeout:       3 * time.Minute,
+		WriteTimeout:      3 * time.Minute,
+		IdleTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+		Handler:           getHTTPServeMux(svc),
+		// TLSConfig:         tlsConfig,
+	}
+
+	clog.Fatal(srv.ListenAndServe())
+
+	// clog.Fatal(http.ListenAndServe(portAddress(svc.Config.Port), getHTTPServeMux(svc)))
 }
 
 func ServeFastHTTP(svc Service) {
