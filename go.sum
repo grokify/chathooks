@@ -43,8 +43,8 @@ github.com/grokify/commonchat v0.3.9 h1:JX0RiA0uWts+eygeTq7Xqs+i8l/E1+1TRxPFDZEb
 github.com/grokify/commonchat v0.3.9/go.mod h1:ikkWafmaVnjLocnuWQL5HUjgOGrr52PxShI9M0neQfk=
 github.com/grokify/go-glip v0.5.9 h1:yWRFbu+IxVMDO/oRz4Yo4+P2mFjbn7he2ar/6WDnE+c=
 github.com/grokify/go-glip v0.5.9/go.mod h1:XsByI6yPqV++khgYrPWAkiD9smy2yTfOgnAvHvVeTzk=
-github.com/grokify/gohttp v0.2.4 h1:XAMClaxgTKdQ7YuOiqB2f2RTOS6Zy7hqkf65FSy4Z9I=
-github.com/grokify/gohttp v0.2.4/go.mod h1:q2y1z6P6OXEwh44br49ALvGE9s5hLrwGZrQvVjyos2o=
+github.com/grokify/gohttp v0.2.5 h1:8+qoIE6MKYSwj3Y8B7xWVq7ZAPms9SlE6HyKe7+TMug=
+github.com/grokify/gohttp v0.2.5/go.mod h1:1E6MhNkK69ZfEhYeA/imzbAjfYQLutKiPdC+2lha+zs=
 github.com/grokify/gonet v0.1.4 h1:9TBUeG8NVC0W0srLQJZ5JZGTiOCkY0UkQ0ibAdkzrbY=
 github.com/grokify/gonet v0.1.4/go.mod h1:lHCSXfT7ArwoSIO3WyQ+XwJBgcOczmDq9dgLGqol4gQ=
 github.com/grokify/mogo v0.49.1 h1:YseoSOBnBUthHG/U58uB9m4shg/SASD/AT/yxVjjikw=
@@ -59,8 +59,8 @@ github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnr
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/klauspost/compress v1.13.4/go.mod h1:8dP1Hq4DHOhN9w426knH3Rhby4rFm6D8eO+e+Dq5Gzg=
 github.com/klauspost/compress v1.13.5/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
-github.com/klauspost/compress v1.16.4 h1:91KN02FnsOYhuunwU4ssRe8lc2JosWmizWa91B5v1PU=
-github.com/klauspost/compress v1.16.4/go.mod h1:ntbaceVETuRiXiv4DpjP66DpAtAGkEQskQzEyD//IeE=
+github.com/klauspost/compress v1.16.6 h1:91SKEy4K37vkp255cJ8QesJhjyRO0hn9i9G0GoUwLsk=
+github.com/klauspost/compress v1.16.6/go.mod h1:ntbaceVETuRiXiv4DpjP66DpAtAGkEQskQzEyD//IeE=
 github.com/leekchan/accounting v1.0.0 h1:+Wd7dJ//dFPa28rc1hjyy+qzCbXPMR91Fb6F1VGTQHg=
 github.com/mattn/go-colorable v0.1.12/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-colorable v0.1.13 h1:fFA4WZxdEF4tXPZVKMLwD8oUnCTTo08duU7wxecdEvA=
