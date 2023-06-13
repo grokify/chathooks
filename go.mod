@@ -10,7 +10,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.9
-	github.com/grokify/gohttp v0.2.4
+	github.com/grokify/gohttp v0.2.5
 	github.com/grokify/gonet v0.1.4
 	github.com/grokify/mogo v0.49.1
 	github.com/jessevdk/go-flags v1.5.0
@@ -33,7 +33,7 @@ require (
 	github.com/grokify/go-glip v0.5.9 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.16.4 // indirect
+	github.com/klauspost/compress v1.16.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
