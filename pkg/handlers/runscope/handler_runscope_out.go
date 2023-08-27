@@ -72,7 +72,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 }
 
 type RunscopeOutMessage struct {
-	Variables       interface{}          `json:"variables,omitempty"`
+	Variables       any                  `json:"variables,omitempty"`
 	TestID          string               `json:"test_id,omitempty"`
 	TestName        string               `json:"test_name,omitempty"`
 	TestRunID       string               `json:"test_run_id,omitempty"`
@@ -88,7 +88,7 @@ type RunscopeOutMessage struct {
 	Result          string               `json:"result,omitempty"`
 	StartedAt       float64              `json:"started_at,omitempty"`
 	FinishedAt      float64              `json:"finished_at,omitempty"`
-	Agent           interface{}          `json:"agent,omitempty"`
+	Agent           any                  `json:"agent,omitempty"`
 	Region          string               `json:"region,omitempty"`
 	RegionName      string               `json:"region_name,omitempty"`
 	Requests        []RunscopeOutRequest `json:"requests,omitempty"`

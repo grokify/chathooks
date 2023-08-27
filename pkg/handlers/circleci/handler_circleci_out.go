@@ -79,28 +79,28 @@ type CircleciOutPayload struct {
 }
 
 type CircleciOutMessage struct {
-	VCSURL          string        `json:"vcs_url,omitempty"`
-	BuildURL        string        `json:"build_url,omitempty"`
-	BuildNum        int64         `json:"build_num,omitempty"`
-	Branch          string        `json:"branch,omitempty"`
-	VCSRevision     string        `json:"vcs_revision,omitempty"`
-	CommitterName   string        `json:"committer_name,omitempty"`
-	CommitterEmail  string        `json:"committer_email,omitempty"`
-	Subject         string        `json:"subject,omitempty"`
-	Body            string        `json:"body,omitempty"`
-	Why             string        `json:"why,omitempty"`
-	DontBuild       interface{}   `json:"dont_build,omitempty"`
-	QueuedAt        string        `json:"queued_at,omitempty"`
-	StartTime       string        `json:"start_time,omitempty"`
-	StopTime        string        `json:"stop_time,omitempty"`
-	BuildTimeMillis int64         `json:"build_time_millis,omitempty"`
-	Username        string        `json:"username,omitempty"`
-	Reponame        string        `json:"reponame,omitempty"`
-	Lifecycle       string        `json:"lifecycle,omitempty"`
-	Outcome         string        `json:"outcome,omitempty"`
-	Status          string        `json:"status,omitempty"`
-	RetryOf         interface{}   `json:"retry_of,omitempty"`
-	Steps           []interface{} `json:"steps,omitempty"`
+	VCSURL          string `json:"vcs_url,omitempty"`
+	BuildURL        string `json:"build_url,omitempty"`
+	BuildNum        int64  `json:"build_num,omitempty"`
+	Branch          string `json:"branch,omitempty"`
+	VCSRevision     string `json:"vcs_revision,omitempty"`
+	CommitterName   string `json:"committer_name,omitempty"`
+	CommitterEmail  string `json:"committer_email,omitempty"`
+	Subject         string `json:"subject,omitempty"`
+	Body            string `json:"body,omitempty"`
+	Why             string `json:"why,omitempty"`
+	DontBuild       any    `json:"dont_build,omitempty"`
+	QueuedAt        string `json:"queued_at,omitempty"`
+	StartTime       string `json:"start_time,omitempty"`
+	StopTime        string `json:"stop_time,omitempty"`
+	BuildTimeMillis int64  `json:"build_time_millis,omitempty"`
+	Username        string `json:"username,omitempty"`
+	Reponame        string `json:"reponame,omitempty"`
+	Lifecycle       string `json:"lifecycle,omitempty"`
+	Outcome         string `json:"outcome,omitempty"`
+	Status          string `json:"status,omitempty"`
+	RetryOf         any    `json:"retry_of,omitempty"`
+	Steps           []any  `json:"steps,omitempty"`
 }
 
 type CircleciOutStep struct {
@@ -109,15 +109,15 @@ type CircleciOutStep struct {
 }
 
 type CircleciOutAction struct {
-	BashCommand   interface{} `json:"bash_command,omitempty"`
-	RunTimeMillis int64       `json:"run_time_millis,omitempty"`
-	StartTime     string      `json:"start_time,omitempty"`
-	EndTime       string      `json:"end_time,omitempty"`
-	Name          string      `json:"name,omitempty"`
-	ExitCode      interface{} `json:"exit_cide,omitempty"`
-	Type          string      `json:"type,omitempty"`
-	Index         int64       `json:"index,omitempty"`
-	Status        string      `json:"status,omitempty"`
+	BashCommand   any    `json:"bash_command,omitempty"`
+	RunTimeMillis int64  `json:"run_time_millis,omitempty"`
+	StartTime     string `json:"start_time,omitempty"`
+	EndTime       string `json:"end_time,omitempty"`
+	Name          string `json:"name,omitempty"`
+	ExitCode      any    `json:"exit_cide,omitempty"`
+	Type          string `json:"type,omitempty"`
+	Index         int64  `json:"index,omitempty"`
+	Status        string `json:"status,omitempty"`
 }
 
 func CircleciOutMessageFromBytes(bytes []byte) (CircleciOutMessage, error) {

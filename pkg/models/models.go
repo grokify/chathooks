@@ -331,7 +331,7 @@ type ResponseInfo struct {
 	Responses  []ErrorInfo `json:"responses,omitempty"`
 	StatusCode int         `json:"statusCode,omitempty"`
 	//URL        string      `json:"url,omitempty"`
-	//Body       interface{} `json:"body,omitempty"`
+	//Body       any         `json:"body,omitempty"`
 	//InputType  string      `json:"inputType,omitempty"`
 	//OutputType string      `json:"outputType,omitempty"`
 }

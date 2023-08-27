@@ -22,7 +22,7 @@ func NewAdapterSet() AdapterSet {
 
 func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo {
 	errs := []models.ErrorInfo{}
-	hookOpts := map[string]interface{}{}
+	hookOpts := map[string]any{}
 	if hookData.OutputFormat == "nocard" {
 		hookOpts["useAttachments"] = false
 		log.Debug().
@@ -32,7 +32,7 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 	}
 	if len(hookData.OutputType) > 0 && len(hookData.OutputURL) > 0 {
 		if adapter, ok := set.Adapters[hookData.OutputType]; ok {
-			var msg interface{}
+			var msg any
 			req, res, err := adapter.SendWebhook(
 				hookData.OutputURL, hookData.CanonicalMessage, &msg, hookOpts)
 			log.Debug().
@@ -46,7 +46,7 @@ func (set *AdapterSet) SendWebhooks(hookData models.HookData) []models.ErrorInfo
 	}
 	for _, namedAdapter := range hookData.OutputNames {
 		if adapter, ok := set.Adapters[namedAdapter]; ok {
-			var msg interface{}
+			var msg any
 			req, res, err := adapter.SendMessage(
 				hookData.CanonicalMessage, &msg, hookOpts)
 			errs = set.procResponse(errs, req, res, err)

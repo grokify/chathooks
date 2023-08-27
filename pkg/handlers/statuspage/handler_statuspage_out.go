@@ -162,9 +162,9 @@ type StatuspageOutIncident struct {
 	ID                            string                        `json:"id,omitempty"`
 	Backfilled                    bool                          `json:"backfilled,omitempty"`
 	Impact                        string                        `json:"impact,omitempty"`
-	ImpactOverride                interface{}                   `json:"impact_override,omitempty"`
+	ImpactOverride                any                           `json:"impact_override,omitempty"`
 	MonitoringAt                  string                        `json:"monitoring_at,omitempty"`
-	PostmortemBody                interface{}                   `json:"postmortem_body,omitempty"`
+	PostmortemBody                any                           `json:"postmortem_body,omitempty"`
 	PostmortemBodyLastUpdatedAt   string                        `json:"postmortem_body_last_updated_at,omitempty"`
 	PostmortemIgnored             bool                          `json:"postmortem_ignored,omitempty"`
 	PostmortemNotifiedSubscribers bool                          `json:"postmortem_notified_subscribers,omitempty"`
@@ -172,10 +172,10 @@ type StatuspageOutIncident struct {
 	PostmortemPublishedAt         string                        `json:"postmortem_published_at,omitempty"`
 	ResovledAt                    string                        `json:"resolved_at,omitempty"`
 	ScheduledAutoTransition       bool                          `json:"scheduled_auto_transition,omitempty"`
-	ScheduledFor                  interface{}                   `json:"scheduled_for,omitempty"`
+	ScheduledFor                  any                           `json:"scheduled_for,omitempty"`
 	ScheduledRemindPrior          bool                          `json:"scheduled_remind_prior,omitempty"`
-	ScheduledRemindedAt           interface{}                   `json:"scheduled_reminded_at,omitempty"`
-	ScheduledUntil                interface{}                   `json:"scheduled_until,omitempty"`
+	ScheduledRemindedAt           any                           `json:"scheduled_reminded_at,omitempty"`
+	ScheduledUntil                any                           `json:"scheduled_until,omitempty"`
 	Shortlink                     string                        `json:"shortlink,omitempty"`
 	Status                        string                        `json:"status,omitempty"`
 	UpdatedAt                     string                        `json:"updated_at,omitempty"`

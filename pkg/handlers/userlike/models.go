@@ -24,8 +24,8 @@ type UserlikeOfflineMessageOutMessage struct {
 	ClientEmail     string             `json:"client_email,omitempty"`
 	ClientName      string             `json:"client_name,omitempty"`
 	CreatedAt       string             `json:"created_at,omitempty"`
-	Custom          interface{}        `json:"custom,omitempty"`
-	DataPrivacy     interface{}        `json:"data_privacy,omitempty"`
+	Custom          any                `json:"custom,omitempty"`
+	DataPrivacy     any                `json:"data_privacy,omitempty"`
 	ID              int64              `json:"id,omitempty"`
 	LocCity         string             `json:"loc_city,omitempty"`
 	LocCountry      string             `json:"loc_country,omitempty"`

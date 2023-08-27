@@ -234,8 +234,8 @@ type GosquaredOutLiveMessageMessage struct {
 	From      string                         `json:"from,omitempty"`
 	Private   bool                           `json:"private,omitempty"`
 	Session   GosquaredOutLiveMessageSession `json:"session,omitempty"`
-	Data      interface{}                    `json:"data,omitempty"`
-	Entities  []interface{}                  `json:"entities,omitempty"`
+	Data      any                            `json:"data,omitempty"`
+	Entities  []any                          `json:"entities,omitempty"`
 	PersonID  string                         `json:"person_id,omitempty"`
 }
 

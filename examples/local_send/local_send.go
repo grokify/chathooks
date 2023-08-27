@@ -71,8 +71,8 @@ func (sender *Sender) SendCcMessage(ccMsg cc.Message, err error) {
 	if err != nil {
 		panic(fmt.Sprintf("Bad Test Message: %v\n", err))
 	}
-	var resMsg interface{}
-	req, resp, err := sender.Adapter.SendMessage(ccMsg, &resMsg, map[string]interface{}{})
+	var resMsg any
+	req, resp, err := sender.Adapter.SendMessage(ccMsg, &resMsg, map[string]any{})
 	fmt.Printf("RESPONSE_STATUS_CODE [%v]\n", resp.StatusCode())
 	if err != nil {
 		fmt.Printf("ERROR [%v]\n", err)

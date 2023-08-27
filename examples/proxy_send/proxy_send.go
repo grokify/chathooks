@@ -66,7 +66,7 @@ func (s *ExampleWebhookSender) SendExamplesForInputType(inputType string) error 
 	return nil
 }
 
-func BuildURLQueryString(baseURL string, qry interface{}) string {
+func BuildURLQueryString(baseURL string, qry any) string {
 	v, _ := query.Values(qry)
 	qryString := v.Encode()
 	if len(qryString) > 0 {
