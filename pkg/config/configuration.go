@@ -7,7 +7,7 @@ import (
 	"path"
 	"strconv"
 
-	env "github.com/caarlos0/env/v6"
+	env "github.com/caarlos0/env/v9"
 	"github.com/rs/zerolog"
 )
 
