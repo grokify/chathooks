@@ -14,7 +14,7 @@ require (
 	github.com/grokify/commonchat v0.3.10
 	github.com/grokify/gohttp v0.2.7
 	github.com/grokify/gonet v0.1.6
-	github.com/grokify/mogo v0.62.5
+	github.com/grokify/mogo v0.62.6
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.26
@@ -44,7 +44,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611 // indirect
+	golang.org/x/exp v0.0.0-20231219180239-dc181d75b848 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
