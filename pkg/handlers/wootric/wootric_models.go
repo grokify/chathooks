@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grokify/gonet/urlutil"
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/maputil"
+	"github.com/grokify/xgo/net/urlutil"
 )
 
 type WootricEvent struct {
