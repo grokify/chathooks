@@ -7,13 +7,13 @@ go 1.21
 
 require (
 	github.com/apex/gateway v1.1.2
-	github.com/aws/aws-lambda-go v1.45.0
+	github.com/aws/aws-lambda-go v1.46.0
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.11
-	github.com/grokify/mogo v0.62.8
-	github.com/grokify/xgo v0.7.4
+	github.com/grokify/mogo v0.63.0
+	github.com/grokify/xgo v0.7.5
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.26
@@ -34,7 +34,7 @@ require (
 	github.com/grokify/go-glip v0.5.13 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/klauspost/compress v1.17.5 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
