@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - name: golangci-lint
-      uses: golangci/golangci-lint-action@v3
+      uses: golangci/golangci-lint-action@v4
       with:
         skip-go-installation: true
         version: latest
