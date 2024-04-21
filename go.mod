@@ -7,7 +7,7 @@ toolchain go1.22.1
 
 require (
 	github.com/apex/gateway v1.1.2
-	github.com/aws/aws-lambda-go v1.46.0
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
