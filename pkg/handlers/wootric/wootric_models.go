@@ -7,7 +7,7 @@ import (
 
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/maputil"
-	"github.com/grokify/xgo/net/urlutil"
+	"github.com/grokify/sogo/net/urlutil"
 )
 
 type WootricEvent struct {

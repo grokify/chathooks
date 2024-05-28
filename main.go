@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/grokify/mogo/config"
-	"github.com/grokify/xgo/net/http/httpsimple"
+	"github.com/grokify/sogo/net/http/httpsimple"
 
 	"github.com/grokify/chathooks/pkg/service"
 )

@@ -12,8 +12,8 @@ import (
 	"github.com/grokify/commonchat"
 	hum "github.com/grokify/mogo/net/http/httputilmore"
 	"github.com/grokify/mogo/type/stringsutil"
-	"github.com/grokify/xgo/net/http/anyhttp"
-	fhu "github.com/grokify/xgo/net/http/fasthttputil"
+	"github.com/grokify/sogo/net/http/anyhttp"
+	fhu "github.com/grokify/sogo/net/http/fasthttputil"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 

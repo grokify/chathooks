@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/grokify/commonchat"
 	"github.com/grokify/mogo/net/urlutil"
-	"github.com/grokify/xgo/net/http/anyhttp"
+	"github.com/grokify/sogo/net/http/anyhttp"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 

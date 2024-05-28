@@ -15,7 +15,7 @@ import (
 	ccglip "github.com/grokify/commonchat/glip"
 	ccslack "github.com/grokify/commonchat/slack"
 	"github.com/grokify/mogo/net/http/httputilmore"
-	"github.com/grokify/xgo/net/http/anyhttp"
+	"github.com/grokify/sogo/net/http/anyhttp"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 
