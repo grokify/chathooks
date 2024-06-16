@@ -12,8 +12,8 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.11
-	github.com/grokify/mogo v0.64.2
-	github.com/grokify/sogo v0.8.4
+	github.com/grokify/mogo v0.64.3
+	github.com/grokify/sogo v0.8.5
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.26
