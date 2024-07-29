@@ -18,7 +18,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.33.0
-	github.com/tidwall/gjson v1.17.1
+	github.com/tidwall/gjson v1.17.2
 	github.com/valyala/fasthttp v1.55.0
 	github.com/valyala/quicktemplate v1.8.0
 )
