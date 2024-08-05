@@ -11,7 +11,7 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.3.11
+	github.com/grokify/commonchat v0.3.12
 	github.com/grokify/mogo v0.64.6
 	github.com/grokify/sogo v0.8.7
 	github.com/jessevdk/go-flags v1.6.1
@@ -31,7 +31,7 @@ require (
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grokify/bitcoinmath v0.1.0 // indirect
-	github.com/grokify/go-glip v0.5.14 // indirect
+	github.com/grokify/go-glip v0.5.15 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
@@ -43,8 +43,8 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20240707233637-46b078467d37 // indirect
+	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
