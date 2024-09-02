@@ -2,9 +2,6 @@ module github.com/grokify/chathooks
 
 // +heroku goVersion go1.22
 go 1.22.0
-
-toolchain go1.22.3
-
 require (
 	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-lambda-go v1.47.0
@@ -13,7 +10,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.12
 	github.com/grokify/mogo v0.64.10
-	github.com/grokify/sogo v0.8.9
+	github.com/grokify/sogo v0.8.10
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
