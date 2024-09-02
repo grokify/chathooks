@@ -1,9 +1,9 @@
 module github.com/grokify/chathooks
 
 // +heroku goVersion go1.22
-go 1.22.0
+go 1.22.6
 
-toolchain go1.22.3
+toolchain go1.23.0
 
 require (
 	github.com/apex/gateway v1.1.2
@@ -11,9 +11,9 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
-	github.com/grokify/commonchat v0.3.12
+	github.com/grokify/commonchat v0.3.13
 	github.com/grokify/mogo v0.64.10
-	github.com/grokify/sogo v0.8.9
+	github.com/grokify/sogo v0.8.10
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -31,7 +31,7 @@ require (
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grokify/bitcoinmath v0.1.0 // indirect
-	github.com/grokify/go-glip v0.5.15 // indirect
+	github.com/grokify/go-glip v0.5.16 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
