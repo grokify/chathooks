@@ -12,8 +12,8 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.13
-	github.com/grokify/mogo v0.64.11
-	github.com/grokify/sogo v0.8.10
+	github.com/grokify/mogo v0.65.0
+	github.com/grokify/sogo v0.8.12
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -24,7 +24,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/env/v6 v6.10.1 // indirect
 	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/grokify/go-glip v0.5.16 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -43,8 +43,8 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
-	golang.org/x/net v0.29.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
+	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
+	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 )
