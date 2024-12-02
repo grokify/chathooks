@@ -10,8 +10,8 @@ github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuP
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
 github.com/buaazp/fasthttprouter v0.1.1 h1:4oAnN0C3xZjylvZJdP35cxfclyn4TYkW6Y+DSvS+h8Q=
 github.com/buaazp/fasthttprouter v0.1.1/go.mod h1:h/Ap5oRVLeItGKTVBb+heQPks+HdIUtGmI4H5WCYijM=
-github.com/caarlos0/env/v6 v6.10.1 h1:t1mPSxNpei6M5yAeu1qtRdPAK29Nbcf/n3G7x+b3/II=
-github.com/caarlos0/env/v6 v6.10.1/go.mod h1:hvp/ryKXKipEkcuYjs9mI4bBCg+UI0Yhgm5Zu0ddvwc=
+github.com/caarlos0/env/v11 v11.2.2 h1:95fApNrUyueipoZN/EhA8mMxiNxrBwDa+oAZrMWl3Kg=
+github.com/caarlos0/env/v11 v11.2.2/go.mod h1:JBfcdeQiBoI3Zh1QRAWfe+tpiNTmDtcCj/hHHHMx0vc=
 github.com/caarlos0/env/v9 v9.0.0 h1:SI6JNsOA+y5gj9njpgybykATIylrRMklbs5ch6wO6pc=
 github.com/caarlos0/env/v9 v9.0.0/go.mod h1:ye5mlCVMYh6tZ+vCgrs/B95sj88cg5Tlnc0XIzgZ020=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
@@ -38,10 +38,10 @@ github.com/grokify/commonchat v0.3.13 h1:GyYMkbT+ki/ICDJji/WL3JtsHOQYFjT0HLZKP52
 github.com/grokify/commonchat v0.3.13/go.mod h1:+AFfpl+iQ8QKi5IezlMbrjy1DDj1YHYaz9E/jAZZ47M=
 github.com/grokify/go-glip v0.5.16 h1:C4zE/UyIC1tv+Rk8qDrfWuoENkVx7vkA4Bo2HxjBIyw=
 github.com/grokify/go-glip v0.5.16/go.mod h1:EpkVNtS6XNv5jicLQWOWrnOUVYoodSAIN2RZtkGJ36g=
-github.com/grokify/mogo v0.65.3 h1:+WHUGNTwIExBRLTUSB6gy+vAFtN15L1MCOU9GqPIVm4=
-github.com/grokify/mogo v0.65.3/go.mod h1:pqvLLaqKpwXRYKQNtAUKvlTR3Zg9MPWHvpe9Qd6p9Uw=
-github.com/grokify/sogo v0.8.13 h1:samn4SUdpJicyEAoN79R9Ov8NY8wKLuTMhwsrr6Tq4Q=
-github.com/grokify/sogo v0.8.13/go.mod h1:KnOXzJRI2ZCB0I9vyyGRrIJTjlGDucXnKINR5FxYLm8=
+github.com/grokify/mogo v0.66.0 h1:lWsbVYM0oJUpuMfA4mdJp+c2k1aRlLky34b2T7l/ehU=
+github.com/grokify/mogo v0.66.0/go.mod h1:npug5+hF1jiAxt8MNWvwU8f+K39Dwp71gJv3lxsIAkM=
+github.com/grokify/sogo v0.8.15 h1:oIeH78slZZ4Ej5kJLbdLKtc/T3zUwJkg2VLMaT6cP50=
+github.com/grokify/sogo v0.8.15/go.mod h1:TNz6wfwLYPPmTHC4gTandKdL58IgWzR1s87kQyUuSME=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.6.1 h1:Cvu5U8UGrLay1rZfv/zP7iLpSHGUZ/Ou68T0iX1bBK4=
