@@ -10,7 +10,7 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.13
-	github.com/grokify/mogo v0.66.5
+	github.com/grokify/mogo v0.67.1
 	github.com/grokify/sogo v0.8.17
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
