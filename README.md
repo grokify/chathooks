@@ -1,4 +1,10 @@
-# Chathooks - A webhook formatter for chat
+<div align="center">
+
+# Chathooks
+
+![](docs/logos/logo_chathooks_long_600x150.png "")
+
+A webhook formatter for chat
 
 [![Build Status][build-status-svg]][build-status-url]
 [![Lint Status][lint-status-svg]][lint-status-url]
@@ -8,7 +14,7 @@
 [![License][license-svg]][license-url]
 [![Heroku][heroku-svg]][heroku-url]
 
-![](docs/logos/logo_chathooks_long_600x150.png "")
+</div>
 
 ## Overview
 
