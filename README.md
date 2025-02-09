@@ -1,5 +1,4 @@
-Chathooks - A webhook formatter for chat
-========================================
+# Chathooks - A webhook formatter for chat
 
 [![Build Status][build-status-svg]][build-status-url]
 [![Lint Status][lint-status-svg]][lint-status-url]
@@ -11,7 +10,7 @@ Chathooks - A webhook formatter for chat
 
 ![](docs/logos/logo_chathooks_long_600x150.png "")
 
-# Overview
+## Overview
 
 Chathooks is a webhook proxy service that converts generic outbound webhook messages to a canonical [CommonChat](https://github.com/commonchat) message format which is then sent to any chat / team messaging platform supported by the [CommonChat](https://github.com/grokify/commonchat) chat post abstraction library.
 
@@ -25,7 +24,7 @@ See the following video to get started quickly:
 
 * [Getting Started YouTube Video](https://youtu.be/H9nbsOmqrI8)
 
-## Supported HTTP Engines
+### Supported HTTP Engines
 
 Chathooks supports multiple HTTP engines including the following:
 
@@ -33,7 +32,7 @@ Chathooks supports multiple HTTP engines including the following:
 * [valyala/fasthttp](https://github.com/valyala/fasthttp)
 * [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go)
 
-## Supported Webhook Formats
+### Supported Webhook Formats
 
 Multiple input webhook formats are supported via handlers. New ones can be easily created by using the `handlers.Handler` interface.
 
@@ -74,21 +73,21 @@ A special webhook format supported is the Slack "inbound" webhook format. This f
 
 * [Slack](https://api.slack.com/incoming-webhooks)
 
-## Supported Chat Services
+### Supported Chat Services
 
 Chathooks can post messages to any service supported by [CommonChat](https://github.com/grokify/commonchat). New services can be added by creating an adapter using the `commonchat.Adapter` interface.
 
 Note: The emoji to URL is designed to take a `icon_emoji` value and convert it to a URL. `EmojiURLFormat` is a [`fmt`](https://golang.org/pkg/fmt/) `format` string with one `%s` verb to represent the emoji string without `:`. You can use any emoji image service. The example shows the emoji set from [github.com/wpeterson/emoji](https://github.com/wpeterson/emoji) forked and hosted at [grokify.github.io/emoji/](https://grokify.github.io/emoji/).
 
-# Installation
+## Installation
 
-## Local
+### Local
 
 ```
 $ go get github.com/grokify/chathooks
 ```
 
-## Heroku
+### Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
@@ -100,7 +99,7 @@ $ git push heroku master
 $ heroku open
 ```
 
-## AWS Lambda
+### AWS Lambda
 
 The following will generate a `main.zip` file to upload to AWS Lambda.
 
@@ -111,9 +110,9 @@ $ sh aws-package.sh
 $ ls main.zip
 ```
 
-# Configuration
+## Configuration
 
-## Environment Variables
+### Environment Variables
 
 Chathooks uses two environment variables:
 
@@ -122,7 +121,7 @@ Chathooks uses two environment variables:
 | `CHATHOOKS_ENGINE` | The engine to be used: `awslambda` for `aws/aws-lambda-go`, `nethttp` for `net/http` and `fasthttp` for `valyala/fasthttp`. Leave empty for `eawsy/aws-lambda-go-shim` as it does not require a server to be started. |
 | `CHATHOOKS_TOKENS` | Comma-delimited list of verification tokens. No extra leading or trailing spaces. |
 
-## Using the `net/http` and `fasthttp` Engines
+### Using the `net/http` and `fasthttp` Engines
 
 1. To adjust supported handlers, edit server.go to add and remove handlers.
 1. Set the `CHATHOOKS_ENGINE` environment variable to `nethttp` or `fasthttp`.
@@ -141,13 +140,13 @@ $ go build main.go
 $ ./main
 ```
 
-## Using the AWS Engine
+### Using the AWS Engine
 
 To use the AWS Lambda engine, you need an AWS account. If you don't hae one, the [free trial account](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) includes 1 million free Lambda requests per month forever and 1 million free API Gateway requests per month for the first year.
 
-### Installing using the AWS Lambda UI
+#### Installing using the AWS Lambda UI
 
-### Installation via AWS Lambda
+#### Installation via AWS Lambda
 
 See the AWS docs for deployment:
 
@@ -185,7 +184,7 @@ $ export PATH=$PATH:/Users/~/Library/Python/2.7/bin
 $ export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.6/bin
 ```
 
-### Update Lambda Code:
+#### Update Lambda Code:
 
 You can update the Lambda function code using the following:
 
@@ -197,7 +196,7 @@ The `aws-update.sh` file has this command with default settings.
 
 Make sure to set your AWS credentials file.
 
-### Manual Setup
+#### Manual Setup
 
 * Configure AWS Lambda Function
   1. Create AWS Lambda function
@@ -220,13 +219,13 @@ Make sure to set your AWS credentials file.
   10. Click "Actions" > "Deploy API" and create stage if necessary.
   11. Copy "Invoke URL" which should end in `{stageName}`
 
-### Troubleshooting
+#### Troubleshooting
 
 * 401 Unauthorized Error: If you can run a test on API Gateway and have deployed your API but are running into a HTTP Status 401 Unauthorized error, check to see if you have configured the `CHATHOOKS_TOKEN` environment variable but not entered a `token` query string parameter.
 
-# Usage
+## Usage
 
-## Creating the Glip Webhook
+### Creating the Glip Webhook
 
 1. create a Glip webhook
 2. use webhook URL's GUID to create the proxy URL as shown below
@@ -244,7 +243,7 @@ The webhook proxy URLs support both inbound and outbound formats. When available
 
 To create the Glip webhook and receive a webhook URL do the following:
 
-### Add the Webhook Integration
+#### Add the Webhook Integration
 
 At the top of any conversation page, click the Settings gear icon and then click `Add Integration`.
 
@@ -254,15 +253,15 @@ Select the `Glip Webhooks` integration.
 
 ![](docs/images/glip_webhook_step-2_add-webhook.png)
 
-### Get the Webhook URL
+#### Get the Webhook URL
 
 Once you get the URL, the proxy URL is created by appending the GUID (e.g. `1112222-3333-4444-5555-666677778888`) to the proxy URL base, `hooks?inputType=slack&outputType=glip` (e.g. `https://glip-proxy.example.com/hooks?inputType=slack&outputType=glip&url=1112222-3333-4444-5555-666677778888`). Use the proxy URL in the app that is posting the Slack webhook and the payload will be sent to Glip.
 
 ![](docs/images/glip_webhook_step-3_details.png)
 
-# Development
+## Development
 
-## Testing new handlers
+### Testing new handlers
 
 It's easy to test handlers by sending messages using the example messages per service.
 
@@ -271,19 +270,19 @@ Code is provided to both send the message locally (without HTTP) and over HTTP.
 * [`local_send.go` without HTTP](https://github.com/grokify/chathooks/tree/master/examples/local_send)
 * [`proxy_send.go` over HTTP](https://github.com/grokify/chathooks/tree/master/examples/proxy_send)
 
-### cURL
+#### cURL
 
 The following is an example curl command that can be used with any host, local or remote.
 
 `curl -XPOST 'https://example.com/webhook?inputType=datadog&outputType=glip&url=https://hooks.glip.com/webhook/11111111-2222-3333-4444-555566667777' --data "@docs/handlers/datadog/event-example_formatted1.json" -H 'Content-Type: application/json' --verbose`
 
-## Adding Handlers
+### Adding Handlers
 
 The easiest way to add a handler is to inspect the code of an existing handler and build something similar. It needs satisfy the `handlers.Handler` interface.
 
-# Notes
+## Notes
 
-## Maintenance
+### Maintenance
 
 Use [`godep`](https://github.com/tools/godep) to rebuild the `vendor` directory with:
 
@@ -297,7 +296,7 @@ More information on deploying Go on Heroku here:
 
 * https://devcenter.heroku.com/articles/go-support
 
-### Heroku
+#### Heroku
 
 Set up your own Go app on Heroku easily using [`goheroku`](https://github.com/grokify/goheroku).
 
