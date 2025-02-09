@@ -2,7 +2,7 @@
 
 # Chathooks
 
-![](docs/logos/logo_chathooks_long_600x150.png "")
+[![](docs/logos/logo_chathooks_long_600x150.png "")](https://github.com/grokify/chathooks)
 
 A webhook formatter for chat
 
