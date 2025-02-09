@@ -2,6 +2,7 @@ Chathooks - A webhook formatter for chat
 ========================================
 
 [![Build Status][build-status-svg]][build-status-url]
+[![Lint Status][lint-status-svg]][lint-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![LOC][loc-svg]][repo-url]
@@ -312,8 +313,10 @@ Chathooks is built using:
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [rs/zerolog](https://github.com/rs/zerolog)
 
- [build-status-svg]: https://github.com/grokify/chathooks/workflows/test/badge.svg?branch=master
- [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/build.yaml
+ [build-status-svg]: https://github.com/grokify/chathooks/workflows/test/badge.svg
+ [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/test.yaml
+ [lint-status-svg]: https://github.com/grokify/chathooks/workflows/lint/badge.svg
+ [lint-status-url]: https://github.com/grokify/chathooks/actions/workflows/lint.yaml
  [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
  [coverage-status-url]: https://coveralls.io/r/grokify/chathooks?branch=master
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
