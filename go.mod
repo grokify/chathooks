@@ -11,7 +11,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.14
 	github.com/grokify/mogo v0.68.1
-	github.com/grokify/sogo v0.10.2
+	github.com/grokify/sogo v0.10.3
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -32,7 +32,7 @@ require (
 	github.com/grokify/go-glip v0.5.18 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
