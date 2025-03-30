@@ -29,5 +29,4 @@ func main() {
 	fmt.Println("===")
 	val = html.UnescapeString(val)
 	fmt.Println(val)
-
 }

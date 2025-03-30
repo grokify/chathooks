@@ -27,7 +27,7 @@ const (
 	EnvWebhookURLSlack        = "SLACK_WEBHOOK"
 	EnvChathooksReqInputType  = "CHATHOOKS_REQ_INPUT_TYPE"
 	EnvChathooksReqOutputType = "CHATHOOKS_REQ_OUTPUT_TYPE"
-	EnvChathooksReqToken      = "CHATHOOKS_REQ_TOKEN"
+	EnvChathooksReqToken      = "CHATHOOKS_REQ_TOKEN" // #nosec G101
 	EnvChathooksReqURL        = "CHATHOOKS_REQ_URL"
 	EnvPath                   = "ENV_PATH"
 )
@@ -124,7 +124,7 @@ func main() {
 		OutputType: opts.Output,
 		Token:      opts.Token,
 		URL:        opts.URLOrGUID}
-	fmtutil.PrintJSON(qry)
+	fmtutil.MustPrintJSON(qry)
 
 	if len(os.Getenv(EnvPath)) > 0 {
 		err := godotenv.Load(os.Getenv(EnvPath))
@@ -146,7 +146,7 @@ func main() {
 		}
 	}
 
-	fmtutil.PrintJSON(qry)
+	fmtutil.MustPrintJSON(qry)
 
 	chathooksURL := "http://localhost:8080/hook"
 	if len(strings.TrimSpace(opts.ChathooksURL)) > 0 {
@@ -162,7 +162,7 @@ func main() {
 		sender.RequestParams.URL = os.Getenv(EnvWebhookURLGlip)
 	}
 
-	examples := stringsutil.SplitCondenseSpace(qry.InputType, ",")
+	examples := stringsutil.SplitTrimSpace(qry.InputType, ",", true)
 
 	for _, ex := range examples {
 		err := sender.SendExamplesForInputType(strings.ToLower(ex))

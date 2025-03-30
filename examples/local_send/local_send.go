@@ -126,13 +126,14 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 	service := opts.Service
 
 	sender := Sender{}
-	if adapterType == "glip" {
+	switch adapterType {
+	case "glip":
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(GLIP_WEBHOOK_ENV)
 			fmt.Printf("GLIP_GUID_ENV [%v]\n", webhookURLOrUID)
 		}
 		sender.Adapter = ccglip.NewGlipAdapter(webhookURLOrUID, adapters.GlipConfig())
-	} else if adapterType == "slack" {
+	case "slack":
 		if len(webhookURLOrUID) < 1 {
 			webhookURLOrUID = os.Getenv(SLACK_WEBHOOK_ENV)
 			fmt.Printf("SLACK_GUID_ENV [%v]\n", webhookURLOrUID)
@@ -142,7 +143,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 			return errorsutil.Wrap(err, "incorrect webhook GUID or URL")
 		}
 		sender.Adapter = adapter
-	} else {
+	default:
 		return errors.New("invalid adapter")
 	}
 
@@ -150,7 +151,7 @@ func SendMessageAdapterHandler(cfg config.Configuration, opts cliOptions) error 
 	if err != nil {
 		return errorsutil.Wrap(err, fmt.Sprintf("invalid example data [%v]", err))
 	}
-	fmtutil.PrintJSON(exampleData)
+	fmtutil.MustPrintJSON(exampleData)
 
 	switch service {
 	case "aha":

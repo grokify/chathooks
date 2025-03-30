@@ -116,9 +116,10 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 						}
 					}
 					if field.Property == "company_brand" {
-						if val == "rc-glip" {
+						switch val {
+						case "rc-glip":
 							val = "RingCentral"
-						} else if val == "non-rc-glip" {
+						case "non-rc-glip":
 							val = "Non-RingCentral"
 						}
 					}
