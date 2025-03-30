@@ -318,8 +318,8 @@ Chathooks is built using:
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [rs/zerolog](https://github.com/rs/zerolog)
 
- [build-status-svg]: https://github.com/grokify/chathooks/actions/workflows/test.yaml/badge.svg?branch=master
- [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/test.yaml
+ [build-status-svg]: https://github.com/grokify/chathooks/actions/workflows/ci.yaml/badge.svg?branch=master
+ [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/ci.yaml
  [lint-status-svg]: https://github.com/grokify/chathooks/actions/workflows/lint.yaml/badge.svg?branch=master
  [lint-status-url]: https://github.com/grokify/chathooks/actions/workflows/lint.yaml
  [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
