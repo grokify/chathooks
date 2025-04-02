@@ -3,6 +3,8 @@ module github.com/grokify/chathooks
 // +heroku goVersion go1.22
 go 1.23.2
 
+toolchain go1.24.1
+
 require (
 	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-lambda-go v1.47.0
@@ -17,7 +19,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.34.0
 	github.com/tidwall/gjson v1.18.0
-	github.com/valyala/fasthttp v1.59.0
+	github.com/valyala/fasthttp v1.60.0
 	github.com/valyala/quicktemplate v1.8.0
 )
 
