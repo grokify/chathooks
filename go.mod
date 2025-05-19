@@ -13,7 +13,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.15
 	github.com/grokify/mogo v0.69.3
-	github.com/grokify/sogo v0.10.14
+	github.com/grokify/sogo v0.11.1
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -27,7 +27,7 @@ require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/env/v11 v11.3.1 // indirect
-	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7 // indirect
+	github.com/derekstavis/go-qs v0.0.0-20250518184349-717ef4cb7534 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grokify/bitcoinmath v0.1.0 // indirect
