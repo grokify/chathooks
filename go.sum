@@ -38,10 +38,10 @@ github.com/grokify/commonchat v0.3.15 h1:u5Zak0PeS38EFV6xPHZO/BK/mZKce2LbIFAdi45
 github.com/grokify/commonchat v0.3.15/go.mod h1:xaJYYPwM9t04oplsTbdD6gN2j4Tmsqz22aoCR8Mu9Xw=
 github.com/grokify/go-glip v0.5.19 h1:oXtfCOUSmhNfKnDYQv6ORALKtIibkGlLZNolPDBcUng=
 github.com/grokify/go-glip v0.5.19/go.mod h1:tLKzPxFT/HYU9W77BGU6SbgWLvD1m5VCZuTiSPNo7EM=
-github.com/grokify/mogo v0.70.0 h1:aL0QvRbkFcii+V0LEB2/JEBKYfbWhsOn5OsK7Nt8/Rc=
-github.com/grokify/mogo v0.70.0/go.mod h1:Lx6k6UuKjWiqy2biGc6qn0J0h7Tn97PDzuopEXFgZ5g=
-github.com/grokify/sogo v0.11.1 h1:WwZhXwfJdyC+QCGRYKGW6y6QW8x6P4+OloopREztCE4=
-github.com/grokify/sogo v0.11.1/go.mod h1:9zmKKwni4yFugArs8SKWgoFfnsoyyj6ioHjtZnmC3YY=
+github.com/grokify/mogo v0.70.2 h1:WgnK3sHnrnyj8TfeFeFAutz8z5/N+CX1nvMH9iDZkHw=
+github.com/grokify/mogo v0.70.2/go.mod h1:GAYJEvaF1PgdCTZ9/G0/vC7N4J117+DoB+xnSX1faYw=
+github.com/grokify/sogo v0.11.5 h1:dztpTa+YQZASmR0xmgRNqeqOQhlEx+0xkfrpYpV9g+4=
+github.com/grokify/sogo v0.11.5/go.mod h1:1RSmtEzxy4gQlHxNtypGQSeruO4mDCsJdc2V3X8YzVo=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.6.1 h1:Cvu5U8UGrLay1rZfv/zP7iLpSHGUZ/Ou68T0iX1bBK4=
@@ -99,8 +99,8 @@ github.com/valyala/quicktemplate v1.8.0 h1:zU0tjbIqTRgKQzFY1L42zq0qR3eh4WoQQdIdq
 github.com/valyala/quicktemplate v1.8.0/go.mod h1:qIqW8/igXt8fdrUln5kOSb+KWMaJ4Y8QUsfd1k6L2jM=
 github.com/xyproto/randomstring v1.0.5 h1:YtlWPoRdgMu3NZtP45drfy1GKoojuR7hmRcnhZqKjWU=
 github.com/xyproto/randomstring v1.0.5/go.mod h1:rgmS5DeNXLivK7YprL0pY+lTuhNQW3iGxZ18UQApw/E=
-golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 h1:y5zboxd6LQAqYIhHnB48p0ByQ/GnQx2BE33L8BOHQkI=
-golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6/go.mod h1:U6Lno4MTRCDY+Ba7aCcauB9T60gsv5s4ralQzP72ZoQ=
+golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b h1:QoALfVG9rhQ/M7vYDScfPdWjGL9dlsVVM5VGh7aKoAA=
+golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b/go.mod h1:U6Lno4MTRCDY+Ba7aCcauB9T60gsv5s4ralQzP72ZoQ=
 golang.org/x/net v0.40.0 h1:79Xs7wF06Gbdcg4kdCCIQArK11Z1hr5POQ6+fIYHNuY=
 golang.org/x/net v0.40.0/go.mod h1:y0hY0exeL2Pku80/zKK7tpntoX23cqL3Oa6njdgRtds=
 golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
