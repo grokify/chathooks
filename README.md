@@ -10,7 +10,6 @@ A webhook formatter for chat
 [![Lint Status][lint-status-svg]][lint-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
-[![LOC][loc-svg]][repo-url]
 [![License][license-svg]][license-url]
 [![Heroku][heroku-svg]][heroku-url]
 
