@@ -40,8 +40,8 @@ github.com/grokify/go-glip v0.5.20 h1:oXnJ9thUg1j8yM83ZCfoiaoHkFgza0j6DwTt/ups5c
 github.com/grokify/go-glip v0.5.20/go.mod h1:ZCmdp1lIwCqyPZb/gEjWWhDtv7lvXc1VrMbORTa8tYU=
 github.com/grokify/mogo v0.70.10 h1:GrTIwggfUyIT7pYT7kCzLu6pb4kZvsNGMRKYMVs97mM=
 github.com/grokify/mogo v0.70.10/go.mod h1:7tfFd9wGliYOv227IQlOMah/9MLH+u0i62MesfwJUKU=
-github.com/grokify/sogo v0.11.5 h1:dztpTa+YQZASmR0xmgRNqeqOQhlEx+0xkfrpYpV9g+4=
-github.com/grokify/sogo v0.11.5/go.mod h1:1RSmtEzxy4gQlHxNtypGQSeruO4mDCsJdc2V3X8YzVo=
+github.com/grokify/sogo v0.11.6 h1:EQiicY5G0dHZqtx5JeieFkWPQNTpuwIipwXgoOch0bk=
+github.com/grokify/sogo v0.11.6/go.mod h1:9eqal5GOl92V+h2mpQLQQMnGKA1Y8Cn+m6J8bUiGJ6g=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.6.1 h1:Cvu5U8UGrLay1rZfv/zP7iLpSHGUZ/Ou68T0iX1bBK4=
