@@ -19,12 +19,12 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.34.0
 	github.com/tidwall/gjson v1.18.0
-	github.com/valyala/fasthttp v1.62.0
+	github.com/valyala/fasthttp v1.63.0
 	github.com/valyala/quicktemplate v1.8.0
 )
 
 require (
-	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/env/v11 v11.3.1 // indirect
 	github.com/derekstavis/go-qs v0.0.0-20250518184349-717ef4cb7534 // indirect
