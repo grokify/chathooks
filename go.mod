@@ -1,7 +1,7 @@
 module github.com/grokify/chathooks
 
 // +heroku goVersion go1.22
-go 1.23.2
+go 1.24.0
 
 toolchain go1.24.1
 
@@ -12,8 +12,8 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/grokify/commonchat v0.3.16
-	github.com/grokify/mogo v0.70.16
-	github.com/grokify/sogo v0.11.9
+	github.com/grokify/mogo v0.70.18
+	github.com/grokify/sogo v0.12.0
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -43,7 +43,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20250718183923-645b1fa84792 // indirect
+	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
