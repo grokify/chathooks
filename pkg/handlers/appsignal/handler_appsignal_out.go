@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	cc "github.com/grokify/commonchat"
-	"github.com/grokify/mogo/time/timeutil"
+	"github.com/grokify/mogo/time/duration"
 
 	"github.com/grokify/chathooks/pkg/config"
 	"github.com/grokify/chathooks/pkg/handlers"
@@ -133,7 +133,7 @@ func Normalize(cfg config.Configuration, hReq handlers.HandlerRequest) (cc.Messa
 		ccMsg.Activity = "Performance incident"
 
 		if src.Performance.Duration > 0.0 {
-			durationString, err := timeutil.DurationStringMinutesSeconds(int64(src.Performance.Duration))
+			durationString, err := duration.DurationStringMinutesSeconds(int64(src.Performance.Duration))
 			if err == nil {
 				ccMsg.Title = fmt.Sprintf("%v performance incident has occurred for %v", src.Performance.Site, durationString)
 			} else {
