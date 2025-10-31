@@ -38,8 +38,8 @@ github.com/grokify/commonchat v0.3.16 h1:ZBIFbj5kVVCu5iAdnJq4TfEB+r2mXT0/+TElSbQ
 github.com/grokify/commonchat v0.3.16/go.mod h1:iQ0R+eFoTVt1wIfNXyvmhXbXoVs0a43jGetuLSV/Rdw=
 github.com/grokify/go-glip v0.5.20 h1:oXnJ9thUg1j8yM83ZCfoiaoHkFgza0j6DwTt/ups5cQ=
 github.com/grokify/go-glip v0.5.20/go.mod h1:ZCmdp1lIwCqyPZb/gEjWWhDtv7lvXc1VrMbORTa8tYU=
-github.com/grokify/mogo v0.71.4 h1:BiADeUaVtihtqwx0APKoIAERs1TWljIJTcvMUZ04DBI=
-github.com/grokify/mogo v0.71.4/go.mod h1:BNjXVV1WWb0QNgQC+p+brYsJf2Yb05IelFQvbzOoctA=
+github.com/grokify/mogo v0.71.7 h1:y1KrHntBvfFByLzD0/cCsJUHwWaWwpvlPno+G5bczuQ=
+github.com/grokify/mogo v0.71.7/go.mod h1:BNjXVV1WWb0QNgQC+p+brYsJf2Yb05IelFQvbzOoctA=
 github.com/grokify/sogo v0.12.8 h1:/RY29xLKHIjSZ1F4lLf94ryinTxc2I8vLFaenbItR9s=
 github.com/grokify/sogo v0.12.8/go.mod h1:5eGMtuKSVZa4o6MAB61nQhmEyDVjrh8iSVHP0pbFBWA=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
