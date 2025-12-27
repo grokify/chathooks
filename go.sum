@@ -38,8 +38,8 @@ github.com/grokify/commonchat v0.3.18 h1:baYn3BQr8E9K9Xl1CLrj+CAg4+sXsIOWwITBKpC
 github.com/grokify/commonchat v0.3.18/go.mod h1:x6s0lyBvuZN1pwkkiXCS3U1UxfO24Nu/nWtyAwAFL/k=
 github.com/grokify/go-glip v0.5.21 h1:Ixoqay2mGG2zAlaLoBLh9Zk81J7OHVeJoqqTVs7Ii24=
 github.com/grokify/go-glip v0.5.21/go.mod h1:EbAlnLAfcBn/Ipbc4+W8BBNvKrSw6/scWBHx/KLKxv4=
-github.com/grokify/mogo v0.72.3 h1:7sQp3T2yiS4IrDvE07G3L4RmOZpCBxGCqDLxDUygyYU=
-github.com/grokify/mogo v0.72.3/go.mod h1:3UOaBu4rJmNZ/RCrtBiDcNv1tHUFW1ydrq0i5TxOmP8=
+github.com/grokify/mogo v0.72.5 h1:1nq2bCcGovhiNxvSk9AGrjBQP9N7XHCTQRsw3lMTEMU=
+github.com/grokify/mogo v0.72.5/go.mod h1:vHAL2gTwcw1a4C+XOIu2fySerZFE860iCPKYVR5b/ms=
 github.com/grokify/sogo v0.13.0 h1:uTsSYb8ESdl+BC0hxbaexmZLTe2t1xKZ+Mzfskaa3Z4=
 github.com/grokify/sogo v0.13.0/go.mod h1:HOXcXkSUZnmtATDSCuFKsTAMd2+cDSTjE7xQy4bWv+s=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
@@ -100,8 +100,8 @@ github.com/valyala/quicktemplate v1.8.0 h1:zU0tjbIqTRgKQzFY1L42zq0qR3eh4WoQQdIdq
 github.com/valyala/quicktemplate v1.8.0/go.mod h1:qIqW8/igXt8fdrUln5kOSb+KWMaJ4Y8QUsfd1k6L2jM=
 github.com/xyproto/randomstring v1.0.5 h1:YtlWPoRdgMu3NZtP45drfy1GKoojuR7hmRcnhZqKjWU=
 github.com/xyproto/randomstring v1.0.5/go.mod h1:rgmS5DeNXLivK7YprL0pY+lTuhNQW3iGxZ18UQApw/E=
-golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 h1:MDfG8Cvcqlt9XXrmEiD4epKn7VJHZO84hejP9Jmp0MM=
-golang.org/x/exp v0.0.0-20251209150349-8475f28825e9/go.mod h1:EPRbTFwzwjXj9NpYyyrvenVh9Y+GFeEvMNh7Xuz7xgU=
+golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 h1:fQsdNF2N+/YewlRZiricy4P1iimyPKZ/xwniHj8Q2a0=
+golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93/go.mod h1:EPRbTFwzwjXj9NpYyyrvenVh9Y+GFeEvMNh7Xuz7xgU=
 golang.org/x/net v0.48.0 h1:zyQRTTrjc33Lhh0fBgT/H3oZq9WuvRR5gPC70xpDiQU=
 golang.org/x/net v0.48.0/go.mod h1:+ndRgGjkh8FGtu1w1FGbEC31if4VrNVMuKTgcAAnQRY=
 golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
