@@ -19,7 +19,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.34.0
 	github.com/tidwall/gjson v1.18.0
-	github.com/valyala/fasthttp v1.68.0
+	github.com/valyala/fasthttp v1.69.0
 	github.com/valyala/quicktemplate v1.8.0
 )
 
