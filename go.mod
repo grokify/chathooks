@@ -1,9 +1,7 @@
 module github.com/grokify/chathooks
 
 // +heroku goVersion go1.22
-go 1.24.0
-
-toolchain go1.24.1
+go 1.25.0
 
 require (
 	github.com/apex/gateway v1.1.2
@@ -12,8 +10,8 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/google/go-querystring v1.2.0
 	github.com/grokify/commonchat v0.3.18
-	github.com/grokify/mogo v0.73.0
-	github.com/grokify/sogo v0.13.0
+	github.com/grokify/mogo v0.73.1
+	github.com/grokify/sogo v0.14.0
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -34,7 +32,7 @@ require (
 	github.com/grokify/go-glip v0.5.21 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.18.3 // indirect
+	github.com/klauspost/compress v1.18.4 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -43,8 +41,8 @@ require (
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
-	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/exp v0.0.0-20260212183809-81e46e3db34a // indirect
+	golang.org/x/net v0.50.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 )
