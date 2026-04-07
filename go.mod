@@ -19,12 +19,12 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.35.0
 	github.com/tidwall/gjson v1.18.0
-	github.com/valyala/fasthttp v1.69.0
+	github.com/valyala/fasthttp v1.70.0
 	github.com/valyala/quicktemplate v1.8.0
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.0 // indirect
+	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/env/v11 v11.3.1 // indirect
 	github.com/derekstavis/go-qs v0.0.0-20250518184349-717ef4cb7534 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/grokify/go-glip v0.5.21 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.18.3 // indirect
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -44,7 +44,7 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
-	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/net v0.50.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 )
