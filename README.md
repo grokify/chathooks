@@ -6,12 +6,33 @@
 
 A webhook formatter for chat
 
-[![Build Status][build-status-svg]][build-status-url]
-[![Lint Status][lint-status-svg]][lint-status-url]
+[![Go CI][go-ci-svg]][go-ci-url]
+[![Go Lint][go-lint-svg]][go-lint-url]
+[![Go SAST][go-sast-svg]][go-sast-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
+[![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
 [![Heroku][heroku-svg]][heroku-url]
+
+ [go-ci-svg]: https://github.com/grokify/chathooks/actions/workflows/go-ci.yaml/badge.svg?branch=main
+ [go-ci-url]: https://github.com/grokify/chathooks/actions/workflows/go-ci.yaml
+ [go-lint-svg]: https://github.com/grokify/chathooks/actions/workflows/go-lint.yaml/badge.svg?branch=main
+ [go-lint-url]: https://github.com/grokify/chathooks/actions/workflows/go-lint.yaml
+ [go-sast-svg]: https://github.com/grokify/chathooks/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
+ [go-sast-url]: https://github.com/grokify/chathooks/actions/workflows/go-sast-codeql.yaml
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
+ [goreport-url]: https://goreportcard.com/report/github.com/grokify/chathooks
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/chathooks
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/chathooks
+ [viz-svg]: https://img.shields.io/badge/visualizaton-Go-blue.svg
+ [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Fchathooks
+ [loc-svg]: https://tokei.rs/b1/github/grokify/chathooks
+ [repo-url]: https://github.com/grokify/chathooks
+ [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
+ [license-url]: https://github.com/grokify/chathooks/blob/master/LICENSE
+ [heroku-svg]: https://img.shields.io/badge/%E2%86%91_deploy-Heroku-7056bf.svg?style=flat
+ [heroku-url]: https://heroku.com/deploy
 
 </div>
 
@@ -316,22 +337,3 @@ Chathooks is built using:
 
 * [buaazp/fasthttprouter](https://github.com/buaazp/fasthttprouter)
 * [rs/zerolog](https://github.com/rs/zerolog)
-
- [build-status-svg]: https://github.com/grokify/chathooks/actions/workflows/ci.yaml/badge.svg?branch=master
- [build-status-url]: https://github.com/grokify/chathooks/actions/workflows/ci.yaml
- [lint-status-svg]: https://github.com/grokify/chathooks/actions/workflows/lint.yaml/badge.svg?branch=master
- [lint-status-url]: https://github.com/grokify/chathooks/actions/workflows/lint.yaml
- [coverage-status-svg]: https://coveralls.io/repos/grokify/chathooks/badge.svg?branch=master
- [coverage-status-url]: https://coveralls.io/r/grokify/chathooks?branch=master
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/chathooks
- [codeclimate-status-svg]: https://codeclimate.com/github/grokify/chathooks/badges/gpa.svg
- [codeclimate-status-url]: https://codeclimate.com/github/grokify/chathooks
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/chathooks
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/chathooks
- [loc-svg]: https://tokei.rs/b1/github/grokify/chathooks
- [repo-url]: https://github.com/grokify/chathooks
- [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/chathooks/blob/master/LICENSE
- [heroku-svg]: https://img.shields.io/badge/%E2%86%91_deploy-Heroku-7056bf.svg?style=flat
- [heroku-url]: https://heroku.com/deploy
