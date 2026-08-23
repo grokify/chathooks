@@ -9,7 +9,6 @@ A webhook formatter for chat
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
 [![Go SAST][go-sast-svg]][go-sast-url]
-[![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
@@ -21,8 +20,6 @@ A webhook formatter for chat
  [go-lint-url]: https://github.com/grokify/chathooks/actions/workflows/go-lint.yaml
  [go-sast-svg]: https://github.com/grokify/chathooks/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
  [go-sast-url]: https://github.com/grokify/chathooks/actions/workflows/go-sast-codeql.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/chathooks
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/chathooks
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/chathooks
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/chathooks
  [viz-svg]: https://img.shields.io/badge/visualizaton-Go-blue.svg
