@@ -206,7 +206,7 @@ type LibratoOutMessage struct {
 	Account       string                           `json:"account,omitempty"`
 	TriggerTime   int64                            `json:"trigger_time,omitempty"`
 	Conditions    []LibratoOutCondition            `json:"conditions,omitempty"`
-	ConditionsMap map[int64]LibratoOutCondition    `json:"-,omitempty"`
+	ConditionsMap map[int64]LibratoOutCondition    `json:"-"`
 	Violations    map[string][]LibratoOutViolation `json:"violations,omitempty"`
 	Clear         string                           `json:"clear,omitempty"`
 }
