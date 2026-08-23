@@ -76,7 +76,7 @@ func BuildURLQueryString(baseURL string, qry any) string {
 }
 
 func (s *ExampleWebhookSender) SendExampleForFilepath(filepath string, inputType string) error {
-	bytes, err := os.ReadFile(filepath)
+	bytes, err := os.ReadFile(filepath) //nolint:gosec // G703: Path from CLI flag (--input)
 	if err != nil {
 		return err
 	}
