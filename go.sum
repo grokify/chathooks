@@ -34,12 +34,12 @@ github.com/grokify/commonchat v0.3.19 h1:heDdbJLwkZCpeQd76vu9lwHh3GtjHwHybwp3lp6
 github.com/grokify/commonchat v0.3.19/go.mod h1:R7URb7N5Dsn9Ffa5Quxp5au1ZKsFRew0EOLIjScgER4=
 github.com/grokify/go-glip v0.5.22 h1:GPsVw0PKvwV3LUX+Y6ZdBfhqKJJx8fSRxMRFMuf4+qY=
 github.com/grokify/go-glip v0.5.22/go.mod h1:hlg92jUeKsb2Y+ls24j9qph41DEw4NjR/bun/lrX/d4=
-github.com/grokify/mogo v0.74.9 h1:kNByiqh2cskqioePUtjnz1pj1t/Z71rgQF0OUEy0/h0=
-github.com/grokify/mogo v0.74.9/go.mod h1:MuKguiqlqmBt83ebEzdc0fRLhC3tz7W3PvTJglVjLaw=
+github.com/grokify/mogo v0.75.0 h1:YVOGu49NWvltMfG9wh3aarRD6CTF7y0llEFU+HU9drc=
+github.com/grokify/mogo v0.75.0/go.mod h1:FLksmFRywriEucyYLAGyub7C0po49Yc/nHc9q9gX67w=
 github.com/grokify/sogo v0.15.0 h1:RS4DPxNhZQLmz/qcLa5t1Mr+SjGwSZPJgpefp9BJInE=
 github.com/grokify/sogo v0.15.0/go.mod h1:BZjNVHThtkfC80J2kcPWCytQzu5XKtHTxCRffpZaWb8=
-github.com/huandu/xstrings v1.6.0 h1:BT/qU6CSmHLURXT1B95n8Boz80RDSwhzjdun89UGJRI=
-github.com/huandu/xstrings v1.6.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
+github.com/huandu/xstrings v1.6.1 h1:yYdKSd6Sjv3fNZt9BDjl1FDsPNfQEaYi19L5LzK2JKs=
+github.com/huandu/xstrings v1.6.1/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.6.1 h1:Cvu5U8UGrLay1rZfv/zP7iLpSHGUZ/Ou68T0iX1bBK4=
 github.com/jessevdk/go-flags v1.6.1/go.mod h1:Mk8T1hIAWpOiJiHa9rJASDK2UGWji0EuPGBnNLMooyc=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
