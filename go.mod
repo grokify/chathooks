@@ -17,12 +17,11 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/rs/zerolog v1.35.1
 	github.com/tidwall/gjson v1.19.0
-	github.com/valyala/fasthttp v1.73.0
+	github.com/valyala/fasthttp v1.75.0
 	github.com/valyala/quicktemplate v1.8.0
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.2 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/env/v11 v11.4.1 // indirect
 	github.com/derekstavis/go-qs v0.0.0-20250518184349-717ef4cb7534 // indirect
@@ -31,9 +30,10 @@ require (
 	github.com/grokify/bitcoinmath v0.1.0 // indirect
 	github.com/grokify/go-glip v0.5.22 // indirect
 	github.com/huandu/xstrings v1.6.0 // indirect
-	github.com/klauspost/compress v1.19.2 // indirect
+	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
+	github.com/molecule-man/go-brrr v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
